@@ -1,0 +1,22 @@
+{
+  "name": "eaton-devices-management",
+  "version": "1.0.0",
+  "description": "An application for Eaton Haina's IT and HR departments for device management",
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LitlMaru/device-management-eaton.git"
+  },
+  "author": "Enmanuel Germosen, Anyeny Mejia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LitlMaru/device-management-eaton/issues"
+  },
+  "homepage": "https://github.com/LitlMaru/device-management-eaton#readme",
+  "dependencies": {
+    "electron": "^36.2.0"
+  }
+}
