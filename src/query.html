@@ -4,21 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Consulta</title>
-  <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="../css/query.css" />
+  <link rel="stylesheet" href="css/query.css" />
+ <script src="js/query.js">alert("Here")</script>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Menú</h2>
-    <ul>
-      <li><a href="menu.html">Inicio</a></li>
-      <li><a href="register_employee.html">Registrar Empleado</a></li>
-      <li><a href="query.html" class="active">Consultar</a></li>
-      <li><a href="assign_device.html">Asignar Dispositivo</a></li>
-    </ul>
-  </div>
 
-<div class="main-content">
+<div class="main-content" id="contenido">
   <h1>Consultar Empleado o Dispositivo</h1>
 
   <button id="toggle-filters" class="toggle-btn">🔽 Mostrar filtros</button>
@@ -63,6 +54,6 @@
 
   <div id="results"></div>
 </div>
-  <script src="../js/query.js"></script>
+
 </body>
 </html>

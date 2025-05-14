@@ -1,0 +1,54 @@
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.main-content h1 {
+    margin-bottom: 3cqmin;
+}
+
+#assign-form {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#assign-form button {
+  padding: 10px 20px;
+  background-color: #0078D4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#assign-form button:hover {
+  background-color: #005b8d;
+}
+
+#result-message {
+  margin-top: 20px;
+  font-weight: bold;
+  color: green;
+}

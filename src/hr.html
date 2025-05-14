@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Management EATON-RRHH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/hr.css">
+</head>
+<body>
+  <div class="header">
+    <div class="title">Device Management EATON - RRHH</div>
+    <div class="window-controls">
+      <i class="fas fa-window-minimize" onclick="minimizarVentana()"></i>
+      <i class="fas fa-window-maximize" onclick="maximizarVentana()"></i>
+      <i class="fas fa-times" onclick="cerrarVentana()"></i>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <img src="Imagen1.jpg" alt="Logo Eaton" />
+      <div class="menu-item" onclick="showContent('registr')">
+        Registrar <i class="fas fa-user-plus"></i>
+      </div>
+      <div class="menu-item" onclick="showContent('query')">
+        Buscador <i class="fas fa-search"></i>
+      </div>
+      <div class="menu-item" onclick="mostrarContenido('RRHH')">
+        RRHH <i class="fas fa-users"></i>
+      </div>
+    </div>
+
+    <div class="content" id="contenido">
+      <div class="welcome-card">
+        <img src="https://www.3ds.com/assets/invest/styles/banner/public/2024-01/eaton-logo-mobile.png.webp?itok=Il74W0cJ" alt="Eaton Logo">
+        <h1>Bienvenido al Panel de Recursos Humanos</h1>
+        <p>
+          En esta plataforma podrás gestionar el registro, búsqueda y administración de empleados de manera eficiente.<br>
+          Desarrollado con precisión y compromiso por el equipo de EATON para optimizar tu experiencia de recursos humanos.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function mostrarContenido(seccion) {
+      let contenido = '';
+
+      switch (seccion) {
+        case 'Registrar':
+          contenido = `
+            <div class="welcome-card">
+              <h1>Registrar Usuario</h1>
+              <p>Aquí podrás registrar nuevos empleados con sus datos completos para su gestión.</p>
+            </div>
+          `;
+          break;
+
+        case 'Buscador':
+          contenido = `
+            <div class="welcome-card">
+              <h1>Buscador</h1>
+              <p>Utiliza los filtros disponibles para buscar y encontrar rápidamente a cualquier empleado registrado.</p>
+            </div>
+          `;
+          break;
+
+        case 'RRHH':
+          contenido = `
+            <div class="welcome-card">
+              <h1>Módulo de Recursos Humanos</h1>
+              <p>Administra todo lo relacionado al personal, desde contrataciones hasta historial laboral.</p>
+            </div>
+          `;
+          break;
+
+        default:
+          contenido = document.querySelector('.content').innerHTML;
+      }
+
+      document.getElementById('contenido').innerHTML = contenido;
+    }
+
+
+
+    function showContent(section) {
+  const content = document.getElementById('contenido');
+  fetch(`${section.toLowerCase()}.html`)
+    .then(res => {
+      if (!res.ok) throw new Error("No se puedo cargar la seccion");
+      return res.text();
+    })
+    .then(html => {
+      content.innerHTML = html;
+    })
+    .catch(err => {
+      content.innerHTML = `<div class="welcome-card"><h1>Error</h1><p>${err.message}</p></div>`;
+    })
+}
+    function minimizarVentana() {
+      alert("Función de minimizar no implementada.");
+    }
+
+    function maximizarVentana() {
+      document.documentElement.requestFullscreen().catch(err =>
+        alert("No se pudo maximizar: " + err)
+      );
+    }
+
+    function cerrarVentana() {
+      alert("Función de cerrar no implementada.");
+    }
+  </script>
+</body>
+</html>

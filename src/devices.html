@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dispositivos</title>
-  <link rel="stylesheet" href="../css/devices.css">
+  <link rel="stylesheet" href="css/devices.css">
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="contenido">
     <h1>Dispositivos en Inventario</h1>
     
     <div class="filters-container">
-      <input type="text" id="serialNumberSearch" placeholder="Search by Serial Number" onkeyup="applyFilters()">
-      <input type="text" id="computerNameSearch" placeholder="Search by Computer Name" onkeyup="applyFilters()">
+      <input type="text" id="serialNumberSearch" placeholder="Buscar por numero de serie" onkeyup="applyFilters()">
+      <input type="text" id="computerNameSearch" placeholder="Buscar por Computer Name" onkeyup="applyFilters()">
       
       <select id="deviceTypeSelect" onchange="applyFilters()">
         <option value="">Tipo de Dispositivo</option>
@@ -55,9 +55,7 @@
     </table>
   </div>
 
-  <script>
-   
-  </script>
+  <script src="js/devices.js"></script>
 
 </body>
 </html>

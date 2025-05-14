@@ -1,0 +1,126 @@
+* {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #e6f0fa, #f8fbff);
+      color: #333;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #004a99, #0078D4);
+      color: white;
+      display: flex;
+      align-items: center;
+      height: 60px;
+      padding: 0 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .window-controls {
+      margin-left: auto;
+      display: flex;
+      gap: 15px;
+    }
+
+    .window-controls i {
+      cursor: pointer;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    .window-controls i:hover {
+      color: #ddd;
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #0078D4;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    }
+
+    .sidebar img {
+     width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .menu-item {
+      width: 90%;
+      padding: 15px 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background-color: rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .menu-item:hover {
+      background-color: #005ea2;
+      transform: scale(1.03);
+    }
+
+    .content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .welcome-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .welcome-card img {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-card h1 {
+      font-size: 30px;
+      color: #004a99;
+      margin-bottom: 15px;
+    }
+
+    .welcome-card p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Management EATON-ADMIN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/it.css">
+</head>
+<body>
+  <div class="header">
+    <div class="title">Device Management EATON</div>
+    <div class="window-controls">
+      <i class="fas fa-window-minimize" onclick="minimizarVentana()"></i>
+      <i class="fas fa-window-maximize" onclick="maximizarVentana()"></i>
+
+      <i class="fas fa-times" onclick="cerrarVentana()"></i>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
+      <div class="menu-item" onclick="showContent('assign')">
+        Registro <i class="fas fa-user-plus"></i>
+      </div>
+      <div class="menu-item" onclick="showContent('query')">
+        Buscador <i class="fas fa-search"></i>  
+      </div>
+
+      <div class="menu-item" onclick="showContent('quantities')">
+        Admin <i class="fas fa-user-cog"></i>
+      </div>
+      <div class="menu-item" onclick="showContent('devices')">
+        Dispositivo <i class="fas fa-microchip"></i>
+      </div>
+    </div>
+
+    <div class="marcoContenido">
+      <div class="content" id="contenido">
+            <h1>Bienvenido</h1>
+            <div class="welcome">
+              <img src="../assets/eaton_logo.svg" alt="Eaton"/>
+              <div class="welcome-text">
+                <p>Bienvenido al sistema de gestión de dispositivos de <strong>EATON</strong>, una empresa global de gestión inteligente de energía que ayuda a las personas a trabajar de forma más segura, eficiente y sostenible.</p>
+                <p>Desde esta plataforma puedes administrar registros, realizar búsquedas, generar reportes y controlar la asignación de dispositivos. ¡Explora todas las opciones del menú y lleva el control al siguiente nivel!</p>
+                <p>Gracias por formar parte de nuestra misión de mejorar la calidad de vida y el medioambiente mediante el uso de tecnologías avanzadas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+
+  <script>
+    function mostrarContenido(seccion) {
+     alert(seccion);
+      document.getElementById('contenido').innerHTML = `
+        <h1>${seccion}</h1>
+        <p style="text-align:center; font-size:18px;">Contenido de la sección <strong>${seccion}</strong> pronto estará disponible.</p>
+      `;
+    }
+
+    function showContent(section) {
+  const content = document.getElementById('contenido');
+  fetch(`${section.toLowerCase()}.html`)
+    .then(res => {
+      if (!res.ok) throw new Error("No se puedo cargar la seccion");
+      return res.text();
+    })
+    .then(html => {
+      content.innerHTML = html;
+    })
+    .catch(err => {
+      content.innerHTML = `<div class="welcome-card"><h1>Error</h1><p>${err.message}</p></div>`;
+    })
+}
+
+    function minimizarVentana() {
+      alert("Función de minimizar no implementada.");
+    }
+
+    function maximizarVentana() {
+      document.documentElement.requestFullscreen().catch(err => console.log(err));
+    }
+
+    function cerrarVentana() {
+      alert("Función de cerrar no implementada.");
+    }
+
+  </script>
+  <script src="../main.js"></script>
+</body>
+</html>

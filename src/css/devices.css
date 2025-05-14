@@ -1,10 +1,10 @@
-  /* Basic CSS for the page layout */
-    body {
+
+   /* body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f4f7fc;
-    }
+    }*/
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -16,12 +16,15 @@
     }
     .filters-container {
       display: flex;
-      justify-content: space-between;
+      justify-content: normal;
+      gap: 8px;
+      flex-wrap: wrap;
       margin-bottom: 20px;
     }
     .filters-container select, .filters-container input {
       padding: 10px;
       margin-right: 10px;
+      margin-bottom: 4px;
       border-radius: 4px;
       border: 1px solid #ccc;
     }
@@ -36,21 +39,24 @@
     .filters-container button:hover {
       background-color: #005392;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background-color: #f1f1f1;
-    }
+  
+  table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #0078D4;
+    color: white;
+  }
+
     .row-alert {
       background-color: #f8d7da;
     }

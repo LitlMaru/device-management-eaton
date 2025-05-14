@@ -1,4 +1,4 @@
-// Toggle filter panel
+
 const toggleBtn = document.getElementById('toggle-filters');
 const filtersContainer = document.getElementById('filters-container');
 
@@ -21,7 +21,6 @@ document.getElementById('query-form').addEventListener('submit', function (e) {
   const brand = document.getElementById('brand').value;
   const model = document.getElementById('model').value.trim().toLowerCase();
 
-  // Dummy data for testing
   const dummyData = [
     {
       employeeId: "1234",
@@ -87,3 +86,16 @@ document.getElementById('query-form').addEventListener('submit', function (e) {
     resultDiv.appendChild(table);
   }
 });
+rial-number').value.trim();
+
+ipcRenderer.send("query-employee-devices", () => {employee_id, employee_name, serial_number})
+
+
+const {ipcRenderer} = require('electron')
+
+document.getElementById("query-form").addEventListener("submit", function (e) {e.preventDefault()})
+
+const employee_id = document.getElementById('employee-id').value.trim();
+const employee_name = document.getElementById('employee-name').value.trim();
+const serial_number = document.getElementById('serial-number').value.trim();
+
