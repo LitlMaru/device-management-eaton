@@ -20,7 +20,7 @@ function createWindow() {
     },
   });
 
-  win.loadFile('src/login.html');
+  win.loadFile('src/hr/register.html');
 }
 
 app.whenReady().then(() => {

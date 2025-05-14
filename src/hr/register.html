@@ -21,20 +21,24 @@
   <div class="main-content">
     <h1>Registrar nuevo empleado</h1>
     <form id="employee-form">
-      <label for="name">Nombre completo</label>
-      <input type="text" id="name" name="name" required>
-
-      <label for="employee-id">ID del Empleado</label>
-      <input type="text" id="employee-id" name="employee-id" required>
-
-      <label for="department">Departamento</label>
-      <input type="text" id="department" name="department" required>
-
-      <label for="position">Puesto</label>
-      <input type="text" id="position" name="position" required>
-
+      <div class="form-input">
+        <label for="name">Nombre completo</label>
+         <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-input">
+           <label for="employee-id">ID del Empleado</label>
+            <input type="text" id="employee-id" name="employee-id" required>
+      </div>
+      <div class="form-input">
+         <label for="department">Departamento</label>
+         <input type="text" id="department" name="department" required>
+      </div>
+      <div class="form-input">
+        <label for="position">Puesto</label>
+         <input type="text" id="position" name="position" required>    
+      </div>
       <button type="submit">Guardar</button>
-      <p id="success-message" style="color: green; display: none;">Empleado registrado con éxito.</p>
+      <div id="form-message" style="display: none;"></div>
     </form>
   </div>
 
