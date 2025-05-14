@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registrar empleados</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/register.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <h2>HR Panel</h2>
+    <ul>
+      <li><a href="hr_menu.html">Menú Principal</a></li>
+      <li><a href="add_employee.html" class="active">Registrar Empleado</a></li>
+      <li><a href="view_employees.html">Ver Empleados</a></li>
+      <li><a href="logout.html">Cerrar Sesión</a></li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Registrar nuevo empleado</h1>
+    <form id="employee-form">
+      <label for="name">Nombre completo</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="employee-id">ID del Empleado</label>
+      <input type="text" id="employee-id" name="employee-id" required>
+
+      <label for="department">Departamento</label>
+      <input type="text" id="department" name="department" required>
+
+      <label for="position">Puesto</label>
+      <input type="text" id="position" name="position" required>
+
+      <button type="submit">Guardar</button>
+      <p id="success-message" style="color: green; display: none;">Empleado registrado con éxito.</p>
+    </form>
+  </div>
+
+  <script src="../js/register.js"></script>
+</body>
+</html>
