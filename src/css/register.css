@@ -45,7 +45,7 @@ form button:hover {
   background-color: #005b8d;
 }
 
-#formMessage {
+#form-message {
     padding: 15px;
     margin-top: 15px;
     border-radius: 5px;
@@ -64,4 +64,3 @@ form button:hover {
     border: 1px solid #f5c6cb;
   }
 
-  
