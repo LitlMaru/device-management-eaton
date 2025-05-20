@@ -5,115 +5,324 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventario de Dispositivos Agrupados</title>
   <link rel="stylesheet" href="css/quantities.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+    }
+
+    header {
+          background: linear-gradient(90deg, #004e92, #000428);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .header-left h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+
+    .header-right button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: white;
+      margin-left: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .header-right button:hover {
+      transform: scale(1.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 25px;
+    }
+
+    .search-filter {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], select {
+      padding: 10px;
+      border: 2px solid #cc0000;
+      background-color: #ffe5e5;
+      color: #660000;
+      border-radius: 6px;
+      flex: 1;
+      font-weight: bold;
+    }
+
+    input[type="text"]::placeholder {
+      color: #990000;
+    }
+
+    .alert-box {
+      background-color: #ffcccc;
+      border: 2px solid #cc0000;
+      color: #800000;
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 8px;
+    }
+
+    .alert-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .alert-box ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .alert-box li {
+      margin-bottom: 6px;
+    }
+
+    button.export-btn {
+      background-color: #cc0000;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 15px;
+      transition: background 0.3s ease;
+    }
+
+    button.export-btn:hover {
+      background-color: #990000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: center;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #004e92;
+      color: #fff;
+    }
+
+    tr.low-stock {
+      background-color: #f8d7da !important;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .view-btn, .edit-btn {
+background: linear-gradient(135deg, #003973, #000428);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: none;
+  cursor: default;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.view-btn::before {
+  font-size: 16px;
+}
+
+.edit-btn::before {
+  font-size: 16px;
+}
+
+.view-btn:hover, .edit-btn:hover {
+  background: linear-gradient(135deg, #003d6b, #001f3f);
+  box-shadow: 0 6px 12px rgba(0, 61, 107, 0.6);
+  transform: translateY(-2px);
+}
+
+
+    
+  </style>
 </head>
 <body>
-  <div id="contenido">
-  <h1>Inventario de Dispositivos Agrupados</h1>
+  <header>
+    <div class="header-left">
+      <h2>📊Device Management EATON</h2>
+    </div>
+    <div class="header-right">
+      <button onclick="minimize()">🗕</button>
+      <button onclick="maximize()">🗖</button>
+      <button onclick="closeWindow()">✖</button>
+    </div>
+  </header>
 
-  <div class="info">
-  <div class="search-filter">
-      <input type="text" placeholder="Buscar por tipo, marca o modelo" />
-      <select>
-        <option>Todos los Tipos</option>
-        <option>Laptop</option>
-        <option>Escritorio</option>
-        <option>Tablet</option>
-      </select>
-      <select>
-        <option>Todas las Marcas</option>
-        <option>Dell</option>
-        <option>HP</option>
-        <option>Apple</option>
-        <option>Samsung</option>
-      </select>
-      <select>
-        <option>Todos los Modelos</option>
-        <option>XPS 13</option>
-        <option>Pavilion 15</option>
-        <option>MacBook Pro</option>
-        <option>Galaxy Tab</option>
+  <div class="container">
+    <h1>Inventario de Dispositivos Agrupados</h1>
+
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="Buscar por marca, modelo o estado" />
+      <select id="filterOption">
+        <option value="marca">Marca</option>
+        <option value="modelo">Modelo</option>
+        <option value="estado">Estado</option>
       </select>
     </div>
 
     <div class="alert-box">
       <div class="alert-title">
-        <strong>Alerta de Limite:</strong> Las siguientes categorías están por debajo del Limite:
+        ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están por debajo del límite:
       </div>
-     
       <ul>
-        <li><strong>Laptop (Dell XPS 13)</strong> – 3 dispositivos restantes (Limite: 5)</li>
-        <li><strong>Escritorio (HP Pavilion)</strong> – 1 dispositivo restante (Limite: 3)</li>
+        <li><strong>Laptop (Dell XPS 13)</strong> – 3 dispositivos restantes (Límite: 5)</li>
+        <li><strong>Escritorio (HP Pavilion)</strong> – 1 dispositivo restante (Límite: 3)</li>
       </ul>
-  </div>
-  
+    </div>
+
+    <button class="export-btn" onclick="exportarExcel()">⬇ Exportar a Excel</button>
+
+    <table id="inventoryTable">
+      <thead>
+        <tr>
+          <th>Tipo de Dispositivo</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Cantidad</th>
+          <th>Límite</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="low-stock">
+          <td>Laptop</td>
+          <td>Dell</td>
+          <td>XPS 13</td>
+          <td>3</td>
+          <td>5</td>
+          <td><strong>Debajo de la cantidad mínima</strong></td>
+          <td>
+            <button class="view-btn">Ver dispositivos</button>
+            <button class="edit-btn">Editar cantidad mínima</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Laptop</td>
+          <td>HP</td>
+          <td>Pavilion 15</td>
+          <td>8</td>
+          <td>5</td>
+          <td>Cantidad apropiada</td>
+          <td>
+            <button class="view-btn">Ver dispositivos</button>
+            <button class="edit-btn">Editar cantidad mínima</button>
+          </td>
+        </tr>
+        <tr class="low-stock">
+          <td>Escritorio</td>
+          <td>Apple</td>
+          <td>MacBook Pro</td>
+          <td>2</td>
+          <td>3</td>
+          <td><strong>Debajo de la cantidad mínima</strong></td>
+          <td>
+            <button class="view-btn">Ver dispositivos</button>
+            <button class="edit-btn">Editar cantidad mínima</button>
+          </td>
+        </tr>
+        <tr>
+          <td>Tablet</td>
+          <td>Samsung</td>
+          <td>Galaxy Tab</td>
+          <td>6</td>
+          <td>5</td>
+          <td>Cantidad apropiada</td>
+          <td>
+            <button class="view-btn">Ver detalles</button>
+            <button class="edit-btn">Editar cantidad mínima</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo de Dispositivo</th>
-        <th>Marca</th>
-        <th>Modelo</th>
-        <th>Cantidad</th>
-        <th>Limite</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="below-threshold">
-        <td>Laptop</td>
-        <td>Dell</td>
-        <td>XPS 13</td>
-        <td>3</td>
-        <td>5</td>
-        <td><strong>Debajo de la cantidad mínima</strong></td>
-        <td class="actions">
-          <button class="view-btn">Ver dispositivos</button>
-          <button class="edit-btn">Editar cantidad minima</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Laptop</td>
-        <td>HP</td>
-        <td>Pavilion 15</td>
-        <td>8</td>
-        <td>5</td>
-        <td>Cantidad apropiada</td>
-        <td class="actions">
-          <button class="view-btn">Ver dispositivos</button>
-          <button class="edit-btn">Editar cantidad minima</button>
-        </td>
-      </tr>
-      <tr class="below-threshold">
-        <td>Escritorio</td>
-        <td>Apple</td>
-        <td>MacBook Pro</td>
-        <td>2</td>
-        <td>3</td>
-        <td><strong>Debajo de la cantidad mínima</strong></td>
-        <td class="actions">
-          <button class="view-btn">Ver dispositivos</button>
-          <button class="edit-btn">Editar cantidad minima</button>
-        </td>
-      </tr>
-      <tr>
-        <td>Tablet</td>
-        <td>Samsung</td>
-        <td>Galaxy Tab</td>
-        <td>6</td>
-        <td>5</td>
-        <td>Cantidad apropiada</td>
-        <td class="actions">
-          <button class="view-btn">Ver Detalles</button>
-          <button class="edit-btn">Cantidad apropiada</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
+  <script>
+    function closeWindow() {
+      alert("Función de cerrar no disponible en navegador.");
+    }
 
+    function maximize() {
+      alert("Función de maximizar no disponible en navegador.");
+    }
 
-  <script src="js/quantities.js"></script>
+    function minimize() {
+      alert("Función de minimizar no disponible en navegador.");
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const input = this.value.toLowerCase();
+      const option = document.getElementById("filterOption").value;
+      const rows = document.querySelectorAll("#inventoryTable tbody tr");
+
+      rows.forEach(row => {
+        let text = "";
+        switch (option) {
+          case "marca":
+            text = row.cells[1].textContent.toLowerCase();
+            break;
+          case "modelo":
+            text = row.cells[2].textContent.toLowerCase();
+            break;
+          case "estado":
+            text = row.cells[5].textContent.toLowerCase();
+            break;
+        }
+
+        row.style.display = text.includes(input) ? "" : "none";
+      });
+    });
+
+    function exportarExcel() {
+      let table = document.getElementById("inventoryTable").outerHTML;
+      const data = 'data:application/vnd.ms-excel,' + encodeURIComponent(table);
+      const a = document.createElement('a');
+      a.href = data;
+      a.download = 'inventario_dispositivos.xls';
+      a.click();
+    }
+  </script>
 </body>
 </html>
+
+
