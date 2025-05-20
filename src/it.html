@@ -53,43 +53,7 @@
     </div>
     
 
-  <script>
-    function mostrarContenido(seccion) {
-     alert(seccion);
-      document.getElementById('contenido').innerHTML = `
-        <h1>${seccion}</h1>
-        <p style="text-align:center; font-size:18px;">Contenido de la sección <strong>${seccion}</strong> pronto estará disponible.</p>
-      `;
-    }
-
-    function showContent(section) {
-  const content = document.getElementById('contenido');
-  fetch(`${section.toLowerCase()}.html`)
-    .then(res => {
-      if (!res.ok) throw new Error("No se puedo cargar la seccion");
-      return res.text();
-    })
-    .then(html => {
-      content.innerHTML = html;
-    })
-    .catch(err => {
-      content.innerHTML = `<div class="welcome-card"><h1>Error</h1><p>${err.message}</p></div>`;
-    })
-}
-
-    function minimizarVentana() {
-      alert("Función de minimizar no implementada.");
-    }
-
-    function maximizarVentana() {
-      document.documentElement.requestFullscreen().catch(err => console.log(err));
-    }
-
-    function cerrarVentana() {
-      alert("Función de cerrar no implementada.");
-    }
-
-  </script>
+  <script src="js/it.js"></script>
   <script src="../main.js"></script>
 </body>
 </html>
