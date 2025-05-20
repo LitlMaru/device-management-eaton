@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dispositivos Asignados</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to right, #004e92, #000428);
+      color: white;
+      padding: 10px 20px;
+    }
+
+    .header-left {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .header-right i {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .header-right i:hover {
+      color: #d0e7ff;
+    }
+
+    h1 {
+      text-align: center;
+      color: #004e92;
+      margin-top: 20px;
+    }
+
+    .contenedor-principal {
+      width: 95%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .busqueda-exportar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .busqueda-exportar input {
+      padding: 10px;
+      border: 2px solid #004e92;
+      border-radius: 8px;
+      width: 250px;
+      font-size: 16px;
+    }
+
+    .busqueda-exportar button {
+      background-color: #004e92;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .busqueda-exportar button:hover {
+      background-color: #002a5c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #004e92;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-left">Device Management EATON</div>
+    <div class="header-right">
+      <i class="fas fa-window-minimize"></i>
+      <i class="fas fa-window-restore"></i>
+      <i class="fas fa-times"></i>
+    </div>
+  </header>
+
+  <div class="contenedor-principal">
+    <h1>Dispositivos Asignados</h1>
+
+    <div class="busqueda-exportar">
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o código...">
+      <button onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
+    </div>
+
+    <table id="tablaAsignados">
+      <thead>
+        <tr>
+          <th>ID Asignación</th>
+          <th>ID Empleado</th>
+          <th>ID Dispositivo</th>
+          <th>Fecha Asignación</th>
+          <th>Fecha Cambio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>1001</td>
+          <td>Laptop-XYZ</td>
+          <td>2024-10-01</td>
+          <td>2025-04-15</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>1002</td>
+          <td>Tablet-ABC</td>
+          <td>2024-11-12</td>
+          <td>2025-01-22</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.getElementById("busqueda").addEventListener("keyup", function () {
+      const filtro = this.value.toLowerCase();
+      const filas = document.querySelectorAll("#tablaAsignados tbody tr");
+
+      filas.forEach((fila) => {
+        const texto = fila.innerText.toLowerCase();
+        fila.style.display = texto.includes(filtro) ? "" : "none";
+      });
+    });
+
+    function exportarExcel() {
+      alert("Función de exportar a Excel en desarrollo.");
+    }
+  </script>
+</body>
+
+</html>
