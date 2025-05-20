@@ -5,3 +5,9 @@ contextBridge.exposeInMainWorld('electron', {
     invoke: (...args) => ipcRenderer.invoke(...args),
   }
 });
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  minimize: () => ipcRenderer.send('minimize-window'),
+  maximize: () => ipcRenderer.send('maximize-window'),
+  close: () => ipcRenderer.send('close-window')
+});
