@@ -57,10 +57,17 @@ function minimizarVentana() {
     window.electronAPI.minimize();
 }
 
+fullScreenImage = document.getElementById("img-full-screen");
 function maximizarVentana() {
     window.electronAPI.maximize();
+    if(fullScreenImage.src == "../assets/fullscreenmode.svg") fullScreenImage.src = "../assets/windowmode.svg"
+    else fullScreenImage.src = "../assets/fullscreenmode.svg"
 }
-
 function cerrarVentana() {
     window.electronAPI.close();
+}
+
+
+function closeSession(){
+    window.location.href = "login.html"
 }

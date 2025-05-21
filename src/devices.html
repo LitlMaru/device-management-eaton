@@ -13,20 +13,12 @@
     
     <div class="filters-container">
       <input type="text" id="serialNumberSearch" placeholder="Buscar por numero de serie" onkeyup="applyFilters()">
-      <input type="text" id="computerNameSearch" placeholder="Buscar por Computer Name" onkeyup="applyFilters()">
       
       <select id="deviceTypeSelect" onchange="applyFilters()">
         <option value="">Tipo de Dispositivo</option>
         <option value="Laptop">Laptop</option>
         <option value="Desktop">Desktop</option>
         <option value="Tablet">Tablet</option>
-      </select>
-
-      <select id="brandSelect" onchange="applyFilters()">
-        <option value="">Marca</option>
-        <option value="Dell">Dell</option>
-        <option value="HP">HP</option>
-        <option value="Apple">Apple</option>
       </select>
 
       <select id="modelSelect" onchange="applyFilters()">
@@ -42,20 +34,27 @@
     <table id="devicesTable">
       <thead>
         <tr>
-          <th>Serial Number</th>
-          <th>Computer Name</th>
-          <th>Tipo de dispositivo</th>
-          <th>Marca</th>
+           <th>Tipo de dispositivo</th>
+           <th>Marca</th>
           <th>Modelo</th>
+          <th>Serial Number</th>
           <th>Acciones</th>
+        </tr>
+        <tr>
+          <td>Laptop</td>
+          <td>Dell</th>
+          <td>Pequeña</td>
+          <td>DADA8909ADLKP</td>
+          <td><div class="action-buttons">
+              <button class="delete-btn">Eliminar</button>
+            </div></td>
         </tr>
       </thead>
       <tbody id="devicesTableBody">
       </tbody>
     </table>
   </div>
-
-  <script src="js/devices.js"></script>
+  <script src="../src/js/devices.js"></script>
 
 </body>
 </html>

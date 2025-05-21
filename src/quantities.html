@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventario de Dispositivos Agrupados</title>
-  <link rel="stylesheet" href="css/quantities.css" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -118,85 +117,75 @@
       background-color: #990000;
     }
 
+    
     table {
       width: 100%;
       border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     th, td {
+      padding: 14px;
       text-align: center;
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #ccc;
     }
 
     th {
       background-color: #004e92;
-      color: #fff;
-    }
-
-    tr.low-stock {
-      background-color: #f8d7da !important;
+      color: white;
     }
 
     tr:hover {
-      background-color: #f1f1f1;
+      background-color: #f0f8ff;
     }
-    .view-btn, .edit-btn {
-background: linear-gradient(135deg, #003973, #000428);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 6px 14px;
-  border-radius: 50px;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.4px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  box-shadow: none;
-  cursor: default;
-  user-select: none;
-  transition: all 0.3s ease;
+
+    td .action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
 }
 
-.view-btn::before {
-  font-size: 16px;
-}
 
-.edit-btn::before {
-  font-size: 16px;
-}
+.edit-btn{
+      width: 100%;
+      height: 100%;
+      background-color: #004e92;
+      padding: .5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+    }
 
-.view-btn:hover, .edit-btn:hover {
-  background: linear-gradient(135deg, #003d6b, #001f3f);
-  box-shadow: 0 6px 12px rgba(0, 61, 107, 0.6);
-  transform: translateY(-2px);
-}
+    .edit-btn:hover{
+      width: 100%;
+      height: 100%;
+      background-color: #0264ba;
+      padding: .5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
 
 
     
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <h2>📊Device Management EATON</h2>
-    </div>
-    <div class="header-right">
-      <button onclick="minimize()">🗕</button>
-      <button onclick="maximize()">🗖</button>
-      <button onclick="closeWindow()">✖</button>
-    </div>
-  </header>
 
   <div class="container">
     <h1>Inventario de Dispositivos Agrupados</h1>
 
     <div class="search-filter">
-      <input type="text" id="searchInput" placeholder="Buscar por marca, modelo o estado" />
-      <select id="filterOption">
-        <option value="marca">Marca</option>
-        <option value="modelo">Modelo</option>
-        <option value="estado">Estado</option>
+      <select id="deviceType">
+        <option value="">Filtrar por tipo de dispositivo</option>
+        <option value="laptop">Laptop</option>
+        <option value="mouse">Mouse</option>
+        <option value="teclado">Teclado</option>
       </select>
     </div>
 
@@ -233,9 +222,10 @@ background: linear-gradient(135deg, #003973, #000428);
           <td>5</td>
           <td><strong>Debajo de la cantidad mínima</strong></td>
           <td>
-            <button class="view-btn">Ver dispositivos</button>
-            <button class="edit-btn">Editar cantidad mínima</button>
-          </td>
+            <div class="action-buttons">
+              <button class="edit-btn">Editar cantidad mínima</button>
+            </div>
+        </td>
         </tr>
         <tr>
           <td>Laptop</td>
@@ -245,9 +235,10 @@ background: linear-gradient(135deg, #003973, #000428);
           <td>5</td>
           <td>Cantidad apropiada</td>
           <td>
-            <button class="view-btn">Ver dispositivos</button>
-            <button class="edit-btn">Editar cantidad mínima</button>
-          </td>
+            <div class="action-buttons">
+              <button class="edit-btn">Editar cantidad mínima</button>
+            </div>
+        </td>
         </tr>
         <tr class="low-stock">
           <td>Escritorio</td>
@@ -257,9 +248,10 @@ background: linear-gradient(135deg, #003973, #000428);
           <td>3</td>
           <td><strong>Debajo de la cantidad mínima</strong></td>
           <td>
-            <button class="view-btn">Ver dispositivos</button>
-            <button class="edit-btn">Editar cantidad mínima</button>
-          </td>
+          <div class="action-buttons">
+              <button class="edit-btn">Editar cantidad mínima</button>
+          </div>
+        </td>
         </tr>
         <tr>
           <td>Tablet</td>
@@ -269,58 +261,17 @@ background: linear-gradient(135deg, #003973, #000428);
           <td>5</td>
           <td>Cantidad apropiada</td>
           <td>
-            <button class="view-btn">Ver detalles</button>
-            <button class="edit-btn">Editar cantidad mínima</button>
-          </td>
+          <div class="action-buttons">
+              <button class="edit-btn">Editar cantidad mínima</button>
+          </div>
+        </td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <script>
-    function closeWindow() {
-      alert("Función de cerrar no disponible en navegador.");
-    }
-
-    function maximize() {
-      alert("Función de maximizar no disponible en navegador.");
-    }
-
-    function minimize() {
-      alert("Función de minimizar no disponible en navegador.");
-    }
-
-    document.getElementById("searchInput").addEventListener("input", function () {
-      const input = this.value.toLowerCase();
-      const option = document.getElementById("filterOption").value;
-      const rows = document.querySelectorAll("#inventoryTable tbody tr");
-
-      rows.forEach(row => {
-        let text = "";
-        switch (option) {
-          case "marca":
-            text = row.cells[1].textContent.toLowerCase();
-            break;
-          case "modelo":
-            text = row.cells[2].textContent.toLowerCase();
-            break;
-          case "estado":
-            text = row.cells[5].textContent.toLowerCase();
-            break;
-        }
-
-        row.style.display = text.includes(input) ? "" : "none";
-      });
-    });
-
-    function exportarExcel() {
-      let table = document.getElementById("inventoryTable").outerHTML;
-      const data = 'data:application/vnd.ms-excel,' + encodeURIComponent(table);
-      const a = document.createElement('a');
-      a.href = data;
-      a.download = 'inventario_dispositivos.xls';
-      a.click();
-    }
+    
   </script>
 </body>
 </html>
