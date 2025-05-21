@@ -14,7 +14,7 @@ const dbConfig = {
   user: 'enmanuel',
   password: 'L3tItG0',
   server: 'localhost\\MSSQLSERVER', 
-  database: 'EATON',
+  database: 'ProgramaEATON',
   options: {
     encrypt: false,
     trustServerCertificate: true,
@@ -24,12 +24,14 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    frame: false,
-    titleBarStyle: 'hidden',
+    frame: true,
+    titleBarStyle: 'default',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
+       devTools: true,
       nodeIntegration: false,
+     
     },
   });
 
@@ -102,25 +104,28 @@ ipcMain.handle('get-current-user', () => {
   return global.currentUser;
 });
 
-ipcMain.handle('register-employee', async (event, data) => {
+ipcMain.on('register-employee', async (event, data) => {
   try {
     const pool = await sql.connect(dbConfig);
-    const result = await pool.request()
+    await pool.request()
       .input("ID_Empleado", sql.VarChar, data.id)
-      .input("Nombre", sql.VarChar, data.name) 
+      .input("Nombre", sql.VarChar, data.name)
       .input("Departamento", sql.VarChar, data.dept)
       .input("Posicion", sql.VarChar, data.position)
       .input("Email", sql.VarChar, data.email)
-      .input("Ubicacion", sql.VarChar, global.currentUser.Rol)
+      .input("Ubicacion", sql.VarChar, global.currentUser?.Ubicacion || '')
       .input("Fecha_Entrada", sql.Date, data.currentDate)
-      
-      event.reply("employee-added")
-} catch(error) {
-  console.error("Error insertando empleado: ", error.message);
-  event.reply("employee-error", error.message);
-}}) 
+      .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
+              VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Email, @Ubicacion, @Fecha_Entrada)`);
 
-ipcMain.handle('query-employee-devices', async (event, filters) => {
+    event.reply("employee-added");
+  } catch (error) {
+    console.error("Error insertando empleado:", error.message);
+    event.reply("employee-error", error.message);
+  }
+});
+
+/*ipcMain.handle('query-employee-devices', async (event, filters) => {
   try {
     const pool = await sql.connect(dbConfig);
     if(filters.employee_name == "" && filters.employee_id == ""){
@@ -143,4 +148,42 @@ ipcMain.handle('query-employee-devices', async (event, filters) => {
   console.error("Error en la consulta: ", error.message);
   event.reply("query-error", error.message)
 } })
+*/
 
+ipcMain.handle('query-employee-devices', async (event, filter) => {
+  try{
+    const pool = await sql.connect(dbConfig);
+    const result = await sql.query(`SELECT e.ID_Empleado, e.Nombre, i.Tipo_Dispositivo, i.Serial_Number, d.Fecha_asignacion, d.Fecha_cambio
+      FROM Inventario i INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo  INNER JOIN Empleados ON e.ID_Empleado = d.ID_Empleado
+      WHERE e.ID_Empleado = ${filter.employeeInfo} OR e.Nombre = ${filter.employeeInfo} `)
+      
+      return result.recordset;
+  }
+  catch(error) {
+    console.error("Error en la consulta: ", error.message);
+  }
+})
+
+ipcMain.handle('get-grouped-inventory', async () => {
+  try {
+    await sql.connect(config);
+    const result = await sql.query(`
+      SELECT 
+        dt.Name AS DeviceType,
+        m.Brand,
+        m.Model,
+        COUNT(i.Id) AS Quantity,
+        m.Threshold
+      FROM Models m
+      JOIN DeviceTypes dt ON dt.Id = m.DeviceTypeId
+      LEFT JOIN Inventory i ON i.ModelId = m.Id
+      GROUP BY dt.Name, m.Brand, m.Model, m.Threshold
+      ORDER BY dt.Name, m.Brand, m.Model;
+    `);
+
+    return result.recordset;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+});

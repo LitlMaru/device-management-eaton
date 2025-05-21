@@ -245,7 +245,6 @@
       }
 
       if (!document.getElementById("tieneSerial").checked) {
-        // Crear serial automático
         serial = generarSerialAutomatico(tipo, modelo);
       }
 
@@ -260,7 +259,7 @@
     }
 
     function generarSerialAutomatico(tipo, modelo) {
-  
+      // Ejemplo simple: tipo abreviado + modelo + timestamp
       const tipoAbrev = tipo.split(" ").map(p => p[0]).join("").toUpperCase();
       const modeloSinEspacios = modelo.replace(/\s+/g, "").toUpperCase();
       const timestamp = Date.now().toString().slice(-5);

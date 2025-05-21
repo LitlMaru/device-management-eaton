@@ -109,14 +109,6 @@
 </head>
 
 <body>
-  <header>
-    <div class="header-left">Device Management EATON</div>
-    <div class="header-right">
-      <i class="fas fa-window-minimize"></i>
-      <i class="fas fa-window-restore"></i>
-      <i class="fas fa-times"></i>
-    </div>
-  </header>
 
   <div class="contenedor-principal">
     <h1>Dispositivos Asignados</h1>
@@ -155,21 +147,6 @@
     </table>
   </div>
 
-  <script>
-    document.getElementById("busqueda").addEventListener("keyup", function () {
-      const filtro = this.value.toLowerCase();
-      const filas = document.querySelectorAll("#tablaAsignados tbody tr");
-
-      filas.forEach((fila) => {
-        const texto = fila.innerText.toLowerCase();
-        fila.style.display = texto.includes(filtro) ? "" : "none";
-      });
-    });
-
-    function exportarExcel() {
-      alert("Función de exportar a Excel en desarrollo.");
-    }
-  </script>
 </body>
 
 </html>

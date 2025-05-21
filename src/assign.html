@@ -11,22 +11,7 @@
       background-color: white;
       font-family: "Segoe UI", sans-serif;
     }
-
-    .dm-header {
-      background-color: #003973;
-      color: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    }
-
-    .dm-header h1 {
-      font-size: 1.4rem;
-      margin: 0;
-    }
-
+    
     .window-controls {
       display: flex;
       gap: 0.5rem;
@@ -55,7 +40,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 3rem;
-      padding: 4rem 2rem;
+      padding: 2rem 2rem;
     }
 
     .logo-container {
@@ -77,9 +62,9 @@
       padding: 2.5rem;
       border-radius: 16px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      max-width: 480px;
-      width: 100%;
+      max-width: 640px;
       border: 2px solid #003973;
+     
     }
 
     .main-content h1 {
@@ -137,9 +122,6 @@
       background-color: #0058b1;
       transform: translateY(-2px);
     }
-    .main-content {
-  max-width: 520px; 
-}
 
 .image-side {
   max-width: 500px; 
@@ -151,6 +133,34 @@
       color: #003973;
     }
 
+     table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+    }
+
+    #device-table-container{
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    th, td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #004e92;
+      color: white;
+      position: sticky;
+      top: 0;
+       z-index: 10; 
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+    }
+
     @media (max-width: 768px) {
       .content-wrapper {
         flex-direction: column;
@@ -160,20 +170,7 @@
 </head>
 <body>
 
-  <header class="dm-header">
-    <h1>Device Management EATON</h1>
-    <div class="window-controls">
-      <span class="control minimize" title="Minimizar">—</span>
-      <span class="control maximize" title="Maximizar">☐</span>
-      <span class="control close" title="Cerrar">✕</span>
-    </div>
-  </header>
-
   <div class="content-wrapper">
-    <div class="logo-container">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Eaton_Corporation_logo.svg/2560px-Eaton_Corporation_logo.svg.png" alt="EATON Logo" />
-    </div>
-
     <div class="main-content" id="main-content">
       <h1>Asignar Dispositivo a Empleado</h1>
 
@@ -196,25 +193,28 @@
         </div>
 
         <div class="form-group">
-          <label for="serial-number">Número de Serie:</label>
-          <input type="text" id="serial-number" name="serial-number" required placeholder="Ej: SN-4567" />
-        </div>
-        <div class="form-group">
-          <label for="serial-number">Número de Serie:</label>
-          <input type="text" id="serial-number" name="serial-number" required placeholder="Ej: SN-4567" />
-        </div>
+  <label>Selecciona un Dispositivo Disponible:</label>
+  <div id="device-table-container" style="display: block; overflow-y: auto;">
+    <table id="device-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+      <thead>
+        <tr>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Numero de Serie</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-        <button type="submit">Asignar</button>
-      </form>
         <button type="submit">Asignar</button>
       </form>
 
       <div id="result-message"></div>
-    </div>
-      <div id="result-message"></div>
-    </div>
   </div>
 
-  <script src="js/assign.js"></script>
+  <script src="../src/js/assign.js">alert("Hola")</script>
 </body>
 </html>

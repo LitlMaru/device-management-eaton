@@ -59,10 +59,6 @@
       flex-wrap: wrap;
     }
 
-    .main-content {
-  max-width: 520px; 
-}
-
 .image-side {
   max-width: 500px; 
 }
@@ -82,182 +78,49 @@
     max-height: 300px;
     }
 
-    .main-content {
-     flex: 1;
-      background: #ffffff;
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      max-width: 480px;
-      width: 100%;
-      border: 2px solid #003973;
-    }
-
-    .main-content h1 {
-      font-size: 1.4rem;
-      color: #003973;
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-input {
-      margin-bottom: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-size: 0.85rem;
-      margin-bottom: 0.3rem;
-      color: #333;
-      font-weight: 500;
-    }
-
-    input {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    input::placeholder {
-      color: #aaa;
-      font-style: italic;
-    }
-
-    input:focus {
-      border-color: #003973;
-      box-shadow: 0 0 0 2px rgba(0, 57, 115, 0.2);
-      outline: none;
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 0.7rem;
-      background-color: #003973;
-      color: white;
-      font-size: 0.95rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    button[type="submit"]:hover {
-      background-color: #0058b1;
-      transform: translateY(-2px);
-    }
-
-    #formMessage {
-      margin-top: 1rem;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: white;
-      font-family: "Segoe UI", sans-serif;
-    }
-
-    .dm-header {
-      background-color: #003973;
-      color: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    }
-
-    .dm-header h1 {
-      font-size: 1.4rem;
-      margin: 0;
-    }
-
-    .window-controls {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .control {
-      width: 18px;
-      height: 18px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      cursor: pointer;
-      font-size: 0.75rem;
-      user-select: none;
-    }
-
-    .control:hover { transform: scale(1.1); }
-    .close:hover { background: #e74c3c; }
-    .maximize:hover { background: #2ecc71; }
-    .minimize:hover { background: #f1c40f; }
-
-    .container {
+  .content-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 2rem;
-      gap: 2rem;
       flex-wrap: wrap;
+      gap: 3rem;
+      padding: 2rem 2rem;
     }
 
-    .main-content {
-  max-width: 520px; 
-}
-
-.image-side {
-  max-width: 500px; 
-}
-
-
-    .image-side {
+    .logo-container {
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 1rem;
     }
 
-    .image-side img {
-     max-width: 100%;
-    height: auto;
-    max-height: 300px;
+    .logo-container img {
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
     }
 
     .main-content {
-     flex: 1;
+      flex: 1;
       background: #ffffff;
       padding: 2.5rem;
       border-radius: 16px;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      max-width: 480px;
-      width: 100%;
+      max-width: 640px;
+      width: 1000px;
       border: 2px solid #003973;
+     
     }
 
     .main-content h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: #003973;
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
-    .form-input {
-      margin-bottom: 1rem;
+    .form-group {
+      margin-bottom: 1.2rem;
       display: flex;
       flex-direction: column;
     }
@@ -265,28 +128,29 @@
     label {
       font-size: 0.85rem;
       margin-bottom: 0.3rem;
-      color: #333;
-      font-weight: 500;
+      color: #003973;
+      font-weight: 600;
     }
 
-    input {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #ccc;
+    input, select {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #003973;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
     input::placeholder {
-      color: #aaa;
+      color: #999;
       font-style: italic;
     }
 
-    input:focus {
-      border-color: #003973;
-      box-shadow: 0 0 0 2px rgba(0, 57, 115, 0.2);
+    input:focus, select:focus {
+      border-color: #0058b1;
+      box-shadow: 0 0 0 2px rgba(0, 89, 177, 0.2);
       outline: none;
     }
+
 
     button[type="submit"] {
       width: 100%;
@@ -317,44 +181,32 @@
       }
     }
   </style>
+  
 </head>
 <body>
-  <header class="dm-header">
-    <h1>Device Management EATON</h1>
-    <div class="window-controls">
-      <span class="control minimize" title="Minimizar">—</span>
-      <span class="control maximize" title="Maximizar">☐</span>
-      <span class="control close" title="Cerrar">✕</span>
-    </div>
-  </header>
 
-  <div class="container">
-
-    <div class="image-side">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Eaton_Corporation_logo.svg/2560px-Eaton_Corporation_logo.svg.png" alt="Logo EATON" />
-    </div>
-
+  <div class="content-wrapper">
 
     <div class="main-content" id="contenido">
       <h1>Registrar nuevo empleado</h1>
       <form id="employee-form">
-        <div class="form-input">
+        <div class="form-group">
           <label for="name">Nombre completo</label>
           <input type="text" id="name" name="name" placeholder="Ej: Juan Pérez" />
         </div>
-        <div class="form-input">
+        <div class="form-group">
           <label for="employee-id">ID del Empleado</label>
           <input type="text" id="employee-id" name="employee-id" placeholder="Ej: EMP1234" />
         </div>
-        <div class="form-input">
+        <div class="form-group">
           <label for="department">Departamento</label>
           <input type="text" id="department" name="department" placeholder="Ej: Recursos Humanos" />
         </div>
-        <div class="form-input">
+        <div class="form-group">
           <label for="position">Puesto</label>
           <input type="text" id="position" name="position" placeholder="Ej: Analista" />
         </div>
-        <div class="form-input">
+        <div class="form-group">
           <label for="email">Correo electrónico</label>
           <input type="email" id="email" name="email" placeholder="Ej: juan.perez@empresa.com" />
         </div>
