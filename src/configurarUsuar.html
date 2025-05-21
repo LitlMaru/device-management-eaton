@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gestión de Usuarios</title>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>!-->
   <style>
     
     body {
@@ -60,34 +60,53 @@
     .container {
       padding: 2rem;
     }
-    table {
+      table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      border-radius: 12px;
+      overflow: hidden;
     }
+
     th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: left;
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
     }
+
     th {
-      background-color: #003366;
+      background-color: #004e92;
       color: white;
     }
-    .btn {
-      padding: 0.5rem 1rem;
-      background-color: #003366;
-      color: white;
+
+    td:focus{
+      outline: none;
+      background-color: #d0e0ff;
+    }
+    tr:hover {
+      background-color: #f0f8ff;
+    }
+    .agregar-container{
+      display: flex;
+      justify-content: center;
+    }
+       .agregar-btn{
+      width: 50%;
+      height: 40px;
+      background-color: #004e92;
+      padding: .5rem 2rem;
       border: none;
+      border-radius: 12px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .agregar-btn:hover{
+      background-color: #0264ba;
       cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 1rem;
     }
-    .btn.eliminar {
-      background-color: #cc0000;
-      padding: 0.3rem 0.7rem;
-      font-size: 0.9rem;
-    }
+
     .modal {
       display: none;
       position: fixed;
@@ -97,47 +116,106 @@
       justify-content: center;
       align-items: center;
     }
+
     .modal-content {
       background-color: white;
       padding: 2rem;
       border-radius: 10px;
       width: 400px;
+      position: relative;
+      left: 130px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
     }
+
+    .modal-content h2{
+      margin-bottom: 16px;
+    }
+
+    .form-content{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .form-group {
       margin-bottom: 1rem;
     }
+
+      .form-group input, select {
+      flex-grow: 1;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #003973;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      width: 100%;
+    }
  
+      .actions button{
+      width: 80px;
+      height: auto;
+      background-color: #004e92;
+      padding: .5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .actions button:hover{
+      background-color: #0264ba;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #eliminar-btn{
+      width: 100px;
+      height: 100%;
+      background-color: #004e92;
+      padding: .5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+    }
+
+    #eliminar-btn:hover{
+      background-color: #0264ba;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Device Management EATON</h1>
-    <div class="window-controls">
-      <button title="Minimizar"><i class="fas fa-window-minimize"></i></button>
-      <button title="Maximizar"><i class="fas fa-window-maximize"></i></button>
-      <button title="Cerrar"><i class="fas fa-times"></i></button>
-    </div>
-  </header>
-  <nav>
-    <h2>Gestión de Usuarios</h2>
-    <span>Usuario:Recursos Humanos</span>
-  </nav>
+
   <div class="container">
-    <button class="btn" onclick="abrirModal()">Agregar / Modificar Usuario</button>
-    <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
+    <h1>Gestionar Usuarios</h1>
+    <div class="agregar-container">
+      <button class="agregar-btn" onclick="abrirModal()">Agregar Usuario</button>
+    </div>
+    
     <table id="tablaUsuarios">
       <thead>
         <tr>
-          <th>ID Empleado</th>
-          <th>Nombre</th>
-          <th>Departamento</th>
-          <th>Posición</th>
-          <th>Email</th>
-          <th>Fecha Entrada</th>
-          <th>Ubicación</th>
-          <th>Eliminar</th>
+          <th>Usuario</th>
+          <th>Contraseña</th>
+          <th>Rol</th>
+          <th>Planta</th>
+          <th>Acciones</th>
         </tr>
       </thead>
+      <tbody>
+        <td contenteditable="true">Enmanuel</td>
+        <td contenteditable="true">1234</td>
+        <td contenteditable="true">IT</td>
+        <td contenteditable="true">MCB</td> 
+        <td><button id="eliminar-btn" onclick="eliminarUsuario()">Eliminar </button></td>
+      </tbody>
       <tbody id="cuerpoTablaUsuarios"></tbody>
     </table>
   </div>
@@ -145,32 +223,24 @@
   <div id="modal" class="modal">
     <div class="modal-content">
       <h2>Agregar / Modificar Usuario</h2>
-      <div class="form-group">
-        <label for="idEmpleado">ID Empleado:</label>
-        <input type="text" id="idEmpleado" />
+      <div class="form-content">
+<div class="form-group">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username"/>
       </div>
       <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" />
+        <label for="clave">Clave:</label>
+        <input type="text" id="clave" />
       </div>
       <div class="form-group">
-        <label for="departamento">Departamento:</label>
-        <input type="text" id="departamento" />
+        <label for="rol">Rol:</label>
+        <select id="rol">
+          <option value="IT">IT</option>
+          <option value="HR">Recursos Humanos</option>
+        </select>
       </div>
       <div class="form-group">
-        <label for="posicion">Posición:</label>
-        <input type="text" id="posicion" />
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" />
-      </div>
-      <div class="form-group">
-        <label for="fechaEntrada">Fecha Entrada:</label>
-        <input type="date" id="fechaEntrada" />
-      </div>
-      <div class="form-group">
-        <label for="ubicacion">Ubicación:</label>
+        <label for="ubicacion">Planta:</label>
         <select id="ubicacion">
           <option value="MCB">MCB</option>
           <option value="ICD">ICD</option>
@@ -178,127 +248,17 @@
         </select>
       </div>
       <div class="actions">
-        <button class="btn" onclick="guardarUsuario()">Guardar</button>
+        <button class="btn" onclick="agregarUsuario()">Guardar</button>
         <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
         <button class="btn btn-secondary" onclick="exportarCorreoDesdeModal()">Exportar por Correo</button>
       </div>
+      </div>
+      
     </div>
   </div>
 
   <script>
-    let usuarios = [];
-
-    function abrirModal() {
-      document.getElementById("modal").style.display = "flex";
-    }
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
-
-      document.getElementById("idEmpleado").value = "";
-      document.getElementById("nombre").value = "";
-      document.getElementById("departamento").value = "";
-      document.getElementById("posicion").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("fechaEntrada").value = "";
-      document.getElementById("ubicacion").value = "MCB";
-    }
-
-    function guardarUsuario() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios.");
-        return;
-      }
-
-      // Buscar si ya existe el usuario
-      const indiceExistente = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
-
-      if (indiceExistente !== -1) {
-        // Modificar usuario existente
-        usuarios[indiceExistente] = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-      } else {
-        // Agregar nuevo usuario
-        usuarios.push({ idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion });
-      }
-      actualizarTabla();
-      cerrarModal();
-    }
-
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTablaUsuarios");
-      tbody.innerHTML = "";
-      usuarios.forEach(usuario => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${usuario.idEmpleado}</td>
-          <td>${usuario.nombre}</td>
-          <td>${usuario.departamento}</td>
-          <td>${usuario.posicion}</td>
-          <td>${usuario.email}</td>
-          <td>${usuario.fechaEntrada}</td>
-          <td>${usuario.ubicacion}</td>
-          <td><button class="btn-danger" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function eliminarUsuario(idEmpleado) {
-      usuarios = usuarios.filter(u => u.idEmpleado !== idEmpleado);
-      actualizarTabla();
-    }
-
-    function exportarExcel() {
-      if (usuarios.length === 0) {
-        alert("No hay datos para exportar.");
-        return;
-      }
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(usuarios);
-      XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
-      XLSX.writeFile(wb, "usuarios.xlsx");
-    }
-
- 
-    function enviarCorreo(usuario) {
-      ç
-      alert(
-        `Correo enviado a ${usuario.email} con los datos:\n` +
-          `ID: ${usuario.idEmpleado}\n` +
-          `Nombre: ${usuario.nombre}\n` +
-          `Departamento: ${usuario.departamento}\n` +
-          `Posición: ${usuario.posicion}\n` +
-          `Fecha Entrada: ${usuario.fechaEntrada}\n` +
-          `Ubicación: ${usuario.ubicacion}`
-      );
-    }
-
-   
-    function exportarCorreoDesdeModal() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios para enviar por correo.");
-        return;
-      }
-
-      const usuario = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-
-      enviarCorreo(usuario);
-    }
+    
   </script>
 </body>
 </html>

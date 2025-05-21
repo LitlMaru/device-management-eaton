@@ -31,8 +31,8 @@ fetch(`${section.toLowerCase()}.html`)
         case "devices":
             initDevices();
             break;
-        case "configurar":
-            initConfigurar();
+        case "configurarDisp":
+            initConfigurarDisp();
             break;
     }
 })
@@ -383,4 +383,95 @@ function initConfigurar(){
     }
 
     aplicarFiltros();
+}
+
+function abrirModal(index = null) {
+      document.getElementById("modal").style.display = "flex";
+      if (index !== null) {
+        editarIndex = index;
+        const d = dispositivos[index];
+        document.getElementById("tipo").value = d.tipo;
+        document.getElementById("modelo").value = d.modelo;
+        if(d.serial === "Sin Serial") {
+          document.getElementById("tieneSerial").checked = false;
+          toggleSerialInput();
+          document.getElementById("serial").value = "";
+        } else {
+          document.getElementById("tieneSerial").checked = true;
+          toggleSerialInput();
+          document.getElementById("serial").value = d.serial;
+        }
+      } else {
+        editarIndex = null;
+        document.getElementById("modelo").value = "";
+        document.getElementById("serial").value = "";
+        document.getElementById("tieneSerial").checked = false;
+        toggleSerialInput();
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function toggleSerialInput() {
+      document.getElementById("grupoSerial").style.display = document.getElementById("tieneSerial").checked ? "block" : "none";
+      document.getElementById("cantidad").classList.toggle('inputBloqueado');
+    }
+
+    function guardarDispositivo() {
+      const tipo = document.getElementById("tipo").value;
+      const modelo = document.getElementById("modelo").value.trim();
+      let serial = document.getElementById("tieneSerial").checked ? document.getElementById("serial").value.trim() : "";
+
+      if (!modelo) {
+        alert("El modelo es obligatorio.");
+        return;
+      }
+
+      if (document.getElementById("tieneSerial").checked && !serial) {
+        alert("Debe ingresar el serial o desmarcar la opción.");
+        return;
+      }
+
+      if (!document.getElementById("tieneSerial").checked) {
+        serial = generarSerialAutomatico(tipo, modelo);
+      }
+
+      if (editarIndex === null) {
+        dispositivos.push({ tipo, modelo, serial });
+      } else {
+        dispositivos[editarIndex] = { tipo, modelo, serial };
+      }
+
+      actualizarTabla();
+      cerrarModal();
+    }
+
+    function actualizarTabla() {
+      const tbody = document.getElementById("cuerpoTabla");
+      tbody.innerHTML = "";
+      dispositivos.forEach((d, index) => {
+        const fila = `
+          <tr>
+            <td>${d.tipo}</td>
+            <td>${d.modelo}</td>
+            <td>${d.serial}</td>
+            <td><button class="btn eliminar" onclick="eliminarDispositivo(${index})">Eliminar</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += fila;
+      });
+    }
+
+    function exportarExcel() {
+      const ws = XLSX.utils.json_to_sheet(dispositivos);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Dispositivos");
+      XLSX.writeFile(wb, "dispositivos.xlsx");
+    }
+
+function initConfigurarDisp(){
+   let dispositivos = [];
+    let editarIndex = null;
 }
