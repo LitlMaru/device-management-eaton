@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Usuarios</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      user-select: none;
+    }
+    header h1 {
+      margin: 0;
+      text-align: center;
+      font-weight: 600;
+    }
+  
+    .window-buttons {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    .window-buttons button {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      width: 30px; height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .window-buttons button:hover {
+      background-color: rgba(255,255,255,0.3);
+    }
+    nav {
+      background-color: #002244;
+      color: white;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    nav h2 {
+      margin: 0;
+    }
+    .container {
+      padding: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #003366;
+      color: white;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      background-color: #003366;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .btn-danger {
+      background-color: #cc0000;
+    }
+    .btn-secondary {
+      background-color: #555555;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 480px;
+      max-width: 95%;
+      box-sizing: border-box;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group select,
+    .form-group input[type="date"] {
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    .actions {
+      text-align: right;
+    }
+    .actions .btn {
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gestión de Usuarios</h1>
+    <div class="window-buttons">
+      <button title="Minimizar"><i class="fa fa-window-minimize"></i></button>
+      <button title="Maximizar"><i class="fa fa-window-maximize"></i></button>
+      <button title="Cerrar"><i class="fa fa-times"></i></button>
+    </div>
+  </header>
+  <nav>
+    <h2>Panel de Administración</h2>
+    <span>Usuario: Admin</span>
+  </nav>
+  <div class="container">
+    <button class="btn" onclick="abrirModal()">Agregar / Modificar Usuario</button>
+    <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
+    <button class="btn" onclick="exportarCorreo()">Exportar a Correo</button>
+
+    <table id="tablaUsuarios">
+      <thead>
+        <tr>
+          <th>ID Empleado</th>
+          <th>Nombre</th>
+          <th>Departamento</th>
+          <th>Posición</th>
+          <th>Email</th>
+          <th>Fecha Entrada</th>
+          <th>Ubicación</th>
+          <th>Eliminar</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoTablaUsuarios"></tbody>
+    </table>
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Agregar / Modificar Usuario</h2>
+      <div class="form-group">
+        <label for="idEmpleado">ID Empleado:</label>
+        <input type="text" id="idEmpleado" />
+      </div>
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" />
+      </div>
+      <div class="form-group">
+        <label for="departamento">Departamento:</label>
+        <input type="text" id="departamento" />
+      </div>
+      <div class="form-group">
+        <label for="posicion">Posición:</label>
+        <input type="text" id="posicion" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" />
+      </div>
+      <div class="form-group">
+        <label for="fechaEntrada">Fecha Entrada:</label>
+        <input type="date" id="fechaEntrada" />
+      </div>
+      <div class="form-group">
+        <label for="ubicacion">Ubicación:</label>
+        <select id="ubicacion">
+          <option value="MCB">MCB</option>
+          <option value="ICD">ICD</option>
+          <option value="MCCB">MCCB</option>
+        </select>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="guardarUsuario()">Guardar</button>
+        <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarios = [];
+
+    function abrirModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+    function cerrarModal() {
+      document.getElementById('modal').style.display = 'none';
+     
+      document.getElementById('idEmpleado').value = '';
+      document.getElementById('nombre').value = '';
+      document.getElementById('departamento').value = '';
+      document.getElementById('posicion').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('fechaEntrada').value = '';
+      document.getElementById('ubicacion').value = 'MCB';
+    }
+
+    function guardarUsuario() {
+      const idEmpleado = document.getElementById('idEmpleado').value.trim();
+      const nombre = document.getElementById('nombre').value.trim();
+      const departamento = document.getElementById('departamento').value.trim();
+      const posicion = document.getElementById('posicion').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const fechaEntrada = document.getElementById('fechaEntrada').value;
+      const ubicacion = document.getElementById('ubicacion').value;
+
+      if (!idEmpleado || !nombre) {
+        alert('ID Empleado y Nombre son obligatorios');
+        return;
+      }
+
+     
+      const index = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
+      if (index >= 0) {
+        usuarios[index] = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
+      } else {
+        usuarios.push({ idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion });
+      }
+      actualizarTabla();
+      cerrarModal();
+
+      enviarCorreo({
+        idEmpleado, nombre, posicion, ubicacion, email
+      });
+    }
+
+    function actualizarTabla() {
+      const tbody = document.getElementById('cuerpoTablaUsuarios');
+      tbody.innerHTML = '';
+      usuarios.forEach((u, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${u.idEmpleado}</td>
+          <td>${u.nombre}</td>
+          <td>${u.departamento}</td>
+          <td>${u.posicion}</td>
+          <td>${u.email}</td>
+          <td>${u.fechaEntrada}</td>
+          <td>${u.ubicacion}</td>
+          <td><button class="btn btn-danger" onclick="eliminarUsuario(${i})"><i class="fa fa-trash"></i></button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function eliminarUsuario(index) {
+      if(confirm('¿Está seguro de eliminar este usuario?')) {
+        usuarios.splice(index, 1);
+        actualizarTabla();
+      }
+    }
+
+    function exportarExcel() {
+      if(usuarios.length === 0){
+        alert('No hay usuarios para exportar');
+        return;
+      }
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(usuarios);
+      XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
+      XLSX.writeFile(wb, 'usuarios.xlsx');
+    }
+
+ 
+    function enviarCorreo(usuario) {
+      fetch('http://localhost:3000/enviar-correo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(usuario)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error en servidor');
+        return res.text();
+      })
+      .then(data => {
+        alert('Correo enviado con éxito');
+      })
+      .catch(err => {
+        alert('Error al enviar correo: ' + err.message);
+      });
+    }
+
+    
+    function exportarCorreo() {
+      if(usuarios.length === 0){
+        alert('No hay usuarios para enviar');
+        return;
+      }
+      usuarios.forEach(usuario => {
+        enviarCorreo(usuario);
+      });
+    }
+
+  </script>
+</body>
+</html>
