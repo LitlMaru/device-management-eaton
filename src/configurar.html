@@ -1,322 +1,301 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configuración del Sistema</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <title>Gestión de Dispositivos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
-      color: #333;
+      padding: 0;
+      background-color: #f4f4f4;
     }
-
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(to right, #004e92, #000428);
+      position: relative;
+      background-color: #003366;
       color: white;
-      padding: 10px 20px;
-    }
-
-    .header-left {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .header-right {
+      padding: 1rem 1.5rem;
       display: flex;
-      gap: 10px;
-    }
-
-    .header-right i {
-      cursor: pointer;
-    }
-
-    .header-right i:hover {
-      color: #d0e7ff;
-    }
-
-    h1 {
-      text-align: center;
-      color: #004e92;
-      margin-top: 20px;
-      font-size: 32px;
-      font-weight: bold;
-    }
-
-    .contenedor-principal {
-      width: 95%;
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .busqueda-exportar {
-      display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
     }
-
-    .busqueda-exportar input,
-    .busqueda-exportar select {
-      padding: 10px;
-      border: 2px solid #004e92;
-      border-radius: 8px;
-      font-size: 16px;
+    header h1 {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+      font-size: 1.5rem;
+      pointer-events: none;
     }
-
-    .busqueda-exportar button {
-      background-color: #004e92;
-      color: white;
+    header .window-controls {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+    header .window-controls button {
+      background-color: #0055aa;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      font-size: 14px;
     }
-
-    .busqueda-exportar button:hover {
-      background-color: #002a5c;
+    nav {
+      background-color: #002244;
+      color: white;
+      padding: 0.5rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
+    nav h2 {
+      margin: 0;
+    }
+    .container {
+      padding: 2rem;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      border-radius: 12px;
-      overflow: hidden;
+      margin-top: 1rem;
     }
-
-    th,
-    td {
-      padding: 14px;
-      text-align: center;
-      border-bottom: 1px solid #ccc;
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: left;
     }
-
     th {
-      background-color: #004e92;
+      background-color: #003366;
       color: white;
     }
-
-    tr:hover {
-      background-color: #f0f8ff;
+    .btn {
+      padding: 0.5rem 1rem;
+      background-color: #003366;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 1rem;
     }
-
-    .vencido {
-      background-color: #ffcccc !important;
+    .btn.eliminar {
+      background-color: #cc0000;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.9rem;
     }
-
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
     }
-
     .modal-content {
       background-color: white;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
+      padding: 2rem;
+      border-radius: 10px;
       width: 400px;
-      border-radius: 12px;
-      position: relative;
     }
-
-    .modal-content h2 {
-      color: #004e92;
-    }
-
-    .modal-content input,
-    .modal-content select {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .modal-content button {
-      background-color: #004e92;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .modal-content button:hover {
-      background-color: #002a5c;
-    }
-
-    .cerrar-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      color: red;
-      cursor: pointer;
+    .form-group {
+      margin-bottom: 1rem;
     }
   </style>
 </head>
-
 <body>
   <header>
-    <div class="header-left">Device Management EATON</div>
-    <div class="header-right">
-      <i class="fas fa-window-minimize"></i>
-      <i class="fas fa-window-restore"></i>
-      <i class="fas fa-times"></i>
+    <h1>Device Management EATON</h1>
+    <div class="window-controls">
+      <button title="Minimizar"><i class="fas fa-window-minimize"></i></button>
+      <button title="Maximizar"><i class="fas fa-window-maximize"></i></button>
+      <button title="Cerrar"><i class="fas fa-times"></i></button>
     </div>
   </header>
+  <nav>
+    <h2>Gestión de Dispositivos </h2>
+    <span>Usuario: Admin</span>
+  </nav>
+  <div class="container">
+    <button class="btn" onclick="abrirModal()">Agregar / Modificar Dispositivo</button>
+    <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
 
-  <div class="contenedor-principal">
-    <h1>Configuración del Sistema</h1>
-
-    <div class="busqueda-exportar">
-      <select id="comboFiltro">
-        <option value="0">ID Empleado</option>
-        <option value="1">ID Dispositivo</option>
-        <option value="2">Estado</option>
-      </select>
-      <input type="text" id="busqueda" placeholder="Buscar..." onkeyup="aplicarFiltros()">
-      <button onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
-      <button onclick="abrirModal()"><i class="fas fa-plus"></i> Agregar Dispositivo</button>
-    </div>
-
-    <table id="tablaConfiguracion">
+    <table id="tablaDispositivos">
       <thead>
         <tr>
-          <th>ID Empleado</th>
-          <th>ID Dispositivo</th>
-          <th>Estado</th>
-          <th>Fecha de Cambio</th>
-          <th>Acciones</th>
+          <th>Tipo</th>
+          <th>Modelo</th>
+          <th>Serial</th>
+          <th>Eliminar</th>
         </tr>
       </thead>
-      <tbody id="cuerpoTabla">
-        <tr>
-          <td>EMP001</td>
-          <td>DISP123</td>
-          <td>Activo</td>
-          <td>2025-05-10</td>
-          <td><button onclick="eliminarFila(this)">Eliminar</button> <button onclick="modificarFila(this)">Modificar</button></td>
-        </tr>
-      </tbody>
+      <tbody id="cuerpoTabla"></tbody>
     </table>
   </div>
 
-  <div id="modalAgregar" class="modal">
+  <div id="modal" class="modal">
     <div class="modal-content">
-      <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
-      <h2>Agregar/Modificar Dispositivo</h2>
-      <input type="text" id="modalEmpleado" placeholder="ID Empleado">
-      <input type="text" id="modalDispositivo" placeholder="ID Dispositivo">
-      <select id="modalEstado">
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
-      </select>
-      <input type="date" id="modalFecha" placeholder="Fecha de Cambio">
-      <button onclick="guardarModal()">Guardar</button>
+      <h2>Agregar / Modificar Dispositivo</h2>
+      <div class="form-group">
+        <label>Tipo:</label>
+        <select id="tipo">
+          <option value="Dokin">Dokin</option>
+          <option value="Batería de Laptop">Batería de Laptop</option>
+          <option value="Batería de UPS">Batería de UPS</option>
+          <option value="Memoria Incrustada">Memoria Incrustada</option>
+          <option value="UPS">UPS</option>
+          <option value="Mouse">Mouse</option>
+          <option value="Cable DVI">Cable DVI</option>
+          <option value="Monitor">Monitor</option>
+          <option value="Mochila">Mochila</option>
+          <option value="Cargador">Cargador</option>
+          <option value="Tablet">Tablet</option>
+          <option value="Cable">Cable</option>
+          <option value="Adaptador">Adaptador</option>
+          <option value="Powercord">Powercord</option>
+          <option value="Faceplate">Faceplate</option>
+          <option value="Jack RJ45">Jack RJ45</option>
+          <option value="Scanner">Scanner</option>
+          <option value="Serial">Serial</option>
+          <option value="USB">USB</option>
+          <option value="Charger">Charger</option>
+          <option value="Display Port">Display Port</option>
+          <option value="Laptop">Laptop</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Mini Desktop">Mini Desktop</option>
+          <option value="Teclado">Teclado</option>
+          <option value="Headset">Headset</option>
+          <option value="Tóner">Tóner</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Modelo:</label>
+        <input type="text" id="modelo" />
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="tieneSerial" onchange="toggleSerialInput()" /> ¿Tiene número de serie?
+        </label>
+      </div>
+      <div class="form-group" id="grupoSerial" style="display: none;">
+        <label>Serial:</label>
+        <input type="text" id="serial" />
+      </div>
+      <div class="form-group">
+        <button class="btn" onclick="guardarDispositivo()">Guardar</button>
+        <button class="btn" onclick="cerrarModal()">Cerrar</button>
+      </div>
     </div>
   </div>
 
   <script>
-    let filaEditando = null;
+    let dispositivos = [];
+    let editarIndex = null;
 
-    function aplicarFiltros() {
-      const filtro = document.getElementById("busqueda").value.toLowerCase();
-      const columna = parseInt(document.getElementById("comboFiltro").value);
-      const filas = document.querySelectorAll("#tablaConfiguracion tbody tr");
-      const hoy = new Date().toISOString().split('T')[0];
-
-      filas.forEach(fila => {
-        const texto = fila.children[columna].innerText.toLowerCase();
-        fila.style.display = texto.includes(filtro) ? "" : "none";
-
-        const fecha = fila.children[3].innerText;
-        if (fecha < hoy) {
-          fila.classList.add("vencido");
+    function abrirModal(index = null) {
+      document.getElementById("modal").style.display = "flex";
+      if (index !== null) {
+        editarIndex = index;
+        const d = dispositivos[index];
+        document.getElementById("tipo").value = d.tipo;
+        document.getElementById("modelo").value = d.modelo;
+        if(d.serial === "Sin Serial") {
+          document.getElementById("tieneSerial").checked = false;
+          toggleSerialInput();
+          document.getElementById("serial").value = "";
         } else {
-          fila.classList.remove("vencido");
+          document.getElementById("tieneSerial").checked = true;
+          toggleSerialInput();
+          document.getElementById("serial").value = d.serial;
         }
-      });
-    }
-
-    function exportarExcel() {
-      alert("Función de exportar a Excel en desarrollo.");
-    }
-
-    function abrirModal() {
-      document.getElementById("modalAgregar").style.display = "block";
+      } else {
+        editarIndex = null;
+        document.getElementById("modelo").value = "";
+        document.getElementById("serial").value = "";
+        document.getElementById("tieneSerial").checked = false;
+        toggleSerialInput();
+      }
     }
 
     function cerrarModal() {
-      document.getElementById("modalAgregar").style.display = "none";
-      filaEditando = null;
-      document.getElementById("modalEmpleado").value = "";
-      document.getElementById("modalDispositivo").value = "";
-      document.getElementById("modalEstado").value = "Activo";
-      document.getElementById("modalFecha").value = "";
+      document.getElementById("modal").style.display = "none";
     }
 
-    function guardarModal() {
-      const emp = document.getElementById("modalEmpleado").value;
-      const disp = document.getElementById("modalDispositivo").value;
-      const est = document.getElementById("modalEstado").value;
-      const fecha = document.getElementById("modalFecha").value;
+    function toggleSerialInput() {
+      document.getElementById("grupoSerial").style.display = document.getElementById("tieneSerial").checked ? "block" : "none";
+    }
 
-      if (filaEditando) {
-        filaEditando.children[0].innerText = emp;
-        filaEditando.children[1].innerText = disp;
-        filaEditando.children[2].innerText = est;
-        filaEditando.children[3].innerText = fecha;
+    function guardarDispositivo() {
+      const tipo = document.getElementById("tipo").value;
+      const modelo = document.getElementById("modelo").value.trim();
+      let serial = document.getElementById("tieneSerial").checked ? document.getElementById("serial").value.trim() : "";
+
+      if (!modelo) {
+        alert("El modelo es obligatorio.");
+        return;
+      }
+
+      if (document.getElementById("tieneSerial").checked && !serial) {
+        alert("Debe ingresar el serial o desmarcar la opción.");
+        return;
+      }
+
+      if (!document.getElementById("tieneSerial").checked) {
+        // Crear serial automático
+        serial = generarSerialAutomatico(tipo, modelo);
+      }
+
+      if (editarIndex === null) {
+        dispositivos.push({ tipo, modelo, serial });
       } else {
-        const tabla = document.getElementById("cuerpoTabla");
-        const fila = document.createElement("tr");
-        fila.innerHTML = `<td>${emp}</td><td>${disp}</td><td>${est}</td><td>${fecha}</td><td><button onclick="eliminarFila(this)">Eliminar</button> <button onclick="modificarFila(this)">Modificar</button></td>`;
-        tabla.appendChild(fila);
+        dispositivos[editarIndex] = { tipo, modelo, serial };
       }
 
+      actualizarTabla();
       cerrarModal();
-      aplicarFiltros();
     }
 
-    function eliminarFila(btn) {
-      if (confirm("¿Estás seguro de eliminar esta fila?")) {
-        btn.parentElement.parentElement.remove();
+    function generarSerialAutomatico(tipo, modelo) {
+      // Ejemplo simple: tipo abreviado + modelo + timestamp
+      const tipoAbrev = tipo.split(" ").map(p => p[0]).join("").toUpperCase();
+      const modeloSinEspacios = modelo.replace(/\s+/g, "").toUpperCase();
+      const timestamp = Date.now().toString().slice(-5);
+      return `${tipoAbrev}-${modeloSinEspacios}-${timestamp}`;
+    }
+
+    function actualizarTabla() {
+      const tbody = document.getElementById("cuerpoTabla");
+      tbody.innerHTML = "";
+      dispositivos.forEach((d, index) => {
+        const fila = `
+          <tr>
+            <td>${d.tipo}</td>
+            <td>${d.modelo}</td>
+            <td>${d.serial}</td>
+            <td><button class="btn eliminar" onclick="eliminarDispositivo(${index})">Eliminar</button></td>
+          </tr>
+        `;
+        tbody.innerHTML += fila;
+      });
+    }
+
+    function eliminarDispositivo(index) {
+      if(confirm("¿Seguro que deseas eliminar este dispositivo?")) {
+        dispositivos.splice(index, 1);
+        actualizarTabla();
       }
     }
 
-    function modificarFila(btn) {
-      filaEditando = btn.parentElement.parentElement;
-      document.getElementById("modalEmpleado").value = filaEditando.children[0].innerText;
-      document.getElementById("modalDispositivo").value = filaEditando.children[1].innerText;
-      document.getElementById("modalEstado").value = filaEditando.children[2].innerText;
-      document.getElementById("modalFecha").value = filaEditando.children[3].innerText;
-      abrirModal();
+    function exportarExcel() {
+      const ws = XLSX.utils.json_to_sheet(dispositivos);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Dispositivos");
+      XLSX.writeFile(wb, "dispositivos.xlsx");
     }
-
-    aplicarFiltros();
   </script>
 </body>
-
 </html>
