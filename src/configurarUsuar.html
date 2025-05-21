@@ -4,18 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gestión de Usuarios</title>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
- body {
+    
+    body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -113,20 +106,21 @@
     .form-group {
       margin-bottom: 1rem;
     }
+ 
   </style>
 </head>
 <body>
   <header>
-    <h1>Gestión de Usuarios</h1>
-    <div class="window-buttons">
-      <button title="Minimizar"><i class="fa fa-window-minimize"></i></button>
-      <button title="Maximizar"><i class="fa fa-window-maximize"></i></button>
-      <button title="Cerrar"><i class="fa fa-times"></i></button>
+    <h1>Device Management EATON</h1>
+    <div class="window-controls">
+      <button title="Minimizar"><i class="fas fa-window-minimize"></i></button>
+      <button title="Maximizar"><i class="fas fa-window-maximize"></i></button>
+      <button title="Cerrar"><i class="fas fa-times"></i></button>
     </div>
   </header>
   <nav>
-    <h2>Panel de Administración</h2>
-    <span>Usuario: Admin</span>
+    <h2>Gestión de Usuarios</h2>
+    <span>Usuario:Recursos Humanos</span>
   </nav>
   <div class="container">
     <button class="btn" onclick="abrirModal()">Agregar / Modificar Usuario</button>
@@ -272,9 +266,9 @@
       XLSX.writeFile(wb, "usuarios.xlsx");
     }
 
-    // Simulación función enviar correo
+ 
     function enviarCorreo(usuario) {
-      // Aquí va tu código real para enviar correo, usando backend o API.
+      ç
       alert(
         `Correo enviado a ${usuario.email} con los datos:\n` +
           `ID: ${usuario.idEmpleado}\n` +
@@ -286,7 +280,7 @@
       );
     }
 
-    // Botón para enviar correo desde modal
+   
     function exportarCorreoDesdeModal() {
       const idEmpleado = document.getElementById("idEmpleado").value.trim();
       const nombre = document.getElementById("nombre").value.trim();
