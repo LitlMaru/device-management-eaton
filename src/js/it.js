@@ -1,321 +1,367 @@
-
-
 function mostrarContenido(seccion) {
-    alert(seccion);
-    document.getElementById('contenido').innerHTML = `
+  alert(seccion);
+  document.getElementById("contenido").innerHTML = `
     <h1>${seccion}</h1>
     <p style="text-align:center; font-size:18px;">Contenido de la sección <strong>${seccion}</strong> pronto estará disponible.</p>
     `;
 }
 
 function showContent(section) {
-const content = document.getElementById('contenido');
-fetch(`${section.toLowerCase()}.html`)
-.then(res => {
-    if (!res.ok) throw new Error("No se puedo cargar la seccion");
-    return res.text();
-})
-.then(html => {
-    content.innerHTML = html;
+  const content = document.getElementById("contenido");
+  fetch(`${section.toLowerCase()}.html`)
+    .then((res) => {
+      if (!res.ok) throw new Error("No se puedo cargar la seccion");
+      return res.text();
+    })
+    .then((html) => {
+      content.innerHTML = html;
 
-    switch(section){
+      switch (section) {
         case "assign":
-            initAssign();
-            break;
+          initAssign();
+          break;
         case "buscar":
-            initBuscar();
-            break;
+          // initBuscar();
+          break;
         case "quantities":
-            initInventario();
-            break;
+          // initInventario();
+          break;
         case "devices":
-            initDevices();
-            break;
+          // initDevices();
+          break;
         case "configurarDisp":
-            initConfigurarDisp();
-            break;
-    }
-})
-.catch(err => {
-    content.innerHTML = `<div class="welcome-card"><h1>Error</h1><p>${err.message}</p></div>`;
-})
+          initConfigurarDisp();
+          break;
+      }
+    })
+    .catch((err) => {
+      content.innerHTML = `<div class="welcome-card"><h1>Error</h1><p>${err.message}</p></div>`;
+    });
 }
 function minimizarVentana() {
-    window.electronAPI.minimize();
+  window.electronAPI.minimize();
 }
 
 fullScreenImage = document.getElementById("img-full-screen");
 function maximizarVentana() {
-    window.electronAPI.maximize();
-    if(fullScreenImage.src == "../assets/fullscreenmode.svg") fullScreenImage.src = "../assets/windowmode.svg"
-    else fullScreenImage.src = "../assets/fullscreenmode.svg"
+  window.electronAPI.maximize();
+  if (fullScreenImage.src == "../assets/fullscreenmode.svg")
+    fullScreenImage.src = "../assets/windowmode.svg";
+  else fullScreenImage.src = "../assets/fullscreenmode.svg";
 }
 
 function cerrarVentana() {
-    window.electronAPI.close();
+  window.electronAPI.close();
 }
 
-function closeSession(){
-    window.location.href = "login.html"
+function closeSession() {
+  window.location.href = "login.html";
 }
 
+//-----------------------ASIGNAR--------------------------
+function initAssign() {
+  document
+    .getElementById("assign-form")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-function initAssign(){
+      const Info_empleado = document.getElementById("employee-id").value.trim();
+      const tipoDispositivo = document.getElementById("device-type").value;
 
-document.getElementById('assign-form').addEventListener('submit', function (e) {
-  e.preventDefault();
+      if (!selectedDeviceSerial) {
+        alert("Selecciona un dispositivo de la tabla.");
+        return;
+      }
 
-  const employeeInfo = document.getElementById('employee-id').value.trim();
-  const deviceType = document.getElementById('device-type').value;
+      const resultMsg = document.getElementById("result-message");
 
-  // Aquí podrías validar si el dispositivo ya está asignado o si el empleado existe
-  // Y luego guardar en la base de datos o backend
+      const today = new Date();
+      const nextYear = new Date(today);
+      nextYear.setFullYear(today.getFullYear() + 1);
 
-  // Simulación de resultado
-  const resultMsg = document.getElementById('result-message');
-  resultMsg.textContent = `✅ Dispositivo ${deviceType} asignado a ${employeeInfo}.`;
+      const formatDate = (date) => date.toISOString().split("T")[0];
 
-  // Limpiar el formulario
-  e.target.reset();
-});
+      const fechaAsignacion = formatDate(today);
+      const fechaCambio = formatDate(nextYear);
 
-  const deviceSelect = document.getElementById("device-type");
-  const tableContainer = document.getElementById("device-table-container");
-  const tableBody = document.querySelector("#device-table tbody");
+      const assignmentResult = await ipcRenderer.invoke("assign-device", {
+        Info_empleado,
+        ID_Dispositivo: selectedDeviceSerial,
+        Fecha_Asignacion: fechaAsignacion,
+        Fecha_Cambio: fechaCambio,
+      });
 
-  const mockDevices = {
-   "Laptop": [
-  { serial: "LAP-001", model: "XPS 13", brand: "Dell" },
-  { serial: "LAP-002", model: "Elitebook 840", brand: "HP" },
-  { serial: "LAP-003", model: "MacBook Pro 16", brand: "Apple" },
-  { serial: "LAP-004", model: "ThinkPad X1 Carbon", brand: "Lenovo" },
-  { serial: "LAP-005", model: "Spectre x360", brand: "HP" },
-  { serial: "LAP-006", model: "Latitude 7420", brand: "Dell" },
-  { serial: "LAP-007", model: "ZenBook 14", brand: "ASUS" },
-  { serial: "LAP-008", model: "ROG Strix G15", brand: "ASUS" },
-  { serial: "LAP-009", model: "MacBook Air M2", brand: "Apple" },
-  { serial: "LAP-010", model: "ThinkPad T14", brand: "Lenovo" },
-  { serial: "LAP-011", model: "Pavilion 15", brand: "HP" },
-  { serial: "LAP-012", model: "Inspiron 15", brand: "Dell" },
-  { serial: "LAP-013", model: "VivoBook S14", brand: "ASUS" },
-  { serial: "LAP-014", model: "Surface Laptop 4", brand: "Microsoft" },
-  { serial: "LAP-015", model: "IdeaPad 5", brand: "Lenovo" },
-  { serial: "LAP-016", model: "MacBook Pro 14", brand: "Apple" },
-  { serial: "LAP-017", model: "Nitro 5", brand: "Acer" },
-  { serial: "LAP-018", model: "Swift 3", brand: "Acer" },
-  { serial: "LAP-019", model: "ZenBook Duo", brand: "ASUS" },
-  { serial: "LAP-020", model: "Latitude 9520", brand: "Dell" },
-  { serial: "LAP-021", model: "ThinkBook 14s", brand: "Lenovo" },
-  { serial: "LAP-022", model: "ProBook 450", brand: "HP" },
-  { serial: "LAP-023", model: "ROG Zephyrus G14", brand: "ASUS" },
-  { serial: "LAP-024", model: "MacBook Air 13", brand: "Apple" },
-  { serial: "LAP-025", model: "IdeaPad Flex 5", brand: "Lenovo" },
-  { serial: "LAP-026", model: "Aspire 5", brand: "Acer" },
-  { serial: "LAP-027", model: "Surface Pro 8", brand: "Microsoft" },
-  { serial: "LAP-028", model: "ThinkPad X13", brand: "Lenovo" },
-  { serial: "LAP-029", model: "Pavilion Gaming 15", brand: "HP" },
-  { serial: "LAP-030", model: "XPS 15", brand: "Dell" }
-],
-    "Monitor": [
-      { serial: "MON-001", model: "24", brand: "LG" },
-      { serial: "MON-002", model: "27", brand: "LG" }
-    ],
-    "Mouse": [
-      { serial: "MOU-001", model: "M185", brand: "Logitech" }
-    ],
-    "Teclado": [],
-    "Auriculares": [
-      { serial: "AUD-001", model: "WH1000", brand: "Sony" }
-    ]
-  };
+      if (assignmentResult?.error) {
+        resultMsg.textContent = "❌ Error al asignar dispositivo.";
+      } else {
+        resultMsg.textContent = `✅ Dispositivo ${tipoDispositivo} asignado a ${Info_empleado}.`;
+        e.target.reset();
+        tableBody.innerHTML = "";
+        tableContainer.style.display = "none";
+      }
 
-  deviceSelect.addEventListener("change", () => {
-    const type = deviceSelect.value;
-    tableBody.innerHTML = "";
+      deviceSelect.addEventListener("change", async () => {
+        const type = deviceSelect.value;
+        tableBody.innerHTML = "";
+        selectedDeviceSerial = null;
 
-    if (type && mockDevices[type] && mockDevices[type].length > 0) {
-      tableContainer.style.display = "block";
+        if (!type) {
+          tableContainer.style.display = "none";
+          return;
+        }
 
-      mockDevices[type].forEach(device => {
-        const row = document.createElement("tr");
-        row.style.cursor = "pointer";
-        row.innerHTML = `
-          <td style="padding: 0.5rem;">${device.brand}</td>
-          <td style="padding: 0.5rem;">${device.model}</td>
-          <td style="padding: 0.5rem;">${device.serial}</td>
-        `;
+        const devices = await ipcRenderer.invoke("get-available-devices", type);
 
-        row.addEventListener("click", () => {
-          // Highlight selected
-          document.querySelectorAll("#device-table tbody tr").forEach(r => {
-            r.style.backgroundColor = "";
+        if (devices.error || devices.length === 0) {
+          tableContainer.style.display = "none";
+          return;
+        }
+
+        tableContainer.style.display = "block";
+
+        devices.forEach((device) => {
+          const row = document.createElement("tr");
+          row.style.cursor = "pointer";
+          row.innerHTML = `
+      <td style="padding: 0.5rem;">${device.Marca}</td>
+      <td style="padding: 0.5rem;">${device.Modelo}</td>
+      <td style="padding: 0.5rem;">${device.Numero_Serie}</td>
+    `;
+
+          row.addEventListener("click", () => {
+            document.querySelectorAll("#device-table tbody tr").forEach((r) => {
+              r.style.backgroundColor = "";
+            });
+            row.style.backgroundColor = "#cce5ff";
+            selectedDeviceSerial = device.Numero_Serie;
           });
-          row.style.backgroundColor = "#cce5ff";
 
+          tableBody.appendChild(row);
         });
-
-        tableBody.appendChild(row);
       });
-    } else {
-      tableContainer.style.display = "none";
-    }
-  });
+    });
+  }
+  //---------------------------BUSCAR-------------------------------------
 
-}
+  function initBuscar() {
+    console.log("Hola")
+    const input = document.getElementById("busqueda");
 
-  function initBuscar(){
- const input = document.getElementById('busqueda');
-  
-  input.addEventListener('input', function () {
-    const filtro = this.value.trim();
+    input.addEventListener("input", function () {
+      const filtro = this.value.trim();
 
-    ipcRenderer.invoke('query-employee-devices', { employeeInfo: filtro })
-      .then(resultado => {
-        actualizarTabla(resultado);
-      })
-      .catch(error => {
-        console.error('Error en consulta:', error);
-      });
-  });
+      ipcRenderer
+        .invoke("query-employee-devices", { employeeInfo: filtro })
+        .then((resultado) => {
+          actualizarTablaBusqueda(resultado);
+        })
+        .catch((error) => {
+          console.error("Error en consulta:", error);
+        });
+    });
 
     function exportarExcel() {
       alert("Función de exportar a Excel en desarrollo.");
     }
-    }
+  }
 
-    function actualizarTablaBusqueda(datos){
- const tbody = document.querySelector('#tablaAsignados tbody');
-  tbody.innerHTML = '';
+  function formatearFecha(fechaISO) {
+    if (!fechaISO) return "";
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
 
-  datos.forEach(fila => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${fila.ID_Asignacion || ''}</td>
-      <td>${fila.ID_Empleado || ''}</td>
-      <td>${fila.ID_Dispositivo || ''}</td>
-      <td>${fila.Fecha_asignacion || ''}</td>
-      <td>${fila.Fecha_cambio || ''}</td>
+  function actualizarTablaBusqueda(datos) {
+    const tbody = document.querySelector("#tablaAsignados tbody");
+    tbody.innerHTML = "";
+
+    datos.forEach((fila) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+      <td>${fila.ID_Asignacion || ""}</td>
+      <td>${fila.ID_Empleado || ""}</td>
+      <td>${fila.ID_Dispositivo || ""}</td>
+      <td>${formatearFecha(fila.Fecha_asignacion) || ""}</td>
+      <td>${formatearFecha(fila.Fecha_cambio) || ""}</td>
     `;
-    tbody.appendChild(tr);
+      tbody.appendChild(tr);
+    });
+  }
+
+  //--------------------------------INVENTARIO---------------------------------
+  let currentModel = null;
+
+  async function loadTypes() {
+    alert("WORKING")
+    const types = await ipcRenderer.invoke("get-device-types");
+    const select = document.getElementById("deviceType");
+    types.forEach((t) => {
+      const option = document.createElement("option");
+      option.value = t.Tipo;
+      option.textContent = t.Tipo;
+      select.appendChild(option);
+    });
+  }
+
+  async function loadInventory(type = "") {
+    const data = await ipcRenderer.invoke("get-grouped-inventory", type);
+    renderTable(data);
+  }
+
+  function renderTable(data) {
+    const tbody = document.querySelector("#inventoryTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach((row) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+          <td>${row.TipoDispositivo}</td>
+          <td>${row.Modelo}</td>
+          <td>${row.Marca}</td>
+          <td>${row.Cantidad}</td>
+          <td>${row.Limite}</td>
+          <td><button class='edit-btn' onclick='openEdit("${row.Modelo}", ${row.Limite})'>Editar</button></td>
+        `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openEdit(modelo, limite) {
+    currentModel = modelo;
+    document.getElementById("editTitle").textContent = `Modelo: ${modelo}`;
+    document.getElementById("newLimit").value = limite;
+    toggleModal(true);
+  }
+
+  function toggleModal(show) {
+    document.getElementById("editModal").classList.toggle("hidden", !show);
+  }
+
+  document.getElementById("saveLimit").addEventListener("click", async () => {
+    const nuevoLimite = parseInt(document.getElementById("newLimit").value);
+    if (isNaN(nuevoLimite)) return alert("Ingrese un número válido");
+
+    const success = await ipcRenderer.invoke(
+      "update-limit",
+      currentModel,
+      nuevoLimite
+    );
+    if (success) {
+      toggleModal(false);
+      loadInventory(document.getElementById("deviceType").value);
+    } else {
+      alert("Error al guardar");
+    }
   });
-    }
-function initInventario(){
- window.addEventListener('DOMContentLoaded', async () => {
-  const data = await ipcRenderer.invoke('get-grouped-inventory');
-  renderTable(data);
-});
 
-function renderTable(data) {
-  const tbody = document.querySelector("#inventoryTable tbody");
-  tbody.innerHTML = "";
+  // Listeners
+  document.getElementById("deviceType").addEventListener("change", function () {
+    loadInventory(this.value);
+  });
 
-  data.forEach(row => {
-    const tr = document.createElement("tr");
+  // Inicializar
+  loadTypes();
+  loadInventory();
 
-    if (row.Quantity < row.Threshold) {
-      tr.classList.add("low-stock");
-    }
+  //----------------------------DISPOSITIVOS-----------------------------------------
+  async function cargarDispositivos() {
+    const filtros = {
+      tipoDispositivo: document.getElementById("deviceTypeSelect").value,
+      marca: document.getElementById("brandSearch").value,
+      modelo: document.getElementById("modelSelect").value,
+      serialNumber: document.getElementById("serialNumberSearch").value,
+    };
 
-    tr.innerHTML = `
-      <td>${row.DeviceType}</td>
-      <td>${row.Brand}</td>
-      <td>${row.Model}</td>
-      <td>${row.Quantity}</td>
-      <td>${row.Threshold}</td>
-      <td>${row.Quantity < row.Threshold ? '<strong>Debajo de la cantidad mínima</strong>' : 'Cantidad apropiada'}</td>
-      <td>
-        <div class="action-buttons">
-          <button class="edit-btn">Editar cantidad mínima</button>
-        </div>
-      </td>
+    const dispositivos = await ipcRenderer.invoke("get-devices", filtros);
+    const tbody = document.getElementById("deviceTableBody");
+    tbody.innerHTML = ""; // limpiar tabla
+
+    dispositivos.forEach((dispositivo) => {
+      const tr = document.createElement("tr");
+
+      // Celdas de datos
+      tr.innerHTML = `
+      <td>${dispositivo.Tipo}</td>
+      <td>${dispositivo.Marca}</td>
+      <td>${dispositivo.Modelo}</td>
+      <td>${dispositivo.Serial_Number}</td>
     `;
 
-    tbody.appendChild(tr);
-  });
-}
-    function exportarExcel() {
-      let table = document.getElementById("inventoryTable").outerHTML;
-      const data = 'data:application/vnd.ms-excel,' + encodeURIComponent(table);
-      const a = document.createElement('a');
-      a.href = data;
-      a.download = 'inventario_dispositivos.xls';
-      a.click();
+      // Celda con botones
+      const accionesTd = document.createElement("td");
+
+      // Botón Editar Serial
+      const btnEditar = document.createElement("button");
+      btnEditar.textContent = "Editar SN";
+      btnEditar.className = "btn btn-sm btn-warning me-2";
+      btnEditar.onclick = () =>
+        editarSerial(dispositivo.ID, dispositivo.Serial_Number);
+
+      // Botón Eliminar
+      const btnEliminar = document.createElement("button");
+      btnEliminar.textContent = "Eliminar";
+      btnEliminar.className = "btn btn-sm btn-danger";
+      btnEliminar.onclick = () => eliminarDispositivo(dispositivo.ID);
+
+      // Agregar botones
+      accionesTd.appendChild(btnEditar);
+      accionesTd.appendChild(btnEliminar);
+
+      tr.appendChild(accionesTd);
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function editarSerial(id, serialActual) {
+    const nuevoSerial = prompt("Nuevo número de serie:", serialActual);
+    if (
+      nuevoSerial &&
+      nuevoSerial.trim() !== "" &&
+      nuevoSerial !== serialActual
+    ) {
+      const respuesta = await ipcRenderer.invoke("update-serial", {
+        id,
+        nuevoSerial,
+      });
+      if (respuesta.success) {
+        alert("Número de serie actualizado");
+        cargarDispositivos();
+      } else {
+        alert("Error al actualizar: " + respuesta.error);
+      }
     }
   }
-   
 
-function initDevices() {
-     const devices = [
-      { serialNumber: 'SN1234', computerName: 'PC001', deviceType: 'Laptop', brand: 'Dell', model: 'XPS 13' },
-      { serialNumber: 'SN5678', computerName: 'PC002', deviceType: 'Desktop', brand: 'HP', model: 'Pavilion 15' },
-      { serialNumber: 'SN91011', computerName: 'PC003', deviceType: 'Laptop', brand: 'Apple', model: 'MacBook Pro' },
-      { serialNumber: 'SN121314', computerName: 'PC004', deviceType: 'Tablet', brand: 'Samsung', model: 'Galaxy Tab' }
-    ];
-
-    function applyFilters() {
-      const serialNumberSearch = document.getElementById('serialNumberSearch').value.toLowerCase();
-      const computerNameSearch = document.getElementById('computerNameSearch').value.toLowerCase();
-      const deviceTypeSelect = document.getElementById('deviceTypeSelect').value;
-      const brandSelect = document.getElementById('brandSelect').value;
-      const modelSelect = document.getElementById('modelSelect').value;
-
-      const filteredDevices = devices.filter(device => {
-        return (
-          (serialNumberSearch === '' || device.serialNumber.toLowerCase().includes(serialNumberSearch)) &&
-          (computerNameSearch === '' || device.computerName.toLowerCase().includes(computerNameSearch)) &&
-          (deviceTypeSelect === '' || device.deviceType === deviceTypeSelect) &&
-          (brandSelect === '' || device.brand === brandSelect) &&
-          (modelSelect === '' || device.model === modelSelect)
-        );
-      });
-
-      displayDevices(filteredDevices);
+  async function eliminarDispositivo(id) {
+    const confirmar = confirm("¿Seguro que deseas eliminar este dispositivo?");
+    if (confirmar) {
+      const respuesta = await ipcRenderer.invoke("delete-device", id);
+      if (respuesta.success) {
+        alert("Dispositivo eliminado");
+        cargarDispositivos();
+      } else {
+        alert("Error al eliminar: " + respuesta.error);
+      }
     }
+  }
 
-    function displayDevices(devicesList) {
-      const tableBody = document.getElementById('devicesTableBody');
-      tableBody.innerHTML = '';
-
-      devicesList.forEach(device => {
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
-          <td>${device.serialNumber}</td>
-          <td>${device.computerName}</td>
-          <td>${device.deviceType}</td>
-          <td>${device.brand}</td>
-          <td>${device.model}</td>
-          <td><button onclick="viewDetails('${device.deviceType}', '${device.brand}', '${device.model}')">View Details</button></td>
-        `;
-        
-        if (device.deviceType === 'Laptop' && device.serialNumber === 'SN1234') {
-          row.classList.add('row-alert');
-        }
-
-        tableBody.appendChild(row);
-      });
-    }
-
-    function viewDetails(deviceType, brand, model) {
-      const url = `ungrouped.html?type=${encodeURIComponent(deviceType)}&brand=${encodeURIComponent(brand)}&model=${encodeURIComponent(model)}`;
-      window.location.href = url;
-    }
-
-    window.onload = () => {
-      displayDevices(devices);
-    };
-}
-
-function initConfigurar(){
+  //---------------------------------------------------------------------
+  function initConfigurar() {
     let filaEditando = null;
 
     function aplicarFiltros() {
       const filtro = document.getElementById("busqueda").value.toLowerCase();
       const columna = parseInt(document.getElementById("comboFiltro").value);
       const filas = document.querySelectorAll("#tablaConfiguracion tbody tr");
-      const hoy = new Date().toISOString().split('T')[0];
+      const hoy = new Date().toISOString().split("T")[0];
 
-      filas.forEach(fila => {
+      filas.forEach((fila) => {
         const texto = fila.children[columna].innerText.toLowerCase();
         fila.style.display = texto.includes(filtro) ? "" : "none";
 
@@ -375,84 +421,91 @@ function initConfigurar(){
 
     function modificarFila(btn) {
       filaEditando = btn.parentElement.parentElement;
-      document.getElementById("modalEmpleado").value = filaEditando.children[0].innerText;
-      document.getElementById("modalDispositivo").value = filaEditando.children[1].innerText;
-      document.getElementById("modalEstado").value = filaEditando.children[2].innerText;
-      document.getElementById("modalFecha").value = filaEditando.children[3].innerText;
+      document.getElementById("modalEmpleado").value =
+        filaEditando.children[0].innerText;
+      document.getElementById("modalDispositivo").value =
+        filaEditando.children[1].innerText;
+      document.getElementById("modalEstado").value =
+        filaEditando.children[2].innerText;
+      document.getElementById("modalFecha").value =
+        filaEditando.children[3].innerText;
       abrirModal();
     }
 
     aplicarFiltros();
-}
+  }
 
-function abrirModal(index = null) {
-      document.getElementById("modal").style.display = "flex";
-      if (index !== null) {
-        editarIndex = index;
-        const d = dispositivos[index];
-        document.getElementById("tipo").value = d.tipo;
-        document.getElementById("modelo").value = d.modelo;
-        if(d.serial === "Sin Serial") {
-          document.getElementById("tieneSerial").checked = false;
-          toggleSerialInput();
-          document.getElementById("serial").value = "";
-        } else {
-          document.getElementById("tieneSerial").checked = true;
-          toggleSerialInput();
-          document.getElementById("serial").value = d.serial;
-        }
-      } else {
-        editarIndex = null;
-        document.getElementById("modelo").value = "";
-        document.getElementById("serial").value = "";
+  function abrirModal(index = null) {
+    document.getElementById("modal").style.display = "flex";
+    if (index !== null) {
+      editarIndex = index;
+      const d = dispositivos[index];
+      document.getElementById("tipo").value = d.tipo;
+      document.getElementById("modelo").value = d.modelo;
+      if (d.serial === "Sin Serial") {
         document.getElementById("tieneSerial").checked = false;
         toggleSerialInput();
-      }
-    }
-
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-
-    function toggleSerialInput() {
-      document.getElementById("grupoSerial").style.display = document.getElementById("tieneSerial").checked ? "block" : "none";
-      document.getElementById("cantidad").classList.toggle('inputBloqueado');
-    }
-
-    function guardarDispositivo() {
-      const tipo = document.getElementById("tipo").value;
-      const modelo = document.getElementById("modelo").value.trim();
-      let serial = document.getElementById("tieneSerial").checked ? document.getElementById("serial").value.trim() : "";
-
-      if (!modelo) {
-        alert("El modelo es obligatorio.");
-        return;
-      }
-
-      if (document.getElementById("tieneSerial").checked && !serial) {
-        alert("Debe ingresar el serial o desmarcar la opción.");
-        return;
-      }
-
-      if (!document.getElementById("tieneSerial").checked) {
-        serial = generarSerialAutomatico(tipo, modelo);
-      }
-
-      if (editarIndex === null) {
-        dispositivos.push({ tipo, modelo, serial });
+        document.getElementById("serial").value = "";
       } else {
-        dispositivos[editarIndex] = { tipo, modelo, serial };
+        document.getElementById("tieneSerial").checked = true;
+        toggleSerialInput();
+        document.getElementById("serial").value = d.serial;
       }
+    } else {
+      editarIndex = null;
+      document.getElementById("modelo").value = "";
+      document.getElementById("serial").value = "";
+      document.getElementById("tieneSerial").checked = false;
+      toggleSerialInput();
+    }
+  }
 
-      actualizarTabla();
-      cerrarModal();
+  function cerrarModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  function toggleSerialInput() {
+    document.getElementById("grupoSerial").style.display =
+      document.getElementById("tieneSerial").checked ? "block" : "none";
+    document.getElementById("cantidad").classList.toggle("inputBloqueado");
+  }
+
+  function guardarDispositivo() {
+    const tipo = document.getElementById("tipo").value;
+    const modelo = document.getElementById("modelo").value.trim();
+    let serial = document.getElementById("tieneSerial").checked
+      ? document.getElementById("serial").value.trim()
+      : "";
+
+    if (!modelo) {
+      alert("El modelo es obligatorio.");
+      return;
     }
 
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTabla");
-      tbody.innerHTML = "";
-      dispositivos.forEach((d, index) => {
-        const fila = `
+    if (document.getElementById("tieneSerial").checked && !serial) {
+      alert("Debe ingresar el serial o desmarcar la opción.");
+      return;
+    }
+
+    if (!document.getElementById("tieneSerial").checked) {
+      serial = generarSerialAutomatico(tipo, modelo);
+    }
+
+    if (editarIndex === null) {
+      dispositivos.push({ tipo, modelo, serial });
+    } else {
+      dispositivos[editarIndex] = { tipo, modelo, serial };
+    }
+
+    actualizarTabla();
+    cerrarModal();
+  }
+
+  function actualizarTabla() {
+    const tbody = document.getElementById("cuerpoTabla");
+    tbody.innerHTML = "";
+    dispositivos.forEach((d, index) => {
+      const fila = `
           <tr>
             <td>${d.tipo}</td>
             <td>${d.modelo}</td>
@@ -460,18 +513,18 @@ function abrirModal(index = null) {
             <td><button class="btn eliminar" onclick="eliminarDispositivo(${index})">Eliminar</button></td>
           </tr>
         `;
-        tbody.innerHTML += fila;
-      });
-    }
+      tbody.innerHTML += fila;
+    });
+  }
 
-    function exportarExcel() {
-      const ws = XLSX.utils.json_to_sheet(dispositivos);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Dispositivos");
-      XLSX.writeFile(wb, "dispositivos.xlsx");
-    }
+  function exportarExcel() {
+    const ws = XLSX.utils.json_to_sheet(dispositivos);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Dispositivos");
+    XLSX.writeFile(wb, "dispositivos.xlsx");
+  }
 
-function initConfigurarDisp(){
-   let dispositivos = [];
+  function initConfigurarDisp() {
+    let dispositivos = [];
     let editarIndex = null;
-}
+  }

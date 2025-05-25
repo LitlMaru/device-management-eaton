@@ -9,14 +9,15 @@
 <body>
 
   
-  <header class="dm-header">
-    <h1>Device Management EATON</h1>
+  <div class="header">
+    <div class="title">Eaton Device Management HR</div>
     <div class="window-controls">
-      <span class="control minimize" title="Minimizar">—</span>
-      <span class="control maximize" title="Maximizar">☐</span>
-      <span class="control close" title="Cerrar">✕</span>
+      <img src="../assets/minimize.svg" onclick="minimizarVentana()">
+      <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="maximizarVentana()">
+
+      <img src="../assets/close.svg" onclick="cerrarVentana()">
     </div>
-  </header>
+  </div>
 
   <div class="login-content">
 

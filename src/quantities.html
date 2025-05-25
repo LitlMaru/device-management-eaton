@@ -13,7 +13,7 @@
     }
 
     header {
-          background: linear-gradient(90deg, #004e92, #000428);
+      background: linear-gradient(90deg, #004e92, #000428);
       color: white;
       display: flex;
       justify-content: space-between;
@@ -173,7 +173,9 @@
       cursor: pointer;
     }
 
-
+.hidden{
+  display: none;
+}
 
     
   </style>
@@ -185,18 +187,15 @@
 
     <div class="search-filter">
       <select id="deviceType">
-        <option value="">Filtrar por tipo de dispositivo</option>
-        <option value="laptop">Laptop</option>
-        <option value="mouse">Mouse</option>
-        <option value="teclado">Teclado</option>
+        <option value="">Todos</option>
       </select>
     </div>
 
     <div class="alert-box">
       <div class="alert-title">
-        ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están por debajo del límite:
+        ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están por debajo de la cantidad minima:
       </div>
-      <ul>
+      <ul id="alert-list">
         <li><strong>Laptop (Dell XPS 13)</strong> – 3 dispositivos restantes (Límite: 5)</li>
         <li><strong>Escritorio (HP Pavilion)</strong> – 1 dispositivo restante (Límite: 3)</li>
       </ul>
@@ -216,56 +215,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="low-stock">
-          <td>Laptop</td>
-          <td>XPS 13</td>
-          <td>3</td>
-          <td>5</td>
-          <td><strong>Debajo de la cantidad mínima</strong></td>
-          <td>
-            <div class="action-buttons">
-              <button class="edit-btn">Editar cantidad mínima</button>
-            </div>
-        </td>
-        </tr>
-        <tr>
-          <td>Laptop</td>
-          <td>Pavilion 15</td>
-          <td>8</td>
-          <td>5</td>
-          <td>Cantidad apropiada</td>
-          <td>
-            <div class="action-buttons">
-              <button class="edit-btn">Editar cantidad mínima</button>
-            </div>
-        </td>
-        </tr>
-        <tr class="low-stock">
-          <td>Escritorio</td>
-          <td>MacBook Pro</td>
-          <td>2</td>
-          <td>3</td>
-          <td><strong>Debajo de la cantidad mínima</strong></td>
-          <td>
-          <div class="action-buttons">
-              <button class="edit-btn">Editar cantidad mínima</button>
-          </div>
-        </td>
-        </tr>
-        <tr>
-          <td>Tablet</td>
-          <td>Galaxy Tab</td>
-          <td>6</td>
-          <td>5</td>
-          <td>Cantidad apropiada</td>
-          <td>
-          <div class="action-buttons">
-              <button class="edit-btn">Editar cantidad mínima</button>
-          </div>
-        </td>
-        </tr>
+       
       </tbody>
     </table>
+    
+      <div id="editModal" class="hidden">
+    <h3>Editar cantidad mínima</h3>
+    <p id="editTitle"></p>
+    <input type="number" id="newLimit" min="0">
+    <button id="saveLimit">Guardar</button>
+    <button onclick="toggleModal(false)">Cancelar</button>
+  </div>
   </div>
 
   <script>

@@ -84,21 +84,27 @@
     <div class="filters-container">
       <input type="text" id="serialNumberSearch" placeholder="Buscar por numero de serie" onkeyup="applyFilters()">
       
-      <select id="deviceTypeSelect" onchange="applyFilters()">
+      <select id="deviceTypeSelect" onchange="cargarDispositivos()">
         <option value="">Tipo de Dispositivo</option>
         <option value="Laptop">Laptop</option>
         <option value="Desktop">Desktop</option>
         <option value="Tablet">Tablet</option>
       </select>
 
-      <select id="modelSelect" onchange="applyFilters()">
+      <select id="modelSelect" onchange="cargarDispositivos()">
         <option value="">Modelo</option>
         <option value="XPS 13">XPS 13</option>
         <option value="MacBook Pro">MacBook Pro</option>
         <option value="Pavilion 15">Pavilion 15</option>
       </select>
 
-      <button onclick="applyFilters()">Aplicar Filtros</button>
+        <select id="stateSelect" onchange="cargarDispositivos()">
+        <option value="">Estado</option>
+        <option value="Dañado">Dañado</option>
+        <option value="Disponible">Disponible</option>
+      </select>
+
+      <button onclick="cargarDispositivos()">Aplicar Filtros</button>
     </div>
 
     <table id="devicesTable">
@@ -109,17 +115,7 @@
           <th>Modelo</th>
           <th>Serial Number</th>
           <th>Acciones</th>
-        </tr>
-        <tr>
-          <td>Laptop</td>
-          <td>Dell</th>
-          <td>Pequeña</td>
-          <td>DADA8909ADLKP</td>
-          <td><div class="action-buttons">
-              <button class="delete-btn">Eliminar</button>
-              <button class="editar-btn">Editar SN</button>
-            </div></td>
-        </tr>
+        </tr>>  
       </thead>
       <tbody id="devicesTableBody">
       </tbody>
