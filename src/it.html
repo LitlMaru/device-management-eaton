@@ -1,67 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Device Management EATON-ADMIN</title>
- <!--- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Device Management EATON-ADMIN</title>
+    <!--- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/> !-->
-  <link rel="stylesheet" href="css/it.css">
-</head>
-<body>
-  <div class="header">
-    <div class="title">EATON Device Management</div>
-    <div class="window-controls">
-      <img src="../assets/minimize.svg" onclick="minimizarVentana()">
-      <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="maximizarVentana()">
+    <link rel="stylesheet" href="css/it.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="title">EATON Device Management</div>
+      <div class="window-controls">
+        <img src="../assets/minimize.svg" onclick="minimizarVentana()" />
+        <img
+          id="img-full-screen"
+          src="../assets/fullscreenmode.svg"
+          onclick="maximizarVentana()"
+        />
 
-      <img src="../assets/close.svg" onclick="cerrarVentana()">
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="sidebar">
-      <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
-      <div class="menu-item" onclick="showContent('assign')">
-        Asignar dispositivo  <img src="../assets/add-user.svg" alt="">
+        <img src="../assets/close.svg" onclick="cerrarVentana()" />
       </div>
-      <div class="menu-item" onclick="showContent('buscar')">
-        Buscar asignados  <img src="../assets/search.svg" alt="">
-      </div>
-
-      <div class="menu-item" onclick="showContent('quantities')">
-        Inventario <img src="../assets/threshold.svg" alt="">
-      </div>
-      <div class="menu-item" onclick="showContent('devices')">
-        Dispositivos <img src="../assets/device.svg" alt="">
-      </div>
-      <div class="menu-item" onclick="showContent('configurarDisp')">
-        Tipos de dispositivo <img src="../assets/settings.svg" alt="">
-      </div>
-       <div class="menu-item close-session" onclick="closeSession()">
-        Cerrar sesión <img src="../assets/close-thick.svg" alt="">
-      </div>
-
     </div>
 
-    <div class="marcoContenido">
-      <div class="content" id="contenido">
-            <h1>Bienvenido</h1>
-            <div class="welcome-card">
-              <img src="../assets/eaton_logo.svg" alt="Eaton"/>
-              <div class="welcome-text">
-                <p>Bienvenido al sistema de gestión de dispositivos de <strong>EATON</strong>, una empresa global de gestión inteligente de energía que ayuda a las personas a trabajar de forma más segura, eficiente y sostenible.</p>
-                <p>Desde esta plataforma puedes administrar registros, realizar búsquedas, generar reportes y controlar la asignación de dispositivos. ¡Explora todas las opciones del menú y lleva el control al siguiente nivel!</p>
-                <p>Gracias por formar parte de nuestra misión de mejorar la calidad de vida y el medioambiente mediante el uso de tecnologías avanzadas.</p>
-              </div>
+    <div class="main">
+      <div class="sidebar">
+        <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
+        <div class="menu-item" onclick="showContent('assign')">
+          Asignar dispositivo <img src="../assets/add-user.svg" alt="" />
+        </div>
+        <div class="menu-item" onclick="showContent('buscar')">
+          Buscar asignados <img src="../assets/search.svg" alt="" />
+        </div>
+
+        <div class="menu-item" onclick="showContent('quantities')">
+          Inventario <img src="../assets/threshold.svg" alt="" />
+        </div>
+        <div class="menu-item" onclick="showContent('devices')">
+          Dispositivos <img src="../assets/device.svg" alt="" />
+        </div>
+        <div class="menu-item" onclick="showContent('configurarDisp')">
+          Tipos de dispositivo <img src="../assets/settings.svg" alt="" />
+        </div>
+        <div class="menu-item close-session" onclick="closeSession()">
+          Cerrar sesión <img src="../assets/close-thick.svg" alt="" />
+        </div>
+      </div>
+
+      <div class="marcoContenido">
+        <div class="content" id="contenido">
+          <h1>Bienvenido</h1>
+          <div class="welcome-card">
+            <img src="../assets/eaton_logo.svg" alt="Eaton" />
+            <div class="welcome-text">
+              <p>
+                Bienvenido al sistema de gestión de dispositivos de
+                <strong>EATON</strong>, una empresa global de gestión
+                inteligente de energía que ayuda a las personas a trabajar de
+                forma más segura, eficiente y sostenible.
+              </p>
+              <p>
+                Desde esta plataforma puedes administrar registros, realizar
+                búsquedas, generar reportes y controlar la asignación de
+                dispositivos. ¡Explora todas las opciones del menú y lleva el
+                control al siguiente nivel!
+              </p>
+              <p>
+                Gracias por formar parte de nuestra misión de mejorar la calidad
+                de vida y el medioambiente mediante el uso de tecnologías
+                avanzadas.
+              </p>
             </div>
           </div>
         </div>
+      </div>
     </div>
-    
 
-  <script src="js/it.js"></script>
-  <script src="../main.js"></script>
-</body>
+    <script src="js/it.js"></script>
+    <script src="../main.js"></script>
+  </body>
 </html>
-/

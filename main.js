@@ -1,21 +1,21 @@
-require('electron-reload')(__dirname, {
-  electron: require(`${__dirname}/node_modules/electron`)
-})
+require("electron-reload")(__dirname, {
+  electron: require(`${__dirname}/node_modules/electron`),
+});
 
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const sql = require('mssql');
-const { electron } = require('process');
-const { serialize } = require('v8');
+const { app, BrowserWindow, ipcMain } = require("electron");
+const path = require("path");
+const sql = require("mssql");
+const { electron } = require("process");
+const { serialize } = require("v8");
 
 let mainWindow;
 global.currentUser = null;
 
 const dbConfig = {
-  user: 'enmanuel',
-  password: 'L3tItG0',
-  server: 'localhost\\MSSQLSERVER', 
-  database: 'ProgramaEATON',
+  user: "enmanuel",
+  password: "L3tItG0",
+  server: "localhost\\MSSQLSERVER",
+  database: "ProgramaEATON",
   options: {
     encrypt: false,
     trustServerCertificate: true,
@@ -26,44 +26,43 @@ function createWindow() {
     width: 900,
     height: 600,
     frame: true,
-    titleBarStyle: 'default',
+    titleBarStyle: "default",
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
-       devTools: true,
+      devTools: true,
       nodeIntegration: false,
-     
     },
   });
 
-  mainWindow.loadFile('src/login.html');
+  mainWindow.loadFile("src/login.html");
 }
 
 app.whenReady().then(async () => {
   try {
     await sql.connect(dbConfig);
-    console.log('Conectado a la base de datos');
+    console.log("Conectado a la base de datos");
   } catch (err) {
-    console.error('Error conectando a la base de datos:', err);
+    console.error("Error conectando a la base de datos:", err);
   }
 
   createWindow();
 
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
 });
 
-ipcMain.on('minimize-window', (event) => {
+ipcMain.on("minimize-window", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   win.minimize();
 });
 
-ipcMain.on('maximize-window', (event) => {
+ipcMain.on("maximize-window", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win.isMaximized()) {
     win.unmaximize();
@@ -72,52 +71,53 @@ ipcMain.on('maximize-window', (event) => {
   }
 });
 
-ipcMain.on('close-window', (event) => {
+ipcMain.on("close-window", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   win.close();
 });
 
-ipcMain.handle('login-user', async (event, { username, password }) => {
+ipcMain.handle("login-user", async (event, { username, password }) => {
   try {
-    const result = await sql.query`SELECT * FROM Usuarios WHERE Username = ${username}`;
+    const result =
+      await sql.query`SELECT * FROM Usuarios WHERE Username = ${username}`;
     const user = result.recordset[0];
 
     if (!user) {
-      return { success: false, message: 'Usuario no encontrado' };
+      return { success: false, message: "Usuario no encontrado" };
     }
 
     const match = password == user.Clave;
     if (!match) {
-      return { success: false, message: 'Contraseña incorrecta' };
+      return { success: false, message: "Contraseña incorrecta" };
     }
 
     const { IDUsuario, Username, Rol, Ubicacion } = user;
     global.currentUser = { IDUsuario, Username, Rol, Ubicacion };
 
-    console.log(global.currentUser.Ubicacion)
+    console.log(global.currentUser.Ubicacion);
     return { success: true, user: global.currentUser };
   } catch (err) {
-    console.error('Error en login:', err);
-    return { success: false, message: 'Error en el servidor' };
+    console.error("Error en login:", err);
+    return { success: false, message: "Error en el servidor" };
   }
 });
 
-ipcMain.handle('get-current-user', () => {
+ipcMain.handle("get-current-user", () => {
   return global.currentUser;
 });
 
-
 //----------------REGISTRO DE NUEVOS EMPLEADOS----------------------------
-ipcMain.on('register-employee', async (event, data) => {
+ipcMain.on("register-employee", async (event, data) => {
   try {
     const pool = await sql.connect(dbConfig);
-    await pool.request()
+    await pool
+      .request()
       .input("ID_Empleado", sql.VarChar, data.id)
       .input("Nombre", sql.VarChar, data.name)
       .input("Departamento", sql.VarChar, data.dept)
       .input("Posicion", sql.VarChar, data.position)
       .input("Email", sql.VarChar, data.email)
-      .input("Ubicacion", sql.VarChar, global.currentUser?.Ubicacion || '')
+      .input("Ubicacion", sql.VarChar, global.currentUser?.Ubicacion || "")
       .input("Fecha_Entrada", sql.Date, data.currentDate)
       .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
               VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Email, @Ubicacion, @Fecha_Entrada)`);
@@ -130,38 +130,36 @@ ipcMain.on('register-employee', async (event, data) => {
 });
 
 //--------------CONSULTA DE DISPOSITIVOS ASIGNADOS--------------------
-ipcMain.handle('query-employee-devices', async (event, filter) => {
-  try{
+ipcMain.handle("query-employee-devices", async (event, filter) => {
+  try {
     const pool = await sql.connect(dbConfig);
-    const result = await sql.query(`SELECT e.ID_Empleado, e.Nombre, i.Tipo_Dispositivo, i.Serial_Number, d.Fecha_asignacion, d.Fecha_cambio
+    const result =
+      await sql.query(`SELECT e.ID_Empleado, e.Nombre, i.Tipo_Dispositivo, i.Serial_Number, d.Fecha_asignacion, d.Fecha_cambio
       FROM Inventario i INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo  INNER JOIN Empleados ON e.ID_Empleado = d.ID_Empleado
-      WHERE (e.ID_Empleado = ${filter.employeeInfo} OR e.Nombre = ${filter.employeeInfo}) AND d.Ubicacion = ${global.currentUser.Ubicacion}`)
-      
-      return result.recordset;
-  }
-  catch(error) {
+      WHERE (e.ID_Empleado = ${filter.employeeInfo} OR e.Nombre = ${filter.employeeInfo}) AND d.Ubicacion = ${global.currentUser.Ubicacion}`);
+
+    return result.recordset;
+  } catch (error) {
     console.error("Error en la consulta: ", error.message);
   }
-})
-
+});
 
 //----------------CONFIGURACION DE USUARIOS ----------------------------
 
 //OBTENER USUARIOS
-ipcMain.handle('get-users', async (event) => {
-  try{
+ipcMain.handle("get-users", async (event) => {
+  try {
     await sql.connect(dbConfig);
-    const result = await sql.query('SELECT * from Usuarios');
+    const result = await sql.query("SELECT * from Usuarios");
     return result.recordset;
-  }
-  catch(err){
+  } catch (err) {
     console.error(err.message);
-    return {error:err.message};
+    return { error: err.message };
   }
-})
+});
 
 //ELIMINAR USUARIO
-ipcMain.handle('delete-user', async (event, username) => {
+ipcMain.handle("delete-user", async (event, username) => {
   try {
     await sql.connect(dbConfig);
     await sql.query`DELETE FROM Usuarios WHERE Username = ${username}`;
@@ -173,7 +171,7 @@ ipcMain.handle('delete-user', async (event, username) => {
 });
 
 //ACTUALIZAR USUARIO
-ipcMain.handle('update-user', async (event, user) => {
+ipcMain.handle("update-user", async (event, user) => {
   try {
     const { username, clave, rol, ubicacion } = user;
     await sql.connect(dbConfig);
@@ -190,7 +188,7 @@ ipcMain.handle('update-user', async (event, user) => {
 });
 
 //AGREGAR USUARIO
-ipcMain.handle('add-user', async (event, user) => {
+ipcMain.handle("add-user", async (event, user) => {
   try {
     const { username, clave, rol, ubicacion } = user;
     await sql.connect(dbConfig);
@@ -206,54 +204,60 @@ ipcMain.handle('add-user', async (event, user) => {
 });
 
 //--------------------ASIGNAR DISPOSITIVO-----------------------
-ipcMain.handle('assign-device', async(event, data) => {
-  try{
+ipcMain.handle("assign-device", async (event, data) => {
+  try {
     await sql.connect(dbConfig);
-    const {Info_empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio} = data;
+    const { Info_empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio } =
+      data;
 
-    if(Number.isInteger(Info_empleado)){
+    if (Number.isInteger(Info_empleado)) {
       await sql.query(`INSERT INTO DispositivosAsignados (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio, Ubicacin)
-        VALUES (${Info_empleado}, ${ID_Dispositivo}, ${Fecha_Asignacion}, ${Fecha_Cambio}, ${global.currentUser.Ubicacion})`)
-    }
-    else{
-      const ID_Empleado = (await sql.query(`SELECT * FROM Empleados WHERE Nombre = ${Info_empleado}`)).recordset[0]?.ID_Empleado;
-       await sql.query(`INSERT INTO DispositivosAsignados (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio, Ubicacion)
-        VALUES (${ID_Empleado}, ${ID_Dispositivo}, ${Fecha_Asignacion}, ${Fecha_Cambio}, ${global.currentUser.Ubicacion})`)
+        VALUES (${Info_empleado}, ${ID_Dispositivo}, ${Fecha_Asignacion}, ${Fecha_Cambio}, ${global.currentUser.Ubicacion})`);
+    } else {
+      const ID_Empleado = (
+        await sql.query(
+          `SELECT * FROM Empleados WHERE Nombre = ${Info_empleado}`
+        )
+      ).recordset[0]?.ID_Empleado;
+      await sql.query(`INSERT INTO DispositivosAsignados (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio, Ubicacion)
+        VALUES (${ID_Empleado}, ${ID_Dispositivo}, ${Fecha_Asignacion}, ${Fecha_Cambio}, ${global.currentUser.Ubicacion})`);
     }
 
-    event.reply('device-assigned-succesfully');
-  }
-  catch(error){
+    event.reply("device-assigned-succesfully");
+  } catch (error) {
     console.error(error.message);
-    event.reply('device-assign-error');
+    event.reply("device-assign-error");
   }
-})
+});
 
-ipcMain.handle('get-available-devices', async (event, deviceType) => {
+ipcMain.handle("get-available-devices", async (event, deviceType) => {
   try {
     await sql.connect(dbConfig);
 
-    const ID_Tipo = await sql.query(`SELECT ID_Tipo FROM TiposDispositivo where Tipo = ${deviceType}`)
+    const ID_Tipo = await sql.query(
+      `SELECT ID_Tipo FROM TiposDispositivo where Tipo = ${deviceType}`
+    );
     const result = await sql.query(
       `SELECT ID_Dispositivo, Marca, Modelo, Serial_Number
       FROM Dispositivos
       WHERE ID_Tipo = ${ID_Tipo} AND Estado = 'Disponible' AND Ubicacion = ${global.currentUser.Ubicacion}`
-    )
+    );
 
     return result.recordset;
-  }
-  catch(error){
+  } catch (error) {
     console.error("Error al obtener dispositivos: ", error);
-    return{error: error.message};
+    return { error: error.message };
   }
-})
+});
 //--------------------------INVENTARIO-----------------------
 // Obtener tipos de dispositivo
-ipcMain.handle('get-device-types', async () => {
+ipcMain.handle("get-device-types", async () => {
   try {
     console.log("WORKING");
     await sql.connect(config);
-    const result = await sql.query('SELECT DISTINCT Tipo FROM TiposDispositivo');
+    const result = await sql.query(
+      "SELECT DISTINCT Tipo FROM TiposDispositivo"
+    );
     return result.recordset;
   } catch (e) {
     console.error(e);
@@ -262,7 +266,7 @@ ipcMain.handle('get-device-types', async () => {
 });
 
 // Ya te pasé este antes (para inventario agrupado)
-ipcMain.handle('get-grouped-inventory', async (event, deviceType) => {
+ipcMain.handle("get-grouped-inventory", async (event, deviceType) => {
   try {
     await sql.connect(config);
     const request = new sql.Request();
@@ -280,7 +284,7 @@ ipcMain.handle('get-grouped-inventory', async (event, deviceType) => {
     `;
 
     if (deviceType) {
-      request.input('deviceType', sql.VarChar, deviceType);
+      request.input("deviceType", sql.VarChar, deviceType);
       query += ` WHERE td.Tipo = @deviceType `;
     }
 
@@ -298,13 +302,15 @@ ipcMain.handle('get-grouped-inventory', async (event, deviceType) => {
 });
 
 // Actualizar límite
-ipcMain.handle('update-limit', async (event, modelo, nuevoLimite) => {
+ipcMain.handle("update-limit", async (event, modelo, nuevoLimite) => {
   try {
     await sql.connect(config);
     const request = new sql.Request();
-    request.input('modelo', sql.VarChar, modelo);
-    request.input('limite', sql.Int, nuevoLimite);
-    await request.query('UPDATE Modelos SET Limite = @limite WHERE Modelo = @modelo');
+    request.input("modelo", sql.VarChar, modelo);
+    request.input("limite", sql.Int, nuevoLimite);
+    await request.query(
+      "UPDATE Modelos SET Limite = @limite WHERE Modelo = @modelo"
+    );
     return true;
   } catch (e) {
     console.error(e);
@@ -312,45 +318,43 @@ ipcMain.handle('update-limit', async (event, modelo, nuevoLimite) => {
   }
 });
 
-
-
 //--------------------------DISPOSITIVOS--------------------------
 
 const filtros = {
-  tipoDispositivo: '',   // puede venir vacío o string, e.g. 'Laptop'
-  marca: '',             // igual, e.g. 'Dell'
-  modelo: '',            // igual, e.g. 'XPS 13'
-  serialNumber: ''       // igual, e.g. 'SN1234'
+  tipoDispositivo: "", // puede venir vacío o string, e.g. 'Laptop'
+  marca: "", // igual, e.g. 'Dell'
+  modelo: "", // igual, e.g. 'XPS 13'
+  serialNumber: "", // igual, e.g. 'SN1234'
 };
 
 function getDevicesFiltered(filtros) {
   return new Promise((resolve, reject) => {
-    let baseSQL = 'SELECT * FROM dispositivos';
+    let baseSQL = "SELECT * FROM dispositivos";
     const condiciones = [];
     const params = [];
 
-    if (filtros.tipoDispositivo && filtros.tipoDispositivo.trim() !== '') {
-      condiciones.push('Tipo = ?');
+    if (filtros.tipoDispositivo && filtros.tipoDispositivo.trim() !== "") {
+      condiciones.push("Tipo = ?");
       params.push(filtros.tipoDispositivo.trim());
     }
-    if (filtros.marca && filtros.marca.trim() !== '') {
-      condiciones.push('Marca LIKE ?');
+    if (filtros.marca && filtros.marca.trim() !== "") {
+      condiciones.push("Marca LIKE ?");
       params.push(`%${filtros.marca.trim()}%`);
     }
-    if (filtros.modelo && filtros.modelo.trim() !== '') {
-      condiciones.push('Modelo LIKE ?');
+    if (filtros.modelo && filtros.modelo.trim() !== "") {
+      condiciones.push("Modelo LIKE ?");
       params.push(`%${filtros.modelo.trim()}%`);
     }
-    if (filtros.serialNumber && filtros.serialNumber.trim() !== '') {
-      condiciones.push('Serial_Number LIKE ?');
+    if (filtros.serialNumber && filtros.serialNumber.trim() !== "") {
+      condiciones.push("Serial_Number LIKE ?");
       params.push(`%${filtros.serialNumber.trim()}%`);
     }
 
     if (condiciones.length > 0) {
-      baseSQL += ' WHERE ' + condiciones.join(' AND ');
+      baseSQL += " WHERE " + condiciones.join(" AND ");
     }
 
-    baseSQL += ' ORDER BY Tipo, Marca, Modelo';
+    baseSQL += " ORDER BY Tipo, Marca, Modelo";
 
     db.all(baseSQL, params, (err, rows) => {
       if (err) return reject(err);
@@ -359,7 +363,7 @@ function getDevicesFiltered(filtros) {
   });
 }
 
-ipcMain.handle('get-devices', async (event, filtros) => {
+ipcMain.handle("get-devices", async (event, filtros) => {
   try {
     const devices = await getDevicesFiltered(filtros);
     return devices;
@@ -369,97 +373,104 @@ ipcMain.handle('get-devices', async (event, filtros) => {
 });
 
 //Agregar dispositivo con numero de serie
-ipcMain.handle('add-serialized-device', async (event, device) => {
-  try{
+ipcMain.handle("add-serialized-device", async (event, device) => {
+  try {
     await sql.connect(config);
-    const {tipoDispositivo, modelo, marca, serial_number} = device;
+    const { tipoDispositivo, modelo, marca, serial_number } = device;
 
-    const ID_Tipo = (await sql.query(`SELECT ID_Dispositivo FROM TiposDispositivo WHERE Tipo = ${tipoDispositivo}`)).recordset[0]?.ID_Tipo
-    const ID_Modelo = (await sql.query(`SELECT ID_Modelo FROM Modelos WHERE Modelo = ${modelo}`)).recordset[0]?.ID_Modelo;
+    const ID_Tipo = (
+      await sql.query(
+        `SELECT ID_Dispositivo FROM TiposDispositivo WHERE Tipo = ${tipoDispositivo}`
+      )
+    ).recordset[0]?.ID_Tipo;
+    const ID_Modelo = (
+      await sql.query(`SELECT ID_Modelo FROM Modelos WHERE Modelo = ${modelo}`)
+    ).recordset[0]?.ID_Modelo;
 
-
-    await sql.query
-    `INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Serial_Number, Ubicacion)
+    await sql.query`INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Serial_Number, Ubicacion)
     Values (${ID_Tipo}, ${ID_Modelo}, ${marca}, ${serial_number}, ${global.currentUser.Ubicacion})
-    `
-  }
-  catch(err){
+    `;
+  } catch (err) {
     console.error(err.message);
-    return {error:err.message};
+    return { error: err.message };
   }
-})
+});
 
 //Agregar dispositivos genericos
-ipcMain.handle('add-devices', async (event, devices) => {
-  try{
+ipcMain.handle("add-devices", async (event, devices) => {
+  try {
     await sql.connect(dbConfig);
-    const {tipoDispositivo, modelo, marca, cantidad} = devices;
+    const { tipoDispositivo, modelo, marca, cantidad } = devices;
 
-    const ID_Tipo = (await sql.query(`SELECT ID_Dispositivo FROM TiposDispositivo WHERE Tipo = ${tipoDispositivo}`)).recordset[0]?.ID_Tipo
-    const ID_Modelo = (await sql.query(`SELECT ID_Modelo FROM Modelos WHERE Modelo = ${modelo}`)).recordset[0]?.ID_Modelo;
+    const ID_Tipo = (
+      await sql.query(
+        `SELECT ID_Dispositivo FROM TiposDispositivo WHERE Tipo = ${tipoDispositivo}`
+      )
+    ).recordset[0]?.ID_Tipo;
+    const ID_Modelo = (
+      await sql.query(`SELECT ID_Modelo FROM Modelos WHERE Modelo = ${modelo}`)
+    ).recordset[0]?.ID_Modelo;
 
-    for(let i = 0; i < cantidad; i++){
-      await sql.query
-    `INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Serial_Number, Ubicacion)
+    for (let i = 0; i < cantidad; i++) {
+      await sql.query`INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Serial_Number, Ubicacion)
     Values (${ID_Tipo}, ${ID_Modelo}, ${marca}, ${global.currentUser.Ubicacion})
-    `
+    `;
     }
-  }
-  catch(err){
+  } catch (err) {
     console.error(err.message);
-    return {error:err.message};
+    return { error: err.message };
   }
-})
+});
 
 //ELIMINAR DISPOSITIVO
-ipcMain.handle('delete-device', async (event, ID_Dispositivo) => {
-  try{
+ipcMain.handle("delete-device", async (event, ID_Dispositivo) => {
+  try {
     await sql.connect(dbConfig);
-    await sql.query `DELETE FROM Dispositivos WHERE ID_Dispositivo = ${ID_Dispositivo}`;
-  }
-  catch(err){
+    await sql.query`DELETE FROM Dispositivos WHERE ID_Dispositivo = ${ID_Dispositivo}`;
+  } catch (err) {
     console.error(err.message);
-     return {error:err.message};
+    return { error: err.message };
   }
-})
+});
 
 //ACTUALIZAR SERIAL NUMBER
-ipcMain.handle('modify-sn', async(event, serial_numbers) => {
-  try{
+ipcMain.handle("modify-sn", async (event, serial_numbers) => {
+  try {
     await sql.connect(dbConfig);
-    const {old_sn, new_sn} = serial_numbers;
-    await sql.query `UPDATE Dispositivos SET Serial_Number = ${new_sn} WHERE Serial_Number = ${old_sn} `;
-  }
-  catch(err){
+    const { old_sn, new_sn } = serial_numbers;
+    await sql.query`UPDATE Dispositivos SET Serial_Number = ${new_sn} WHERE Serial_Number = ${old_sn} `;
+  } catch (err) {
     console.error(err.message);
-    return {error:err.message};
+    return { error: err.message };
   }
-})
+});
 
 //-------------------CONSULTAS----------------------------
 
-
 //OBTENER ID DE TIPO DE DISPOSITIVO
-ipcMain.handle('get-type-id', async(event, type) => {
-  try{
-    await sql.connect(dbConfig);
-    const result = await sql.query(`SELECT ID_Tipo from TiposDispositivo WHERE Tipo = ${type}`.recordset[0]?.ID_Tipo);
-    return result;
-  }
-  catch(err){
-    console.error(err.message);
-    return []
-  }
-})
-
-//OBTENER MODELOS
-ipcMain.handle('get-models', async () => {
+ipcMain.handle("get-type-id", async (event, type) => {
   try {
     await sql.connect(dbConfig);
-    const result = await sql.query`SELECT t.ID_Tipo AS ID_Tipo, t.Tipo AS Tipo, m.Modelo As Modelo FROM TiposDispositivo t INNER JOIN Modelos m ON t.ID_Tipo = M.ID_Tipo`;
-    return result.recordset; 
+    const result = await sql.query(
+      `SELECT ID_Tipo from TiposDispositivo WHERE Tipo = ${type}`.recordset[0]
+        ?.ID_Tipo
+    );
+    return result;
   } catch (err) {
-    console.error('Error consultando los modelos', err);
-    return []; 
+    console.error(err.message);
+    return [];
+  }
+});
+
+//OBTENER MODELOS
+ipcMain.handle("get-models", async () => {
+  try {
+    await sql.connect(dbConfig);
+    const result =
+      await sql.query`SELECT t.ID_Tipo AS ID_Tipo, t.Tipo AS Tipo, m.Modelo As Modelo FROM TiposDispositivo t INNER JOIN Modelos m ON t.ID_Tipo = M.ID_Tipo`;
+    return result.recordset;
+  } catch (err) {
+    console.error("Error consultando los modelos", err);
+    return [];
   }
 });

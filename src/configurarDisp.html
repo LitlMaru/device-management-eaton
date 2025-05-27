@@ -1,119 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión de Dispositivos</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    header {
-      position: relative;
-      background-color: #003366;
-      color: white;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    header h1 {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      margin: 0;
-      font-size: 1.5rem;
-      pointer-events: none;
-    }
-    header .window-controls {
-      margin-left: auto;
-      display: flex;
-      gap: 0.5rem;
-    }
-    header .window-controls button {
-      background-color: #0055aa;
-      border: none;
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    nav {
-      background-color: #002244;
-      color: white;
-      padding: 0.5rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav h2 {
-      margin: 0;
-    }
-    .container {
-      padding: 2rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: left;
-    }
-    th {
-      background-color: #003366;
-      color: white;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      background-color: #003366;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 1rem;
-    }
-    .btn.eliminar {
-      background-color: #cc0000;
-      padding: 0.3rem 0.7rem;
-      font-size: 0.9rem;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Dispositivos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header {
+        position: relative;
+        background-color: #003366;
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      header h1 {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 1.5rem;
+        pointer-events: none;
+      }
+      header .window-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+      }
+      header .window-controls button {
+        background-color: #0055aa;
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      nav {
+        background-color: #002244;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      nav h2 {
+        margin: 0;
+      }
+      .container {
+        padding: 2rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      th {
+        background-color: #003366;
+        color: white;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        background-color: #003366;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+      }
+      .btn.eliminar {
+        background-color: #cc0000;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.9rem;
+      }
 
-    .form-group {
-      margin-bottom: 1rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Gestionar tipos de dispositivo</h1>
-    <button class="btn" onclick="abrirModal()">Agregar / Modificar Dispositivo</button>
-    <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
+      .form-group {
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gestionar tipos de dispositivo</h1>
+      <button class="btn" onclick="abrirModal()">
+        Agregar / Modificar Dispositivo
+      </button>
+      <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
 
-    <table id="tablaDispositivos">
-      <thead>
-        <tr>
-          <th>Tipo</th>
-          <th>Modelo</th>
-          <th>Serial</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="cuerpoTabla"></tbody>
-    </table>
-  </div>
+      <table id="tablaDispositivos">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Serial</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+    </div>
 
-  <script>
-   
-  </script>
-</body>
+    <script></script>
+  </body>
 </html>

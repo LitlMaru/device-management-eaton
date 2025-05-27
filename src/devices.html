@@ -1,127 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dispositivos</title>
-  <link rel="stylesheet" href="css/devices.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispositivos</title>
+    <link rel="stylesheet" href="css/devices.css" />
+  </head>
+  <body>
+    <div class="container" id="contenido">
+      <h1>Dispositivos en Inventario</h1>
 
-  <div class="container" id="contenido">
-    <h1>Dispositivos en Inventario</h1>
-    
-    <div class="agregarDisp">
-      <button class="agregar-btn" onclick="abrirModal()">Agregar Dispositivo
-      </button>
-    </div>
+      <div class="agregarDisp">
+        <button class="agregar-btn" onclick="abrirModal()">
+          Agregar Dispositivo
+        </button>
+      </div>
 
-    <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Agregar Dispositivo</h2>
-      <div class="form-content">
-        <div class="form-group">
-        <label>Tipo:</label>
-        <select id="tipo">
-          <option value="Docking">Docking</option>
-          <option value="Batería de Laptop">Batería de Laptop</option>
-          <option value="Batería de UPS">Batería de UPS</option>
-          <option value="Memoria Incrustada">Memoria Incrustada</option>
-          <option value="UPS">UPS</option>
-          <option value="Mouse">Mouse</option>
-          <option value="Cable DVI">Cable DVI</option>
-          <option value="Monitor">Monitor</option>
-          <option value="Mochila">Mochila</option>
-          <option value="Cargador">Cargador</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Cable">Cable</option>
-          <option value="Adaptador">Adaptador</option>
-          <option value="Powercord">Powercord</option>
-          <option value="Faceplate">Faceplate</option>
-          <option value="Jack RJ45">Jack RJ45</option>
-          <option value="Scanner">Scanner</option>
-          <option value="Serial">Serial</option>
-          <option value="USB">USB</option>
-          <option value="Charger">Charger</option>
-          <option value="Display Port">Display Port</option>
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <h2>Agregar Dispositivo</h2>
+          <div class="form-content">
+            <div class="form-group">
+              <label>Tipo:</label>
+              <select id="tipo">
+                <option value="Docking">Docking</option>
+                <option value="Batería de Laptop">Batería de Laptop</option>
+                <option value="Batería de UPS">Batería de UPS</option>
+                <option value="Memoria Incrustada">Memoria Incrustada</option>
+                <option value="UPS">UPS</option>
+                <option value="Mouse">Mouse</option>
+                <option value="Cable DVI">Cable DVI</option>
+                <option value="Monitor">Monitor</option>
+                <option value="Mochila">Mochila</option>
+                <option value="Cargador">Cargador</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Cable">Cable</option>
+                <option value="Adaptador">Adaptador</option>
+                <option value="Powercord">Powercord</option>
+                <option value="Faceplate">Faceplate</option>
+                <option value="Jack RJ45">Jack RJ45</option>
+                <option value="Scanner">Scanner</option>
+                <option value="Serial">Serial</option>
+                <option value="USB">USB</option>
+                <option value="Charger">Charger</option>
+                <option value="Display Port">Display Port</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Desktop">Desktop</option>
+                <option value="Mini Desktop">Mini Desktop</option>
+                <option value="Teclado">Teclado</option>
+                <option value="Headset">Headset</option>
+                <option value="Tóner">Tóner</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Modelo:</label>
+              <input type="text" id="modelo" />
+            </div>
+
+            <div class="form-group">
+              <label>Cantidad:</label>
+              <input type="number" class="inputBloqueado" id="cantidad" />
+            </div>
+            <div class="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  id="tieneSerial"
+                  onchange="toggleSerialInput()"
+                />
+                ¿Tiene número de serie?
+              </label>
+            </div>
+            <div class="form-group" id="grupoSerial" style="display: none">
+              <label>SN:</label>
+              <input type="text" id="serial" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button class="btn" onclick="guardarDispositivo()">Agregar</button>
+            <button class="btn" onclick="cerrarModal()">Cerrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="filters-container">
+        <input
+          type="text"
+          id="serialNumberSearch"
+          placeholder="Buscar por numero de serie"
+          onkeyup="applyFilters()"
+        />
+
+        <select id="deviceTypeSelect" onchange="cargarDispositivos()">
+          <option value="">Tipo de Dispositivo</option>
           <option value="Laptop">Laptop</option>
           <option value="Desktop">Desktop</option>
-          <option value="Mini Desktop">Mini Desktop</option>
-          <option value="Teclado">Teclado</option>
-          <option value="Headset">Headset</option>
-          <option value="Tóner">Tóner</option>
+          <option value="Tablet">Tablet</option>
         </select>
-        </div>
-        <div class="form-group">
-        <label>Modelo:</label>
-        <input type="text" id="modelo" />
-      </div>
 
-      <div class="form-group">
-        <label>Cantidad:</label>
-        <input type="number" class="inputBloqueado" id="cantidad" />
-      </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="tieneSerial" onchange="toggleSerialInput()" /> ¿Tiene número de serie?
-        </label>
-      </div>
-      <div class="form-group" id="grupoSerial" style="display: none;">
-        <label>SN:</label>
-        <input type="text" id="serial" />
-
-      </div>
-      </div>
-      
-      
-      <div class="form-group">
-        <button class="btn" onclick="guardarDispositivo()">Agregar</button>
-        <button class="btn" onclick="cerrarModal()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-    <div class="filters-container">
-      <input type="text" id="serialNumberSearch" placeholder="Buscar por numero de serie" onkeyup="applyFilters()">
-      
-      <select id="deviceTypeSelect" onchange="cargarDispositivos()">
-        <option value="">Tipo de Dispositivo</option>
-        <option value="Laptop">Laptop</option>
-        <option value="Desktop">Desktop</option>
-        <option value="Tablet">Tablet</option>
-      </select>
-
-      <select id="modelSelect" onchange="cargarDispositivos()">
-        <option value="">Modelo</option>
-        <option value="XPS 13">XPS 13</option>
-        <option value="MacBook Pro">MacBook Pro</option>
-        <option value="Pavilion 15">Pavilion 15</option>
-      </select>
+        <select id="modelSelect" onchange="cargarDispositivos()">
+          <option value="">Modelo</option>
+          <option value="XPS 13">XPS 13</option>
+          <option value="MacBook Pro">MacBook Pro</option>
+          <option value="Pavilion 15">Pavilion 15</option>
+        </select>
 
         <select id="stateSelect" onchange="cargarDispositivos()">
-        <option value="">Estado</option>
-        <option value="Dañado">Dañado</option>
-        <option value="Disponible">Disponible</option>
-      </select>
+          <option value="">Estado</option>
+          <option value="Dañado">Dañado</option>
+          <option value="Disponible">Disponible</option>
+        </select>
 
-      <button onclick="cargarDispositivos()">Aplicar Filtros</button>
+        <button onclick="cargarDispositivos()">Aplicar Filtros</button>
+      </div>
+
+      <table id="devicesTable">
+        <thead>
+          <tr>
+            <th>Tipo de dispositivo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Serial Number</th>
+            <th>Acciones</th>
+          </tr>
+          >
+        </thead>
+        <tbody id="devicesTableBody"></tbody>
+      </table>
     </div>
-
-    <table id="devicesTable">
-      <thead>
-        <tr>
-           <th>Tipo de dispositivo</th>
-           <th>Marca</th>
-          <th>Modelo</th>
-          <th>Serial Number</th>
-          <th>Acciones</th>
-        </tr>>  
-      </thead>
-      <tbody id="devicesTableBody">
-      </tbody>
-    </table>
-  </div>
-  <script src="../src/js/devices.js"></script>
-
-</body>
+    <script src="../src/js/devices.js"></script>
+  </body>
 </html>

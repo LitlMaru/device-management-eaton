@@ -1,264 +1,276 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gestión de Usuarios</title>
-  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestión de Usuarios</title>
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>!-->
-  <style>
-    
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    header {
-      position: relative;
-      background-color: #003366;
-      color: white;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    header h1 {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      margin: 0;
-      font-size: 1.5rem;
-      pointer-events: none;
-    }
-    header .window-controls {
-      margin-left: auto;
-      display: flex;
-      gap: 0.5rem;
-    }
-    header .window-controls button {
-      background-color: #0055aa;
-      border: none;
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    nav {
-      background-color: #002244;
-      color: white;
-      padding: 0.5rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav h2 {
-      margin: 0;
-    }
-    .container {
-      padding: 2rem;
-    }
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header {
+        position: relative;
+        background-color: #003366;
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      header h1 {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 1.5rem;
+        pointer-events: none;
+      }
+      header .window-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+      }
+      header .window-controls button {
+        background-color: #0055aa;
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      nav {
+        background-color: #002244;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      nav h2 {
+        margin: 0;
+      }
+      .container {
+        padding: 2rem;
+      }
       table {
-      width: 100%;
-      border-collapse: collapse;
-      border-radius: 12px;
-      overflow: hidden;
-    }
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 12px;
+        overflow: hidden;
+      }
 
-    th, td {
-      padding: 14px;
-      text-align: center;
-      border-bottom: 1px solid #ccc;
-    }
+      th,
+      td {
+        padding: 14px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+      }
 
-    th {
-      background-color: #004e92;
-      color: white;
-    }
+      th {
+        background-color: #004e92;
+        color: white;
+      }
 
-    td:focus{
-      outline: none;
-      background-color: #d0e0ff;
-    }
-    tr:hover {
-      background-color: #f0f8ff;
-    }
-    .agregar-container{
-      display: flex;
-      justify-content: center;
-    }
-       .agregar-btn{
-      width: 50%;
-      height: 40px;
-      background-color: #004e92;
-      padding: .5rem 2rem;
-      border: none;
-      border-radius: 12px;
-      margin-top: 8px;
-      margin-bottom: 16px;
-      color: white;
-      font-weight: bold;
-    }
+      td:focus {
+        outline: none;
+        background-color: #d0e0ff;
+      }
+      tr:hover {
+        background-color: #f0f8ff;
+      }
+      .agregar-container {
+        display: flex;
+        justify-content: center;
+      }
+      .agregar-btn {
+        width: 50%;
+        height: 40px;
+        background-color: #004e92;
+        padding: 0.5rem 2rem;
+        border: none;
+        border-radius: 12px;
+        margin-top: 8px;
+        margin-bottom: 16px;
+        color: white;
+        font-weight: bold;
+      }
 
-    .agregar-btn:hover{
-      background-color: #0264ba;
-      cursor: pointer;
-    }
+      .agregar-btn:hover {
+        background-color: #0264ba;
+        cursor: pointer;
+      }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+      }
 
-    .modal-content {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      width: 400px;
-      position: relative;
-      left: 130px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: center;
-    }
+      .modal-content {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        width: 400px;
+        position: relative;
+        left: 130px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
 
-    .modal-content h2{
-      margin-bottom: 16px;
-    }
+      .modal-content h2 {
+        margin-bottom: 16px;
+      }
 
-    .form-content{
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+      .form-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
 
-    .form-group {
-      margin-bottom: 1rem;
-    }
+      .form-group {
+        margin-bottom: 1rem;
+      }
 
-      .form-group input, select {
-      flex-grow: 1;
-      padding: 0.6rem 0.75rem;
-      border: 1px solid #003973;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
-      width: 100%;
-    }
- 
-      .actions button{
-      width: 80px;
-      height: auto;
-      background-color: #004e92;
-      padding: .5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-    }
+      .form-group input,
+      select {
+        flex-grow: 1;
+        padding: 0.6rem 0.75rem;
+        border: 1px solid #003973;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        width: 100%;
+      }
 
-    .actions button:hover{
-      background-color: #0264ba;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+      .actions button {
+        width: 80px;
+        height: auto;
+        background-color: #004e92;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+      }
 
-    .eliminar-btn{
-      width: 100px;
-      height: 100%;
-      background-color: #004e92;
-      padding: .5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-    }
+      .actions button:hover {
+        background-color: #0264ba;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-    .eliminar-btn:hover{
-      background-color: #0264ba;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
+      .eliminar-btn {
+        width: 100px;
+        height: 100%;
+        background-color: #004e92;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+      }
 
-  <div class="container">
-    <h1>Gestionar Usuarios</h1>
-    <div class="agregar-container">
-      <button class="agregar-btn" onclick="abrirModal()">Agregar Usuario</button>
+      .eliminar-btn:hover {
+        background-color: #0264ba;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gestionar Usuarios</h1>
+      <div class="agregar-container">
+        <button class="agregar-btn" onclick="abrirModal()">
+          Agregar Usuario
+        </button>
+      </div>
+
+      <table id="tablaUsuarios">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Contraseña</th>
+            <th>Rol</th>
+            <th>Planta</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <td contenteditable="true">Enmanuel</td>
+          <td contenteditable="true">1234</td>
+          <td contenteditable="true">IT</td>
+          <td contenteditable="true">MCB</td>
+          <td>
+            <button class="eliminar-btn" onclick="eliminarUsuario()">
+              Eliminar
+            </button>
+          </td>
+        </tbody>
+        <tbody id="cuerpoTablaUsuarios"></tbody>
+      </table>
     </div>
-    
-    <table id="tablaUsuarios">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Contraseña</th>
-          <th>Rol</th>
-          <th>Planta</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <td contenteditable="true">Enmanuel</td>
-        <td contenteditable="true">1234</td>
-        <td contenteditable="true">IT</td>
-        <td contenteditable="true">MCB</td> 
-        <td><button class="eliminar-btn" onclick="eliminarUsuario()">Eliminar </button></td>
-      </tbody>
-      <tbody id="cuerpoTablaUsuarios"></tbody>
-    </table>
-  </div>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Agregar / Modificar Usuario</h2>
-      <div class="form-content">
-<div class="form-group">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username"/>
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <h2>Agregar / Modificar Usuario</h2>
+        <div class="form-content">
+          <div class="form-group">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" />
+          </div>
+          <div class="form-group">
+            <label for="clave">Clave:</label>
+            <input type="text" id="clave" />
+          </div>
+          <div class="form-group">
+            <label for="rol">Rol:</label>
+            <select id="rol">
+              <option value="IT">IT</option>
+              <option value="HR">Recursos Humanos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ubicacion">Planta:</label>
+            <select id="ubicacion">
+              <option value="MCB">MCB</option>
+              <option value="ICD">ICD</option>
+              <option value="MCCB">MCCB</option>
+            </select>
+          </div>
+          <div class="actions">
+            <button class="btn" onclick="agregarUsuario()">Guardar</button>
+            <button class="btn btn-secondary" onclick="cerrarModal()">
+              Cerrar
+            </button>
+            <button
+              class="btn btn-secondary"
+              onclick="exportarCorreoDesdeModal()"
+            >
+              Exportar por Correo
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="clave">Clave:</label>
-        <input type="text" id="clave" />
-      </div>
-      <div class="form-group">
-        <label for="rol">Rol:</label>
-        <select id="rol">
-          <option value="IT">IT</option>
-          <option value="HR">Recursos Humanos</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="ubicacion">Planta:</label>
-        <select id="ubicacion">
-          <option value="MCB">MCB</option>
-          <option value="ICD">ICD</option>
-          <option value="MCCB">MCCB</option>
-        </select>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="agregarUsuario()">Guardar</button>
-        <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-        <button class="btn btn-secondary" onclick="exportarCorreoDesdeModal()">Exportar por Correo</button>
-      </div>
-      </div>
-      
     </div>
-  </div>
 
-  <script>
-    
-  </script>
-</body>
+    <script></script>
+  </body>
 </html>
