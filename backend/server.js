@@ -17,7 +17,8 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/auth", auth);
 app.use("/api/devices", devicesRoutes)
 
+const HOST = process.env.HOST || "http//localhost"
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor backend corriendo en puerto ${PORT}`);
+  console.log(`Servidor backend corriendo en puerto en ${HOST}:${PORT}`);
 });

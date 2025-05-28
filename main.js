@@ -2,13 +2,13 @@ require("electron-reload")(__dirname, {
   electron: require(`${__dirname}/node_modules/electron`),
 });
 
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, session } = require("electron");
 const path = require("path");
 const { electron } = require("process");
+const { exec } = require("child_process");
 
 let mainWindow;
 global.currentUser = null;
-
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -24,16 +24,24 @@ function createWindow() {
     },
   });
 
+   win.webContents.session.clearCache().then(() =>
+  console.log("Succesfully emptied cache")).catch(err => {console.error("Error clearing cache ", err.message)})
+
   mainWindow.loadFile("src/login.html");
 }
 
 app.whenReady().then(async () => {
-  try {
-    await sql.connect(dbConfig);
-    console.log("Conectado a la base de datos");
-  } catch (err) {
-    console.error("Error conectando a la base de datos:", err);
-  }
+   const serverProcess = exec(`node "${path.join(__dirname, "backend/server.js")}"`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error starting server: ${err.message}`);
+      return;
+    }
+    console.log(`${stdout}`);
+  });
+
+  serverProcess.stderr.on("data", (data) => {
+    console.error(`Server error: ${data}`);
+  });
 
   createWindow();
 
@@ -65,9 +73,12 @@ ipcMain.on("close-window", (event) => {
   win.close();
 });
 
+const HOST = process.env.HOST || "http://localhost";
+const PORT = process.env.PORT || 3000;
+
 ipcMain.handle("login-user", async (event, credentials) => {
   try {
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    const response = await fetch(`${HOST}:${PORT}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
