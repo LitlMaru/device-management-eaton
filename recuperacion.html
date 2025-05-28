@@ -1,0 +1,322 @@
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dispositivos Asignados</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #f0f4ff, #ffffff);
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to right, #004e92, #000428);
+      color: white;
+      padding: 10px 20px;}
+
+    .contenedor-principal {
+      width: 95%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .busqueda-exportar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .busqueda-exportar input {
+      padding: 10px;
+      border: 2px solid #004e92;
+      border-radius: 8px;
+      width: 250px;
+      font-size: 16px;
+    }
+
+    .busqueda-exportar button {
+      background-color: #004e92;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .busqueda-exportar button:hover {
+      background-color: #003366;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;}
+
+    th,
+    td {
+      padding: 14px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #004e92;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+      cursor: pointer;
+    }
+
+    .estado-proceso {
+      background-color: red;
+      color: white;
+      font-weight: bold;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px 30px;
+      border-radius: 12px;
+      width: 450px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 78, 146, 0.5);
+    }
+
+    .modal-content h2 {
+      color: #004e92;
+      margin-bottom: 20px;
+    }
+
+    .modal-content label {
+      display: block;
+      margin: 8px 0;
+      font-weight: 600;
+      color: #004e92;
+      text-align: left;}
+    .modal-content input[type="checkbox"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+    .modal-content button {
+      background-color: #004e92;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 5px 0 5px;
+      transition: background-color 0.3s;
+    }
+    .modal-content button:hover {
+      background-color: #003366;
+    }
+ </style></head>
+  <body>
+ <div class="contenedor-principal">
+      <h1>Dispositivos Asignados</h1>
+   <div class="busqueda-exportar">
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
+    <button onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
+   </div>
+<table id="tablaAsignados">
+    <thead>
+      <tr>
+          <th>ID Asignación</th>          <th>ID Empleado</th>
+         <th>ID Dispositivo</th>          <th>Fecha Asignación</th>
+         <th>Fecha Cambio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>      </thead>
+    <tbody>
+        <tr>          <td>1</td>
+        <td>1001</td>
+        <td>Laptop-XYZ</td>
+        <td>2024-10-01</td>
+         <td>2025-04-15</td>
+          <td class="estado-proceso">En proceso</td>
+          <td><button onclick="abrirModal(this)">Asignar Dispositivos</button></td>        </tr>
+      
+    </tbody>
+  </table>
+</div>
+ 
+  <div id="modalAsignacion" class="modal">
+    <div class="modal-content" id="contenidoModal">
+      <h2>Asignar Dispositivos a <span id="userModal"></span></h2>
+      <form id="formDispositivos">
+        <label><input type="checkbox" name="dispositivo" value="Laptop"> Laptop</label>
+        <label><input type="checkbox" name="dispositivo" value="Cargador Laptop"> Cargador Laptop</label>
+        <label><input type="checkbox" name="dispositivo" value="Mouse"> Mouse</label>
+        <label><input type="checkbox" name="dispositivo" value="Teclado"> Teclado</label>
+        <label><input type="checkbox" name="dispositivo" value="Mochila"> Mochila</label>
+        <label><input type="checkbox" name="dispositivo" value="Headset"> Headset</label>
+        <label><input type="checkbox" name="dispositivo" value="Flota"> Flota</label>
+        <label><input type="checkbox" name="dispositivo" value="Cargador Flota"> Cargador Flota</label>
+        <label><input type="checkbox" name="dispositivo" value="Desktop"> Desktop</label>
+        <br />
+        <button type="button" onclick="generarAcuerdo()">Generar Carta de Entrega</button>
+        <button type="button" onclick="cerrarModal()">Cerrar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let filaSeleccionada = null;
+
+    function abrirModal(boton) {
+      // Obtener la fila de la tabla de la que se presionó el botón
+      filaSeleccionada = boton.closest('tr');
+      const userId = filaSeleccionada.cells[1].innerText;
+
+      document.getElementById("userModal").innerText = userId;
+      // Mostrar modal
+      document.getElementById("modalAsignacion").style.display = "block";
+    }
+
+    function cerrarModal() {
+      document.getElementById("modalAsignacion").style.display = "none";
+      // Limpiar selección checkboxes
+      document.querySelectorAll('#formDispositivos input[type="checkbox"]').forEach(chk => chk.checked = false);
+    }
+
+    function filtrarTabla() {
+      const filtro = document.getElementById('busqueda').value.toLowerCase();
+      const filas = document.querySelectorAll('#tablaAsignados tbody tr');
+      filas.forEach(fila => {
+        const textoFila = fila.innerText.toLowerCase();
+        fila.style.display = textoFila.includes(filtro) ? '' : 'none';
+      });
+    }
+
+    async function generarAcuerdo() {
+      if (!filaSeleccionada) {
+        alert('No se ha seleccionado ninguna fila.');
+        return;
+      }
+
+      const dispositivos = Array.from(document.querySelectorAll('input[name="dispositivo"]:checked')).map(el => el.value);
+      if (dispositivos.length === 0) {
+        alert('Selecciona al menos un dispositivo.');
+        return;
+      }
+
+      // Obtener datos de la fila seleccionada
+      const fechaActual = new Date();
+      const fechaFormato = fechaActual.toLocaleDateString('es-ES');
+
+      const numeroE = filaSeleccionada.cells[0].innerText;
+      const nombreEmpleado = filaSeleccionada.cells[1].innerText; // aquí tienes solo ID, puedes cambiar a nombre si tienes en otra celda
+      const modelo = filaSeleccionada.cells[2].innerText;
+      const numeroSerie = "N/A"; // No lo tienes en tabla, puedes cambiar si lo añades
+      const equipo = modelo; // Puedes definir distinto si tienes otra info
+      const marca = "Eaton"; // Empresa como marca fija, puedes cambiar
+
+      // Usaremos jsPDF para crear el PDF con estilo
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Estilos
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor("#004e92");
+      doc.text("Eaton Corporation", 105, 20, null, null, "center");
+
+      doc.setFontSize(14);
+      doc.text("Carta de entrega de equipo de trabajo", 105, 30, null, null, "center");
+
+      doc.setDrawColor("#004e92");
+      doc.setLineWidth(0.8);
+      doc.line(15, 35, 195, 35);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor("#333");
+
+     
+      const textoCarta = `Por medio de la presente recibo en fecha ${fechaFormato} de mi empleador Eaton con carácter de herramienta de trabajo, el cual debo usar para el desempeño de mis funciones.
+
+Datos generales del equipo:
+
+Fecha: ${fechaFormato}
+Número E.: ${numeroE}
+Nombre: ${nombreEmpleado}
+Modelo: ${modelo}
+Número de serie: ${numeroSerie}
+Equipo: ${equipo}
+Marca: ${marca}
+
+A partir de este momento me hago responsable del mismo y acepto cuidarlo siguiendo las recomendaciones de la política de uso de equipos electrónicos, me comprometo a utilizarlo para el desempeño de mis labores, a usarlo con apego a las disposiciones vigentes en esta empresa, a mantenerlo en buen estado y a no proporcionar a terceras personas ni el equipo ni las claves o contraseñas necesarias para su uso.`;
+
+      const splitTexto = doc.splitTextToSize(textoCarta, 180);
+      doc.text(splitTexto, 15, 45);
+
+    
+      const yFirmas = 45 + splitTexto.length * 7 + 15;
+      doc.setDrawColor("#004e92");
+      doc.setLineWidth(0.5);
+
+ 
+      doc.text("Firma de quien entrega:", 30, yFirmas);
+      doc.line(30, yFirmas + 2, 80, yFirmas + 2);
+
+      doc.text("Firma de quien recibe:", 130, yFirmas);
+      doc.line(130, yFirmas + 2, 180, yFirmas + 2);
+
+      doc.save(`Carta_Entrega_${nombreEmpleado}_${fechaFormato.replace(/\//g, '-')}.pdf`);
+      cerrarModal();
+    }
+
+
+    function exportarExcel() {
+      let table = document.getElementById("tablaAsignados");
+      let html = table.outerHTML;
+
+      let uri = 'data:application/vnd.ms-excel;base64,';
+      let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+        <head><meta charset="UTF-8"></head><body>${html}</body></html>`;
+      let base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
+
+      let link = document.createElement('a');
+      link.href = uri + base64(template);
+      link.download = 'DispositivosAsignados.xls';
+      link.click();
+    }
+
+   
+    window.onclick = function (event) {
+      let modal = document.getElementById("modalAsignacion");
+      if (event.target == modal) {
+        cerrarModal();
+      }
+    };
+  </script>
+  </body>
+  </html>
