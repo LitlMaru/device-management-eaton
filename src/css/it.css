@@ -116,7 +116,7 @@
   .menu-item i {
     font-size: 18px;
   }
-  .marcoContenido{
+  .content-frame{
     position: fixed;
     left: 260px;
     top: var(--header-height);
@@ -124,7 +124,7 @@
     overflow-y: scroll;
     height: 100%;
   }
-  .content {
+  #content {
     flex: 1;
     padding: 40px;
     background-color: white;

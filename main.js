@@ -4,23 +4,12 @@ require("electron-reload")(__dirname, {
 
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const sql = require("mssql");
 const { electron } = require("process");
-const { serialize } = require("v8");
 
 let mainWindow;
 global.currentUser = null;
 
-const dbConfig = {
-  user: "enmanuel",
-  password: "L3tItG0",
-  server: "localhost\\MSSQLSERVER",
-  database: "ProgramaEATON",
-  options: {
-    encrypt: false,
-    trustServerCertificate: true,
-  },
-};
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
@@ -76,29 +65,24 @@ ipcMain.on("close-window", (event) => {
   win.close();
 });
 
-ipcMain.handle("login-user", async (event, { username, password }) => {
+ipcMain.handle("login-user", async (event, credentials) => {
   try {
-    const result =
-      await sql.query`SELECT * FROM Usuarios WHERE Username = ${username}`;
-    const user = result.recordset[0];
+    const response = await fetch("http://localhost:3000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
 
-    if (!user) {
-      return { success: false, message: "Usuario no encontrado" };
+    const result = await response.json();
+    if (result.success) {
+      global.currentUser = result.user;
+      return { success: true, user: result.user };
+    } else {
+      return { success: false, message: result.message };
     }
-
-    const match = password == user.Clave;
-    if (!match) {
-      return { success: false, message: "Contraseña incorrecta" };
-    }
-
-    const { IDUsuario, Username, Rol, Ubicacion } = user;
-    global.currentUser = { IDUsuario, Username, Rol, Ubicacion };
-
-    console.log(global.currentUser.Ubicacion);
-    return { success: true, user: global.currentUser };
   } catch (err) {
-    console.error("Error en login:", err);
-    return { success: false, message: "Error en el servidor" };
+    console.error("Error comunicando con el backend:", err);
+    return { success: false, message: "No se pudo conectar con el servidor" };
   }
 });
 
@@ -106,102 +90,105 @@ ipcMain.handle("get-current-user", () => {
   return global.currentUser;
 });
 
-//----------------REGISTRO DE NUEVOS EMPLEADOS----------------------------
-ipcMain.on("register-employee", async (event, data) => {
+ipcMain.handle("register-employee", async (event, data) => {
   try {
-    const pool = await sql.connect(dbConfig);
-    await pool
-      .request()
-      .input("ID_Empleado", sql.VarChar, data.id)
-      .input("Nombre", sql.VarChar, data.name)
-      .input("Departamento", sql.VarChar, data.dept)
-      .input("Posicion", sql.VarChar, data.position)
-      .input("Email", sql.VarChar, data.email)
-      .input("Ubicacion", sql.VarChar, global.currentUser?.Ubicacion || "")
-      .input("Fecha_Entrada", sql.Date, data.currentDate)
-      .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
-              VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Email, @Ubicacion, @Fecha_Entrada)`);
+    const user = global.currentUser;
+    const response = await fetch("http://localhost:3000/api/employees/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...data, ubicacion: user?.Ubicacion || "" }),
+    });
 
-    event.reply("employee-added");
+    const result = await response.json();
+    if (result.success) return { success: true };
+    return { success: false, message: result.message };
   } catch (error) {
-    console.error("Error insertando empleado:", error.message);
-    event.reply("employee-error", error.message);
+    console.error("Error registrando empleado:", error.message);
+    return { success: false, message: error.message };
   }
 });
 
-//--------------CONSULTA DE DISPOSITIVOS ASIGNADOS--------------------
 ipcMain.handle("query-employee-devices", async (event, filter) => {
   try {
-    const pool = await sql.connect(dbConfig);
-    const result =
-      await sql.query(`SELECT e.ID_Empleado, e.Nombre, i.Tipo_Dispositivo, i.Serial_Number, d.Fecha_asignacion, d.Fecha_cambio
-      FROM Inventario i INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo  INNER JOIN Empleados ON e.ID_Empleado = d.ID_Empleado
-      WHERE (e.ID_Empleado = ${filter.employeeInfo} OR e.Nombre = ${filter.employeeInfo}) AND d.Ubicacion = ${global.currentUser.Ubicacion}`);
+    const response = await fetch("http://localhost:3000/api/employees/devices", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        employeeInfo: filter.employeeInfo,
+        ubicacion: global.currentUser?.Ubicacion || "",
+      }),
+    });
 
-    return result.recordset;
+    const result = await response.json();
+    return result.success ? result.data : [];
   } catch (error) {
-    console.error("Error en la consulta: ", error.message);
+    console.error("Error consultando dispositivos:", error.message);
+    return [];
   }
 });
+
 
 //----------------CONFIGURACION DE USUARIOS ----------------------------
 
 //OBTENER USUARIOS
-ipcMain.handle("get-users", async (event) => {
+ipcMain.handle("get-users", async () => {
   try {
-    await sql.connect(dbConfig);
-    const result = await sql.query("SELECT * from Usuarios");
-    return result.recordset;
+    const res = await fetch("http://localhost:3000/api/users");
+    const data = await res.json();
+    return data.success ? data.data : { error: data.message };
   } catch (err) {
     console.error(err.message);
     return { error: err.message };
   }
 });
+
 
 //ELIMINAR USUARIO
 ipcMain.handle("delete-user", async (event, username) => {
   try {
-    await sql.connect(dbConfig);
-    await sql.query`DELETE FROM Usuarios WHERE Username = ${username}`;
-    return { success: true };
+    const res = await fetch(`http://localhost:3000/api/users/${username}`, {
+      method: "DELETE",
+    });
+    return await res.json();
   } catch (err) {
     console.error(err.message);
     return { error: err.message };
   }
 });
+
 
 //ACTUALIZAR USUARIO
 ipcMain.handle("update-user", async (event, user) => {
   try {
-    const { username, clave, rol, ubicacion } = user;
-    await sql.connect(dbConfig);
-    await sql.query`
-      UPDATE Usuarios
-      SET Clave = ${clave}, Rol = ${rol}, Ubicacion = ${ubicacion}
-      WHERE Username = ${username}
-    `;
-    return { success: true };
+    const res = await fetch("http://localhost:3000/api/users", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+    return await res.json();
   } catch (err) {
     console.error(err.message);
     return { error: err.message };
   }
 });
 
+
+
 //AGREGAR USUARIO
 ipcMain.handle("add-user", async (event, user) => {
   try {
-    const { username, clave, rol, ubicacion } = user;
-    await sql.connect(dbConfig);
-    await sql.query`
-      INSERT INTO Usuarios (Username, Clave, Rol, Ubicacion)
-      VALUES (${username}, ${clave}, ${rol}, ${ubicacion})
-    `;
-    return { success: true };
+    const res = await fetch("http://localhost/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+    return await res.json();
   } catch (err) {
     console.error(err.message);
     return { error: err.message };
   }
 });
+
 
 //--------------------ASIGNAR DISPOSITIVO-----------------------
 ipcMain.handle("assign-device", async (event, data) => {
@@ -250,7 +237,6 @@ ipcMain.handle("get-available-devices", async (event, deviceType) => {
   }
 });
 //--------------------------INVENTARIO-----------------------
-// Obtener tipos de dispositivo
 ipcMain.handle("get-device-types", async () => {
   try {
     console.log("WORKING");
@@ -265,7 +251,6 @@ ipcMain.handle("get-device-types", async () => {
   }
 });
 
-// Ya te pasé este antes (para inventario agrupado)
 ipcMain.handle("get-grouped-inventory", async (event, deviceType) => {
   try {
     await sql.connect(config);
@@ -321,10 +306,10 @@ ipcMain.handle("update-limit", async (event, modelo, nuevoLimite) => {
 //--------------------------DISPOSITIVOS--------------------------
 
 const filtros = {
-  tipoDispositivo: "", // puede venir vacío o string, e.g. 'Laptop'
-  marca: "", // igual, e.g. 'Dell'
-  modelo: "", // igual, e.g. 'XPS 13'
-  serialNumber: "", // igual, e.g. 'SN1234'
+  tipoDispositivo: "", 
+  marca: "", 
+  modelo: "", 
+  serialNumber: "",
 };
 
 function getDevicesFiltered(filtros) {
