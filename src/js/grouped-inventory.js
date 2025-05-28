@@ -1,7 +1,7 @@
  let currentModel = null;
 
   async function loadTypes() {
-    alert("WORKING")
+    
     const types = await ipcRenderer.invoke("get-device-types");
     const select = document.getElementById("deviceType");
     types.forEach((t) => {
