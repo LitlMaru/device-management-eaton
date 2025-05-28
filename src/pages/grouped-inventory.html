@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventario de Dispositivos Agrupados</title>
+    <link rel="stylesheet" href="../css/grouped-inventory.css">
+    
+  </head>
+  <body>
+    <div class="container">
+      <h1>Inventario de Dispositivos Agrupados</h1>
+      <div class="search-filter">
+        <select id="deviceType">
+          <option value="">Todos</option>
+        </select>
+      </div>
+
+      <div class="alert-box">
+        <div class="alert-title">
+          ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están
+          por debajo de la cantidad minima:
+        </div>
+        <ul id="alert-list">
+          <li>
+            <strong>Laptop (Dell XPS 13)</strong> – 3 dispositivos restantes
+            (Límite: 5)
+          </li>
+          <li>
+            <strong>Escritorio (HP Pavilion)</strong> – 1 dispositivo restante
+            (Límite: 3)
+          </li>
+        </ul>
+      </div>
+
+      <button class="export-btn" onclick="exportarExcel()">
+        ⬇ Exportar a Excel
+      </button>
+
+      <table id="inventoryTable">
+        <thead>
+          <tr>
+            <th>Tipo de Dispositivo</th>
+            <th>Modelo</th>
+            <th>Cantidad</th>
+            <th>Límite</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="editModal" class="hidden">
+        <h3>Editar cantidad mínima</h3>
+        <p id="editTitle"></p>
+        <input type="number" id="newLimit" min="0" />
+        <button id="saveLimit">Guardar</button>
+        <button onclick="toggleModal(false)">Cancelar</button>
+      </div>
+    </div>
+
+    <script></script>
+  </body>
+</html>
