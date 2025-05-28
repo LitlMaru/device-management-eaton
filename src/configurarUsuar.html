@@ -176,129 +176,97 @@
           <option value="ICD">ICD</option>
           <option value="MCCB">MCCB</option>
         </select>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="guardarUsuario()">Guardar</button>
-        <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-        <button class="btn btn-secondary" onclick="exportarCorreoDesdeModal()">Exportar por Correo</button>
-      </div>
-    </div>
-  </div>
+                </div>
+                <div class="actions">
+                    <button class="btn" onclick="guardarUsuario()">Guardar</button>
+                    <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                    <button class="btn btn-secondary" onclick="exportarCorreoDesdeModal()">Exportar por Correo</button>
+                </div>
+                </div>
+            </div>
+            
+            <script>
+            let usuarios = [];
 
-  <script>
-    let usuarios = [];
+            function abrirModal() {
+                document.getElementById("modal").style.display = "flex";
+            }
 
-    function abrirModal() {
-      document.getElementById("modal").style.display = "flex";
-    }
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
+            function cerrarModal() {
+                document.getElementById("modal").style.display = "none";
+                document.getElementById("idEmpleado").value = "";
+                document.getElementById("nombre").value = "";
+                document.getElementById("departamento").value = "";
+                document.getElementById("posicion").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("fechaEntrada").value = "";
+                document.getElementById("ubicacion").value = "MCB";
+            }
 
-      document.getElementById("idEmpleado").value = "";
-      document.getElementById("nombre").value = "";
-      document.getElementById("departamento").value = "";
-      document.getElementById("posicion").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("fechaEntrada").value = "";
-      document.getElementById("ubicacion").value = "MCB";
-    }
+            function guardarUsuario() {
+                const idEmpleado = document.getElementById("idEmpleado").value.trim();
+                const nombre = document.getElementById("nombre").value.trim();
+                const departamento = document.getElementById("departamento").value.trim();
+                const posicion = document.getElementById("posicion").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const fechaEntrada = document.getElementById("fechaEntrada").value;
+                const ubicacion = document.getElementById("ubicacion").value;
 
-    function guardarUsuario() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
+                if (!idEmpleado || !nombre || !email) {
+                alert("ID Empleado, Nombre y Email son obligatorios.");
+                return;
+                }
 
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios.");
-        return;
-      }
+                const indiceExistente = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
+                const usuarioNuevo = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
 
-      // Buscar si ya existe el usuario
-      const indiceExistente = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
+                if (indiceExistente !== -1) {
+                usuarios[indiceExistente] = usuarioNuevo;
+                } else {
+                usuarios.push(usuarioNuevo);
+                }
 
-      if (indiceExistente !== -1) {
-        // Modificar usuario existente
-        usuarios[indiceExistente] = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-      } else {
-        // Agregar nuevo usuario
-        usuarios.push({ idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion });
-      }
-      actualizarTabla();
-      cerrarModal();
-    }
+                actualizarTabla();
+                cerrarModal();
+            }
 
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTablaUsuarios");
-      tbody.innerHTML = "";
-      usuarios.forEach(usuario => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${usuario.idEmpleado}</td>
-          <td>${usuario.nombre}</td>
-          <td>${usuario.departamento}</td>
-          <td>${usuario.posicion}</td>
-          <td>${usuario.email}</td>
-          <td>${usuario.fechaEntrada}</td>
-          <td>${usuario.ubicacion}</td>
-          <td><button class="btn-danger" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+            function actualizarTabla() {
+                const tbody = document.getElementById("cuerpoTablaUsuarios");
+                tbody.innerHTML = "";
+                usuarios.forEach(usuario => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${usuario.idEmpleado}</td>
+                    <td>${usuario.nombre}</td>
+                    <td>${usuario.departamento}</td>
+                    <td>${usuario.posicion}</td>
+                    <td>${usuario.email}</td>
+                    <td>${usuario.fechaEntrada}</td>
+                    <td>${usuario.ubicacion}</td>
+                    <td><button class="btn eliminar" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
+                `;
+                tbody.appendChild(tr);
+                });
+            }
 
-    function eliminarUsuario(idEmpleado) {
-      usuarios = usuarios.filter(u => u.idEmpleado !== idEmpleado);
-      actualizarTabla();
-    }
+            function eliminarUsuario(idEmpleado) {
+                usuarios = usuarios.filter(u => u.idEmpleado !== idEmpleado);
+                actualizarTabla();
+            }
 
-    function exportarExcel() {
-      if (usuarios.length === 0) {
-        alert("No hay datos para exportar.");
-        return;
-      }
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(usuarios);
-      XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
-      XLSX.writeFile(wb, "usuarios.xlsx");
-    }
+            function exportarExcel() {
+                if (usuarios.length === 0) {
+                alert("No hay datos para exportar.");
+                return;
+                }
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.json_to_sheet(usuarios);
+                XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
+                XLSX.writeFile(wb, "usuarios.xlsx");
+            }
 
- 
-    function enviarCorreo(usuario) {
-      ç
-      alert(
-        `Correo enviado a ${usuario.email} con los datos:\n` +
-          `ID: ${usuario.idEmpleado}\n` +
-          `Nombre: ${usuario.nombre}\n` +
-          `Departamento: ${usuario.departamento}\n` +
-          `Posición: ${usuario.posicion}\n` +
-          `Fecha Entrada: ${usuario.fechaEntrada}\n` +
-          `Ubicación: ${usuario.ubicacion}`
-      );
-    }
+            
+            </script>
 
-   
-    function exportarCorreoDesdeModal() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios para enviar por correo.");
-        return;
-      }
-
-      const usuario = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-
-      enviarCorreo(usuario);
-    }
-  </script>
-</body>
-</html>
+            </body>
+            </html>
