@@ -1,0 +1,171 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.window-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.control:hover {
+  transform: scale(1.1);
+}
+.close:hover {
+  background: #e74c3c;
+}
+.maximize:hover {
+  background: #2ecc71;
+}
+.minimize:hover {
+  background: #f1c40f;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+  padding: 2rem 2rem;
+}
+
+.logo-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container img {
+  max-width: 100%;
+  height: auto;
+  max-height: 300px;
+}
+
+.main-content {
+  flex: 1;
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  max-width: 640px;
+  border: 2px solid #003973;
+}
+
+.main-content h1 {
+  font-size: 1.3rem;
+  color: #003973;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  color: #003973;
+  font-weight: 600;
+}
+
+input,
+select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #003973;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+input:focus,
+select:focus {
+  border-color: #0058b1;
+  box-shadow: 0 0 0 2px rgba(0, 89, 177, 0.2);
+  outline: none;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #003973;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #0058b1;
+  transform: translateY(-2px);
+}
+
+.image-side {
+  max-width: 500px;
+}
+
+#result-message {
+  margin-top: 1.2rem;
+  text-align: center;
+  color: #003973;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 12px;
+}
+
+#device-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+th,
+td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background-color: #004e92;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+tr:hover {
+  background-color: #f0f8ff;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+}

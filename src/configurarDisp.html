@@ -1,300 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión de Dispositivos</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
-    header {
-      position: relative;
-      background-color: #003366;
-      color: white;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-    header h1 {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      margin: 0;
-      font-size: 1.5rem;
-      pointer-events: none;
-    }
-    header .window-controls {
-      margin-left: auto;
-      display: flex;
-      gap: 0.5rem;
-    }
-    header .window-controls button {
-      background-color: #0055aa;
-      border: none;
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    nav {
-      background-color: #002244;
-      color: white;
-      padding: 0.5rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    nav h2 {
-      margin: 0;
-    }
-    .container {
-      padding: 2rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: left;
-    }
-    th {
-      background-color: #003366;
-      color: white;
-    }
-    .btn {
-      padding: 0.5rem 1rem;
-      background-color: #003366;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 1rem;
-    }
-    .btn.eliminar {
-      background-color: #cc0000;
-      padding: 0.3rem 0.7rem;
-      font-size: 0.9rem;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      width: 400px;
-    }
-    .form-group {
-      margin-bottom: 1rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Device Management EATON</h1>
-    <div class="window-controls">
-      <button title="Minimizar"><i class="fas fa-window-minimize"></i></button>
-      <button title="Maximizar"><i class="fas fa-window-maximize"></i></button>
-      <button title="Cerrar"><i class="fas fa-times"></i></button>
-    </div>
-  </header>
-  <nav>
-    <h2>Gestión de Dispositivos </h2>
-    <span>Usuario: Admin</span>
-  </nav>
-  <div class="container">
-    <button class="btn" onclick="abrirModal()">Agregar / Modificar Dispositivo</button>
-    <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
-
-    <table id="tablaDispositivos">
-      <thead>
-        <tr>
-          <th>Tipo</th>
-          <th>Modelo</th>
-          <th>Serial</th>
-          <th>Eliminar</th>
-        </tr>
-      </thead>
-      <tbody id="cuerpoTabla"></tbody>
-    </table>
-  </div>
-
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Agregar / Modificar Dispositivo</h2>
-      <div class="form-group">
-        <label>Tipo:</label>
-        <select id="tipo">
-          <option value="Dokin">Dokin</option>
-          <option value="Batería de Laptop">Batería de Laptop</option>
-          <option value="Batería de UPS">Batería de UPS</option>
-          <option value="Memoria Incrustada">Memoria Incrustada</option>
-          <option value="UPS">UPS</option>
-          <option value="Mouse">Mouse</option>
-          <option value="Cable DVI">Cable DVI</option>
-          <option value="Monitor">Monitor</option>
-          <option value="Mochila">Mochila</option>
-          <option value="Cargador">Cargador</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Cable">Cable</option>
-          <option value="Adaptador">Adaptador</option>
-          <option value="Powercord">Powercord</option>
-          <option value="Faceplate">Faceplate</option>
-          <option value="Jack RJ45">Jack RJ45</option>
-          <option value="Scanner">Scanner</option>
-          <option value="Serial">Serial</option>
-          <option value="USB">USB</option>
-          <option value="Charger">Charger</option>
-          <option value="Display Port">Display Port</option>
-          <option value="Laptop">Laptop</option>
-          <option value="Desktop">Desktop</option>
-          <option value="Mini Desktop">Mini Desktop</option>
-          <option value="Teclado">Teclado</option>
-          <option value="Headset">Headset</option>
-          <option value="Tóner">Tóner</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Modelo:</label>
-        <input type="text" id="modelo" />
-      </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" id="tieneSerial" onchange="toggleSerialInput()" /> ¿Tiene número de serie?
-        </label>
-      </div>
-      <div class="form-group" id="grupoSerial" style="display: none;">
-        <label>Serial:</label>
-        <input type="text" id="serial" />
-      </div>
-      <div class="form-group">
-        <button class="btn" onclick="guardarDispositivo()">Guardar</button>
-        <button class="btn" onclick="cerrarModal()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let dispositivos = [];
-    let editarIndex = null;
-
-    function abrirModal(index = null) {
-      document.getElementById("modal").style.display = "flex";
-      if (index !== null) {
-        editarIndex = index;
-        const d = dispositivos[index];
-        document.getElementById("tipo").value = d.tipo;
-        document.getElementById("modelo").value = d.modelo;
-        if(d.serial === "Sin Serial") {
-          document.getElementById("tieneSerial").checked = false;
-          toggleSerialInput();
-          document.getElementById("serial").value = "";
-        } else {
-          document.getElementById("tieneSerial").checked = true;
-          toggleSerialInput();
-          document.getElementById("serial").value = d.serial;
-        }
-      } else {
-        editarIndex = null;
-        document.getElementById("modelo").value = "";
-        document.getElementById("serial").value = "";
-        document.getElementById("tieneSerial").checked = false;
-        toggleSerialInput();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Dispositivos</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
       }
-    }
-
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
-    }
-
-    function toggleSerialInput() {
-      document.getElementById("grupoSerial").style.display = document.getElementById("tieneSerial").checked ? "block" : "none";
-    }
-
-    function guardarDispositivo() {
-      const tipo = document.getElementById("tipo").value;
-      const modelo = document.getElementById("modelo").value.trim();
-      let serial = document.getElementById("tieneSerial").checked ? document.getElementById("serial").value.trim() : "";
-
-      if (!modelo) {
-        alert("El modelo es obligatorio.");
-        return;
+      header {
+        position: relative;
+        background-color: #003366;
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      header h1 {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 1.5rem;
+        pointer-events: none;
+      }
+      header .window-controls {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+      }
+      header .window-controls button {
+        background-color: #0055aa;
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      nav {
+        background-color: #002244;
+        color: white;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      nav h2 {
+        margin: 0;
+      }
+      .container {
+        padding: 2rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      th {
+        background-color: #003366;
+        color: white;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        background-color: #003366;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+      }
+      .btn.eliminar {
+        background-color: #cc0000;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.9rem;
       }
 
-      if (document.getElementById("tieneSerial").checked && !serial) {
-        alert("Debe ingresar el serial o desmarcar la opción.");
-        return;
+      .form-group {
+        margin-bottom: 1rem;
       }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gestionar tipos de dispositivo</h1>
+      <button class="btn" onclick="abrirModal()">
+        Agregar / Modificar Dispositivo
+      </button>
+      <button class="btn" onclick="exportarExcel()">Exportar a Excel</button>
 
-      if (!document.getElementById("tieneSerial").checked) {
-        serial = generarSerialAutomatico(tipo, modelo);
-      }
-
-      if (editarIndex === null) {
-        dispositivos.push({ tipo, modelo, serial });
-      } else {
-        dispositivos[editarIndex] = { tipo, modelo, serial };
-      }
-
-      actualizarTabla();
-      cerrarModal();
-    }
-
-    function generarSerialAutomatico(tipo, modelo) {
-      
-      const tipoAbrev = tipo.split(" ").map(p => p[0]).join("").toUpperCase();
-      const modeloSinEspacios = modelo.replace(/\s+/g, "").toUpperCase();
-      const timestamp = Date.now().toString().slice(-5);
-      return `${tipoAbrev}-${modeloSinEspacios}-${timestamp}`;
-    }
-
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTabla");
-      tbody.innerHTML = "";
-      dispositivos.forEach((d, index) => {
-        const fila = `
+      <table id="tablaDispositivos">
+        <thead>
           <tr>
-            <td>${d.tipo}</td>
-            <td>${d.modelo}</td>
-            <td>${d.serial}</td>
-            <td><button class="btn eliminar" onclick="eliminarDispositivo(${index})">Eliminar</button></td>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Serial</th>
+            <th>Eliminar</th>
           </tr>
-        `;
-        tbody.innerHTML += fila;
-      });
-    }
+        </thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+    </div>
 
-    function eliminarDispositivo(index) {
-      if(confirm("¿Seguro que deseas eliminar este dispositivo?")) {
-        dispositivos.splice(index, 1);
-        actualizarTabla();
-      }
-    }
-
-    function exportarExcel() {
-      const ws = XLSX.utils.json_to_sheet(dispositivos);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Dispositivos");
-      XLSX.writeFile(wb, "dispositivos.xlsx");
-    }
-  </script>
-</body>
+    <script></script>
+  </body>
 </html>
