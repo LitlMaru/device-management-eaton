@@ -1,186 +1,71 @@
+let usuarios = [];
+
 function abrirModal() {
-      document.getElementById("modal").style.display = "flex";
-    }
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
+  document.getElementById("modal").style.display = "flex";
+}
 
-      document.getElementById("idEmpleado").value = "";
-      document.getElementById("nombre").value = "";
-      document.getElementById("departamento").value = "";
-      document.getElementById("posicion").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("fechaEntrada").value = "";
-      document.getElementById("ubicacion").value = "MCB";
-    }
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+  document.querySelectorAll("#modal input, #modal select").forEach(el => el.value = "");
+}
 
+function guardarUsuario() {
+  const idEmpleado = document.getElementById("idEmpleado").value.trim();
+  const nombre = document.getElementById("nombre").value.trim();
+  const departamento = document.getElementById("departamento").value.trim();
+  const posicion = document.getElementById("posicion").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const fechaEntrada = document.getElementById("fechaEntrada").value;
+  const ubicacion = document.getElementById("ubicacion").value;
 
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTablaUsuarios");
-      tbody.innerHTML = "";
-      usuarios.forEach(usuario => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${usuario.idEmpleado}</td>
-          <td>${usuario.nombre}</td>
-          <td>${usuario.departamento}</td>
-          <td>${usuario.posicion}</td>
-          <td>${usuario.email}</td>
-          <td>${usuario.fechaEntrada}</td>
-          <td>${usuario.ubicacion}</td>
-          <td><button class="btn-danger" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
- 
-    function enviarCorreo(usuario) {
-      alert(
-        `Correo enviado a ${usuario.email} con los datos:\n` +
-          `ID: ${usuario.idEmpleado}\n` +
-          `Nombre: ${usuario.nombre}\n` +
-          `Departamento: ${usuario.departamento}\n` +
-          `Posición: ${usuario.posicion}\n` +
-          `Fecha Entrada: ${usuario.fechaEntrada}\n`
-      );
-    }
-
-
-async function cargarUsuarios() {
-  const cuerpo = document.getElementById('cuerpoTablaUsuarios');
-  cuerpo.innerHTML = ''; // Limpiar tabla
-
-  const usuarios = await ipcRenderer.invoke('get-users');
-
-  if (usuarios.error) {
-    alert('Error al obtener usuarios: ' + usuarios.error);
+  if (!idEmpleado || !nombre || !email) {
+    alert("ID, Nombre y Email son obligatorios.");
     return;
   }
 
-  usuarios.forEach(user => {
-    const tr = document.createElement('tr');
+  const existente = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
+  const datos = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
 
-    // Username (NO editable)
-    const tdUsername = document.createElement('td');
-    tdUsername.textContent = user.Username;
-    tdUsername.contentEditable = false;
-    tr.appendChild(tdUsername);
-
-    // Clave, Rol y Ubicación (editables)
-    const camposEditables = ['Clave', 'Rol', 'Ubicacion'];
-    camposEditables.forEach((campo, index) => {
-      const td = document.createElement('td');
-      td.contentEditable = true;
-      td.textContent = user[campo];
-
-      // Guardar automáticamente al salir del campo
-      td.addEventListener('blur', () => {
-        const nuevoUsuario = {
-          username: tdUsername.textContent,
-          clave: tr.children[1].textContent,
-          rol: tr.children[2].textContent,
-          ubicacion: tr.children[3].textContent
-        };
-        actualizarUsuario(nuevoUsuario);
-      });
-
-      tr.appendChild(td);
-    });
-
-    // Botón Eliminar
-    const accionesTd = document.createElement('td');
-    const btnEliminar = document.createElement('button');
-    btnEliminar.textContent = 'Eliminar';
-    btnEliminar.onclick = () => eliminarUsuario(user.Username);
-    accionesTd.appendChild(btnEliminar);
-
-    tr.appendChild(accionesTd);
-    cuerpo.appendChild(tr);
-  });
-}
-
-
-  async function eliminarUsuario(username) {
-    const confirmacion = confirm(`¿Eliminar usuario ${username}?`);
-    if (!confirmacion) return;
-
-    const res = await ipcRenderer.invoke('delete-user', username);
-    if (res.error) {
-      alert('Error al eliminar: ' + res.error);
-    } else {
-      cargarUsuarios();
-    }
+  if (existente !== -1) {
+    usuarios[existente] = datos;
+  } else {
+    usuarios.push(datos);
   }
 
- async function actualizarUsuario(user) {
-  const res = await ipcRenderer.invoke('update-user', user);
-  if (res.error) {
-    alert('Error al actualizar usuario: ' + res.error);
-  }
+  actualizarTabla();
+  cerrarModal();
 }
 
-
-   async function agregarUsuario() {
-    const user = {
-      username: document.getElementById('username').value,
-      clave: document.getElementById('clave').value,
-      rol: document.getElementById('rol').value,
-      ubicacion: document.getElementById('ubicacion').value
-    };
-
-    const res = await ipcRenderer.invoke('add-user', user);
-    if (res.error) {
-      alert('Error al agregar: ' + res.error);
-    } else {
-      alert('Usuario agregado');
-      cerrarModal();
-      cargarUsuarios();
-    }
-  }
-
-
-   function initBuscar(){
- const input = document.getElementById('busqueda');
-  
-  input.addEventListener('input', function () {
-    const filtro = this.value.trim();
-
-    ipcRenderer.invoke('query-employee-devices', { employeeInfo: filtro })
-      .then(resultado => {
-        actualizarTablaBusqueda(resultado);
-      })
-      .catch(error => {
-        console.error('Error en consulta:', error);
-      });
-  });
-
-    function exportarExcel() {
-      alert("Función de exportar a Excel en desarrollo.");
-    }
-    }
-
-  function formatearFecha(fechaISO) {
-  if (!fechaISO) return '';
-  const fecha = new Date(fechaISO);
-  return fecha.toLocaleDateString('es-ES', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-}
-
-  function actualizarTablaBusqueda(datos){
- const tbody = document.querySelector('#tablaAsignados tbody');
-  tbody.innerHTML = '';
-
-  datos.forEach(fila => {
-    const tr = document.createElement('tr');
+function actualizarTabla() {
+  const tbody = document.getElementById("cuerpoTablaUsuarios");
+  tbody.innerHTML = "";
+  usuarios.forEach(usuario => {
+    const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${fila.ID_Asignacion || ''}</td>
-      <td>${fila.ID_Empleado || ''}</td>
-      <td>${fila.ID_Dispositivo || ''}</td>
-      <td>${formatearFecha(fila.Fecha_asignacion) || ''}</td>
-      <td>${formatearFecha(fila.Fecha_cambio) || ''}</td>
+      <td>${usuario.idEmpleado}</td>
+      <td>${usuario.nombre}</td>
+      <td>${usuario.departamento}</td>
+      <td>${usuario.posicion}</td>
+      <td>${usuario.email}</td>
+      <td>${usuario.fechaEntrada}</td>
+      <td>${usuario.ubicacion}</td>
+      <td><button class="btn-danger" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
     `;
     tbody.appendChild(tr);
-  }
-)};
+  });
+}
+
+function eliminarUsuario(idEmpleado) {
+  usuarios = usuarios.filter(u => u.idEmpleado !== idEmpleado);
+  actualizarTabla();
+}
+
+function filtrarUsuarios() {
+  const filtro = document.getElementById("buscador").value.toLowerCase();
+  const filas = document.querySelectorAll("#cuerpoTablaUsuarios tr");
+
+  filas.forEach(fila => {
+    const id = fila.children[0].textContent.toLowerCase();
+    fila.style.display = id.includes(filtro) ? "" : "none";
+  });
+}

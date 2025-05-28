@@ -22,20 +22,20 @@
   <div class="main">
     <div class="sidebar">
       <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
-      <div class="menu-item" onclick="loadPage('assign')">
+      <div class="menu-item" onclick="loadPage('assign-devices.html')">
         Asignar dispositivo  <img src="../assets/add-user.svg" alt="">
       </div>
-      <div class="menu-item" onclick="loadPage('buscar.html')">
+      <div class="menu-item" onclick="loadPage('query-employee-devices.html')">
         Buscar asignados  <img src="../assets/search.svg" alt="">
       </div>
 
-      <div class="menu-item" onclick="loadPage('quantities.html')">
+      <div class="menu-item" onclick="cargarPagina('grouped-inventory.html')">
         Inventario <img src="../assets/threshold.svg" alt="">
       </div>
-      <div class="menu-item" onclick="loadPage('devices.hmtl')">
+      <div class="menu-item" onclick="cargarPagina('devices.html')">
         Dispositivos <img src="../assets/device.svg" alt="">
       </div>
-       <div class="menu-item close-session" onclick="closeSession()">
+       <div class="menu-item close-session" onclick="cerrarSesion()">
         Cerrar sesión <img src="../assets/close-thick.svg" alt="">
       </div>
 
@@ -44,7 +44,7 @@
     <div class="content-frame">
         <iframe src="pages/it-dashboard.html" class="content" id="content"></iframe>
     </div>
-    
+
     <script>
         const iframe = document.getElementById("content");
       
@@ -60,13 +60,14 @@
             window.electronAPI.minimize();
         }
 
-        fullScreenImage = document.getElementById("img-full-screen");
-        function fullScreen() {
-            window.electronAPI.maximize();
-            if (fullScreenImage.src == "../assets/fullscreenmode.svg")
-               fullScreenImage.src = "../assets/windowmode.svg";
-            else fullScreenImage.src = "../assets/fullscreenmode.svg";
-        }
+      const fullScreenImage = document.getElementById("img-full-screen");
+      function maximizarVentana() {
+        window.electronAPI.maximize();
+        if (fullScreenImage.src.includes("fullscreenmode.svg"))
+          fullScreenImage.src = "../assets/windowmode.svg";
+        else
+          fullScreenImage.src = "../assets/fullscreenmode.svg";
+      }
 
         function closeWindow() {
             window.electronAPI.close();
@@ -77,6 +78,7 @@
         }
 
     </script>
-  <script src="../main.js"></script>
-</body>
-</html>
+    <script src="../it.js"></script>
+  </body>
+  </html>
+

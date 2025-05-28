@@ -1,77 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gestión de Usuarios</title>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Usuarios</title>
+   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>!-->
  <link rel="stylesheet" href="../css/users-settings.css">
-   
-  </head>
-  <body>
-    <div class="container">
-      <h1>Gestionar Usuarios</h1>
-      <div class="agregar-container">
-        <button class="agregar-btn" onclick="abrirModal()">
-          Agregar Usuario
-        </button>
-      </div>
+</head>
+<body>
+  <div class="container">
+    <h1>Gestión de Usuarios</h1>
 
-      <table id="tablaUsuarios">
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th>Contraseña</th>
-            <th>Rol</th>
-            <th>Planta</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <td contenteditable="true">Enmanuel</td>
-          <td contenteditable="true">1234</td>
-          <td contenteditable="true">IT</td>
-          <td contenteditable="true">MCB</td>
-          <td>
-            <button class="eliminar-btn" onclick="eliminarUsuario()">
-              Eliminar
-            </button>
-          </td>
-        </tbody>
-        <tbody id="cuerpoTablaUsuarios"></tbody>
-      </table>
+    <div class="top-bar">
+      <input type="text" id="buscador" placeholder="Buscar por ID..." oninput="filtrarUsuarios()" />
+      <button class="agregar-btn" onclick="abrirModal()">Agregar Usuario</button>
     </div>
 
+    <table id="tablaUsuarios">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Departamento</th>
+          <th>Posición</th>
+          <th>Email</th>
+          <th>Fecha</th>
+          <th>Ubicación</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpoTablaUsuarios"></tbody>
+    </table>
+  </div>
+
+  <!-- Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <h2>Agregar / Modificar Usuario</h2>
+      <div class="form-group"><label>ID Empleado:</label><input type="text" id="idEmpleado" /></div>
+      <div class="form-group"><label>Nombre:</label><input type="text" id="nombre" /></div>
+      <div class="form-group"><label>Departamento:</label><input type="text" id="departamento" /></div>
+      <div class="form-group"><label>Posición:</label><input type="text" id="posicion" /></div>
+      <div class="form-group"><label>Email:</label><input type="email" id="email" /></div>
+      <div class="form-group"><label>Fecha Entrada:</label><input type="date" id="fechaEntrada" /></div>
       <div class="form-group">
-        <label for="idEmpleado">ID Empleado:</label>
-        <input type="text" id="idEmpleado" />
-      </div>
-      <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" />
-      </div>
-      <div class="form-group">
-        <label for="departamento">Departamento:</label>
-        <input type="text" id="departamento" />
-      </div>
-      <div class="form-group">
-        <label for="posicion">Posición:</label>
-        <input type="text" id="posicion" />
-      </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" />
-      </div>
-      <div class="form-group">
-        <label for="fechaEntrada">Fecha Entrada:</label>
-        <input type="date" id="fechaEntrada" />
-      </div>
-      <div class="form-group">
-        <label for="ubicacion">Ubicación:</label>
+        <label>Ubicación:</label>
         <select id="ubicacion">
           <option value="MCB">MCB</option>
           <option value="ICD">ICD</option>
@@ -79,126 +53,12 @@
         </select>
       </div>
       <div class="actions">
-        <button class="btn" onclick="guardarUsuario()">Guardar</button>
-        <button class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-        <button class="btn btn-secondary" onclick="exportarCorreoDesdeModal()">Exportar por Correo</button>
+        <button onclick="guardarUsuario()">Guardar</button>
+        <button onclick="cerrarModal()" class="secundario">Cerrar</button>
       </div>
     </div>
   </div>
 
-  <script>
-    let usuarios = [];
-
-    function abrirModal() {
-      document.getElementById("modal").style.display = "flex";
-    }
-    function cerrarModal() {
-      document.getElementById("modal").style.display = "none";
-
-      document.getElementById("idEmpleado").value = "";
-      document.getElementById("nombre").value = "";
-      document.getElementById("departamento").value = "";
-      document.getElementById("posicion").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("fechaEntrada").value = "";
-      document.getElementById("ubicacion").value = "MCB";
-    }
-
-    function guardarUsuario() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios.");
-        return;
-      }
-
-      // Buscar si ya existe el usuario
-      const indiceExistente = usuarios.findIndex(u => u.idEmpleado === idEmpleado);
-
-      if (indiceExistente !== -1) {
-        // Modificar usuario existente
-        usuarios[indiceExistente] = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-      } else {
-        // Agregar nuevo usuario
-        usuarios.push({ idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion });
-      }
-      actualizarTabla();
-      cerrarModal();
-    }
-
-    function actualizarTabla() {
-      const tbody = document.getElementById("cuerpoTablaUsuarios");
-      tbody.innerHTML = "";
-      usuarios.forEach(usuario => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${usuario.idEmpleado}</td>
-          <td>${usuario.nombre}</td>
-          <td>${usuario.departamento}</td>
-          <td>${usuario.posicion}</td>
-          <td>${usuario.email}</td>
-          <td>${usuario.fechaEntrada}</td>
-          <td>${usuario.ubicacion}</td>
-          <td><button class="btn-danger" onclick="eliminarUsuario('${usuario.idEmpleado}')">Eliminar</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function eliminarUsuario(idEmpleado) {
-      usuarios = usuarios.filter(u => u.idEmpleado !== idEmpleado);
-      actualizarTabla();
-    }
-
-    function exportarExcel() {
-      if (usuarios.length === 0) {
-        alert("No hay datos para exportar.");
-        return;
-      }
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(usuarios);
-      XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
-      XLSX.writeFile(wb, "usuarios.xlsx");
-    }
-
- 
-    function enviarCorreo(usuario) {
-      alert(
-        `Correo enviado a ${usuario.email} con los datos:\n` +
-          `ID: ${usuario.idEmpleado}\n` +
-          `Nombre: ${usuario.nombre}\n` +
-          `Departamento: ${usuario.departamento}\n` +
-          `Posición: ${usuario.posicion}\n` +
-          `Fecha Entrada: ${usuario.fechaEntrada}\n` +
-          `Ubicación: ${usuario.ubicacion}`
-      );
-    }
-
-   
-    function exportarCorreoDesdeModal() {
-      const idEmpleado = document.getElementById("idEmpleado").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
-      const departamento = document.getElementById("departamento").value.trim();
-      const posicion = document.getElementById("posicion").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const fechaEntrada = document.getElementById("fechaEntrada").value;
-      const ubicacion = document.getElementById("ubicacion").value;
-
-      if (!idEmpleado || !nombre || !email) {
-        alert("ID Empleado, Nombre y Email son obligatorios para enviar por correo.");
-        return;
-      }
-
-      const usuario = { idEmpleado, nombre, departamento, posicion, email, fechaEntrada, ubicacion };
-
-      enviarCorreo(usuario);
-    }
-  </script>
+    <script src="../js/users-settings.js"></script>
 </body>
 </html>
