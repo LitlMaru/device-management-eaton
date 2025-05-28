@@ -4,6 +4,38 @@ const router = express.Router();
 const sql = require("mssql");
 const dbConfig = require("../dbConfig"); 
 
+router.post("/get-available-devices", async (req, res) => {
+  try {
+    const { deviceType} = req.body; 
+    const ubicacion = req.headers["x-ubicacion"];
+    const pool = await poolPromise;
+
+    const tipoResult = await pool.request()
+      .input("deviceType", sql.VarChar, deviceType)
+      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @deviceType");
+
+    if (tipoResult.recordset.length === 0) {
+      return res.status(404).json({ error: "Tipo de dispositivo no encontrado" });
+    }
+
+    const ID_Tipo = tipoResult.recordset[0].ID_Tipo;
+
+    const result = await pool.request()
+      .input("ID_Tipo", sql.Int, ID_Tipo)
+      .input("Ubicacion", sql.VarChar, ubicacion) 
+      .query(`
+        SELECT ID_Dispositivo, Marca, Modelo, Serial_Number
+        FROM Dispositivos
+        WHERE ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND Ubicacion = @Ubicacion
+      `);
+
+    res.json({ success: true, devices: result.recordset });
+  } catch (error) {
+    console.error("Error al obtener dispositivos:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 async function getDevicesFiltered(filtros) {
   try {
     await sql.connect(dbConfig);

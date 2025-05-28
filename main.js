@@ -87,6 +87,7 @@ ipcMain.handle("login-user", async (event, credentials) => {
     const result = await response.json();
     if (result.success) {
       global.currentUser = result.user;
+      sessionStorage.setItem("userLocation", global.currentUser.Ubicacion);
       return { success: true, user: result.user };
     } else {
       return { success: false, message: result.message };
