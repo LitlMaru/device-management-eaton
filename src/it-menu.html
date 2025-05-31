@@ -1,20 +1,23 @@
-  <!DOCTYPE html>
-  <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Device Management EATON-ADMIN</title>
-    <link rel="stylesheet" href="css/it.css">
-  </head>
-  <body>
-    <div class="header">
-      <div class="title">EATON Device Management</div>
-      <div class="window-controls">
-        <img src="../assets/minimize.svg" onclick="minimizarVentana()">
-        <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="maximizarVentana()">
-        <img src="../assets/close.svg" onclick="cerrarVentana()">
-      </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Management EATON-ADMIN</title>
+ <!--- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/> !-->
+  <link rel="stylesheet" href="css/it.css">
+</head>
+<body>
+  <div class="header">
+    <div class="title">EATON Device Management</div>
+    <div class="window-controls">
+      <img src="../assets/minimize.svg" onclick="minimizeWindow()">
+      <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="fullScreen()">
+
+      <img src="../assets/close.svg" onclick="closeWindow()">
     </div>
+  </div>
 
     <div class="main">
       <div class="sidebar">
@@ -24,7 +27,7 @@
           Asignar dispositivo <img src="../assets/add-user.svg" alt="">
         </div>
 
-        <div class="menu-item" onclick="cargarPagina('buscar_it.html')">
+        <div class="menu-item" onclick="cargarPagina('buscar.html')">
           Buscar asignados <img src="../assets/search.svg" alt="">
         </div>
 
@@ -40,31 +43,31 @@
           Tipos de dispositivo <img src="../assets/settings.svg" alt="">
         </div>
 
-      
         <div class="menu-item close-session" onclick="cerrarSesion()">
           Cerrar sesión <img src="../assets/close-thick.svg" alt="">
         </div>
       </div>
 
-      <div class="marcoContenido">
-        <iframe src="pages/it-dashboard.html" class="content" id="contenido"></iframe>
-      </div>
+    </div>
+
+    <div class="content-frame">
+        <iframe src="pages/it-dashboard.html" class="content" id="content"></iframe>
     </div>
 
     <script>
-      const iframe = document.getElementById("contenido");
+        const iframe = document.getElementById("content");
+      
+        iframe.onload = () => {
+            iframe.contentWindow.electron = window.electron;
+        };
 
-      iframe.onload = () => {
-        iframe.contentWindow.electron = window.electron;
-      };
+        function loadPage(page) {
+            iframe.src = `pages/${page}`;
+        }
 
-      function cargarPagina(page) {
-        iframe.src = `pages/${page}`;
-      }
-
-      function minimizarVentana() {
-        window.electronAPI.minimize();
-      }
+        function minimizeWindow() {
+            window.electronAPI.minimize();
+        }
 
       const fullScreenImage = document.getElementById("img-full-screen");
       function maximizarVentana() {
@@ -75,13 +78,14 @@
           fullScreenImage.src = "../assets/fullscreenmode.svg";
       }
 
-      function cerrarVentana() {
-        window.electronAPI.close();
-      }
+        function closeWindow() {
+            window.electronAPI.close();
+        }
 
-      function cerrarSesion() {
-        window.location.href = "login.html";
-      }
+        function closeSession() {
+            window.location.href = "login.html";
+        }
+
     </script>
     <script src="../it.js"></script>
   </body>

@@ -12,62 +12,62 @@
   <div class="header">
     <div class="title">Eaton Device Management HR</div>
     <div class="window-controls">
-      <img src="../assets/minimize.svg" onclick="minimizarVentana()">
-      <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="maximizarVentana()">
+      <img src="../assets/minimize.svg" onclick="minimizeWindow()">
+      <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="fullScreen()">
 
-      <img src="../assets/close.svg" onclick="cerrarVentana()">
+      <img src="../assets/close.svg" onclick="closeWindow()">
     </div>
   </div>
 
   <div class="main">
     <div class="sidebar">
       <img src="../assets/eaton_logo_white.svg" alt="Logo Eaton" />
-      <div class="menu-item" onclick="cargarPagina('register.html')">
+      <div class="menu-item" onclick="loadPage('register.html')">
         Registrar <img src="../assets/add-user.svg" alt="">
       </div>
-      <div class="menu-item" onclick="cargarPagina('query-employee-devices.html')">
+      <div class="menu-item" onclick="loadPage('query-employee-devices.html')">
         Buscador <img src="../assets/search.svg" alt="">
       </div>
-      <div class="menu-item" onclick="cargarPagina('users-settings.html')">
+      <div class="menu-item" onclick="loadPage('users-settings.html')">
         Usuarios <img src="../assets/users.svg" alt="">
       </div>
-      <div class="menu-item close-session" onclick="cerrarSesion()">
+      <div class="menu-item close-session" onclick="closeSession()">
         Cerrar sesión <img src="../assets/close-thick.svg" alt="">
       </div>
     </div>
 
-    <div class="marcoContenido">
-         <iframe src="pages/hr-dashboard.html" class="content" id="contenido"></iframe>
+    <div class="content-frame">
+         <iframe src="pages/hr-dashboard.html" id="content"></iframe>
     </div>
     
     <script>
-        const iframe = document.getElementById("contenido");
+        const iframe = document.getElementById("content");
       
         iframe.onload = () => {
             iframe.contentWindow.electron = window.electron;
         };
 
-        function cargarPagina(page) {
+        function loadPage(page) {
             iframe.src = `pages/${page}`;
         }
 
-        function minimizarVentana() {
+        function minimizeWindow() {
             window.electronAPI.minimize();
         }
 
         fullScreenImage = document.getElementById("img-full-screen");
-        function maximizarVentana() {
+        function fullScreen() {
             window.electronAPI.maximize();
             if (fullScreenImage.src == "../assets/fullscreenmode.svg")
                fullScreenImage.src = "../assets/windowmode.svg";
             else fullScreenImage.src = "../assets/fullscreenmode.svg";
         }
 
-        function cerrarVentana() {
+        function closeWindow() {
             window.electronAPI.close();
         }
 
-        function cerrarSesion() {
+        function closeSession() {
             window.location.href = "login.html";
         }
 
