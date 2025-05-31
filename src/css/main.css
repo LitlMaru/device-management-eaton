@@ -1,23 +1,17 @@
-
-/*SIDEBAR*/
-
-/* Reset básico */
-* {
+  * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Arial', sans-serif;
-}
+  }
 
-/* Layout base */
-body {
+  body {
   display: flex;
   height: 100vh;
   background-color: #f4f4f4;
 }
 
-/* Sidebar */
-.sidebar {
+  .sidebar {
   width: 240px;
   background-color: #0078D4;
   color: white;
@@ -55,15 +49,13 @@ body {
   background-color: #005b8d;
 }
 
-/* Contenido principal */
-.main-content {
+  .main-content {
   flex-grow: 1;
   padding: 40px;
   overflow-y: auto;
 }
 
 .main-content h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
+   text-align: center;
+  color: #003973;
 }

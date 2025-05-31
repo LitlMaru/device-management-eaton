@@ -61,10 +61,8 @@ body {
     }
 
     .main-content h1 {
-      font-size: 1.3rem;
+       text-align: center;
       color: #003973;
-      text-align: center;
-      margin-bottom: 2rem;
     }
 
     .form-group {

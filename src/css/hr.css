@@ -16,7 +16,7 @@
     background: linear-gradient(to right, #e9f0f7, #f7fbff);
   }
   .header {
-    /*background: linear-gradient(90deg, #004e92, #000428);*/
+  
     background-color: #003973;
     color: white;
     display: flex;
@@ -24,7 +24,7 @@
     justify-content: space-between;
     height: var(--header-height);
     padding: 0 30px;
-    /*box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);*/
+   
     position: fixed;
     width: 100%;
       -webkit-app-region: drag;
@@ -178,7 +178,7 @@
 
 
   ::selection {
-  background-color: #697682; /* or any other color */
+  background-color: #697682; 
   color: white;
 }
 @keyframes fadeIn {
