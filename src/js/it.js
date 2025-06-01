@@ -21,13 +21,13 @@ function showContent(section) {
           initAssign();
           break;
         case "buscar":
-          // initBuscar();
+     
           break;
         case "quantities":
-          // initInventario();
+
           break;
         case "devices":
-          // initDevices();
+
           break;
         case "configurarDisp":
           initConfigurarDisp();
@@ -58,7 +58,7 @@ function closeSession() {
   window.location.href = "login.html";
 }
 
-//-----------------------ASIGNAR--------------------------
+
 function initAssign() {
   document
     .getElementById("assign-form")
@@ -141,7 +141,7 @@ function initAssign() {
       });
     });
   }
-  //---------------------------BUSCAR-------------------------------------
+ 
 
   function initBuscar() {
     console.log("Hola")
@@ -192,7 +192,7 @@ function initAssign() {
     });
   }
 
-  //--------------------------------INVENTARIO---------------------------------
+
   let currentModel = null;
 
   async function loadTypes() {
@@ -260,16 +260,16 @@ function initAssign() {
     }
   });
 
-  // Listeners
+
   document.getElementById("deviceType").addEventListener("change", function () {
     loadInventory(this.value);
   });
 
-  // Inicializar
+
   loadTypes();
   loadInventory();
 
-  //----------------------------DISPOSITIVOS-----------------------------------------
+  
   async function cargarDispositivos() {
     const filtros = {
       tipoDispositivo: document.getElementById("deviceTypeSelect").value,
@@ -280,12 +280,12 @@ function initAssign() {
 
     const dispositivos = await ipcRenderer.invoke("get-devices", filtros);
     const tbody = document.getElementById("deviceTableBody");
-    tbody.innerHTML = ""; // limpiar tabla
+    tbody.innerHTML = ""; 
 
     dispositivos.forEach((dispositivo) => {
       const tr = document.createElement("tr");
 
-      // Celdas de datos
+     
       tr.innerHTML = `
       <td>${dispositivo.Tipo}</td>
       <td>${dispositivo.Marca}</td>
@@ -293,23 +293,23 @@ function initAssign() {
       <td>${dispositivo.Serial_Number}</td>
     `;
 
-      // Celda con botones
+     
       const accionesTd = document.createElement("td");
 
-      // Botón Editar Serial
+     
       const btnEditar = document.createElement("button");
       btnEditar.textContent = "Editar SN";
       btnEditar.className = "btn btn-sm btn-warning me-2";
       btnEditar.onclick = () =>
         editarSerial(dispositivo.ID, dispositivo.Serial_Number);
 
-      // Botón Eliminar
+    
       const btnEliminar = document.createElement("button");
       btnEliminar.textContent = "Eliminar";
       btnEliminar.className = "btn btn-sm btn-danger";
       btnEliminar.onclick = () => eliminarDispositivo(dispositivo.ID);
 
-      // Agregar botones
+      
       accionesTd.appendChild(btnEditar);
       accionesTd.appendChild(btnEliminar);
 
@@ -351,7 +351,7 @@ function initAssign() {
     }
   }
 
-  //---------------------------------------------------------------------
+  
   function initConfigurar() {
     let filaEditando = null;
 

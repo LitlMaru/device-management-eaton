@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,24 +5,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dispositivos Asignados</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="../css/query-employee-devices.css">
 </head>
 
-<body>
- 
+  <body>
   <div class="contenedor-principal">
     <h1>Dispositivos Asignados</h1>
 
     <div class="busqueda-exportar">
-      <div class="busqueda-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="busqueda" placeholder="Buscar por nombre o código...">
-      </div>
-      <button onclick="exportarExcel()">
-        <i class="fas fa-file-excel"></i> Exportar a Excel
-      </button>
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
+      <button onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
     </div>
 
     <table id="tablaAsignados">
@@ -34,6 +27,8 @@
           <th>ID Dispositivo</th>
           <th>Fecha Asignación</th>
           <th>Fecha Cambio</th>
+          <th>Estado</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -43,19 +38,34 @@
           <td>Laptop-XYZ</td>
           <td>2024-10-01</td>
           <td>2025-04-15</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>1002</td>
-          <td>Tablet-ABC</td>
-          <td>2024-11-12</td>
-          <td>2025-01-22</td>
+          <td class="estado-proceso">En proceso</td>
+          <td><button onclick="abrirModal(this)">Asignar Dispositivos</button></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <script src="../js/query-employee-devices.js"></script>
+  <div id="modalAsignacion" class="modal">
+    <div class="modal-content" id="contenidoModal">
+      <h1>Asignar Dispositivos a <span id="userModal"></span></h1>
+      <form id="formDispositivos">
+        <label><input type="checkbox" name="dispositivo" value="Laptop"> Laptop</label>
+        <label><input type="checkbox" name="dispositivo" value="Cargador Laptop"> Cargador Laptop</label>
+        <label><input type="checkbox" name="dispositivo" value="Mouse"> Mouse</label>
+        <label><input type="checkbox" name="dispositivo" value="Teclado"> Teclado</label>
+        <label><input type="checkbox" name="dispositivo" value="Mochila"> Mochila</label>
+        <label><input type="checkbox" name="dispositivo" value="Headset"> Headset</label>
+        <label><input type="checkbox" name="dispositivo" value="Flota"> Flota</label>
+        <label><input type="checkbox" name="dispositivo" value="Cargador Flota"> Cargador Flota</label>
+        <label><input type="checkbox" name="dispositivo" value="Desktop"> Desktop</label>
+        <br />
+        <button type="button" onclick="generarAcuerdo()">Generar Carta de Entrega</button>
+        <button type="button" onclick="cerrarModal()">Cerrar</button>
+      </form>
+    </div>
+  </div>
+    <script src="../js/query-employee-devices.js"></script>
+
 </body>
 
 </html>
