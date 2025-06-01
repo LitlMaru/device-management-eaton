@@ -2,19 +2,35 @@
 console.log("Hola")
 const input = document.getElementById("busqueda");
 
-input.addEventListener("input", function () {
+input.addEventListener("input", async function () {
     const filtro = this.value.trim();
 
-    ipcRenderer
+    try{
+        const response = await fetch(`${HOST}:${PORT}/api/employees/devices`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-ubicacion": sessionStorage.getItem("userLocation"),
+        },
+        body: JSON.stringify({employeeInfo: filtro})
+    });
+      const data = await response.json;
+      actualizarTablaBusqueda(data);
+    }
+    catch(error){
+        alert("Error al consultar dispositivos del empleado.")
+        console.log(error);
+    }
+});
+
+/*ipcRenderer
     .invoke("query-employee-devices", { employeeInfo: filtro })
     .then((resultado) => {
         actualizarTablaBusqueda(resultado);
     })
     .catch((error) => {
         console.error("Error en consulta:", error);
-    });
-});
-
+    });*/
 
 function exportarExcel() {
   const tabla = document.getElementById('tablaAsignados');

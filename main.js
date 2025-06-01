@@ -24,20 +24,27 @@ function createWindow() {
     },
   });
 
-   win.webContents.session.clearCache().then(() =>
-  console.log("Succesfully emptied cache")).catch(err => {console.error("Error clearing cache ", err.message)})
+  mainWindow.webContents.session
+    .clearCache()
+    .then(() => console.log("Succesfully emptied cache"))
+    .catch((err) => {
+      console.error("Error clearing cache ", err.message);
+    });
 
   mainWindow.loadFile("src/login.html");
 }
 
 app.whenReady().then(async () => {
-   const serverProcess = exec(`node "${path.join(__dirname, "backend/server.js")}"`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Error starting server: ${err.message}`);
-      return;
+  const serverProcess = exec(
+    `node "${path.join(__dirname, "backend/server.js")}"`,
+    (err, stdout, stderr) => {
+      if (err) {
+        console.error(`Error starting server: ${err.message}`);
+        return;
+      }
+      console.log(`${stdout}`);
     }
-    console.log(`${stdout}`);
-  });
+  );
 
   serverProcess.stderr.on("data", (data) => {
     console.error(`Server error: ${data}`);
@@ -87,7 +94,9 @@ ipcMain.handle("login-user", async (event, credentials) => {
     const result = await response.json();
     if (result.success) {
       global.currentUser = result.user;
-      sessionStorage.setItem("userLocation", global.currentUser.Ubicacion);
+      global.sharedObject = {
+        userLocation: result.user.Ubicacion,
+      };
       return { success: true, user: result.user };
     } else {
       return { success: false, message: result.message };
@@ -105,11 +114,14 @@ ipcMain.handle("get-current-user", () => {
 ipcMain.handle("register-employee", async (event, data) => {
   try {
     const user = global.currentUser;
-    const response = await fetch("http://localhost:3000/api/employees/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, ubicacion: user?.Ubicacion || "" }),
-    });
+    const response = await fetch(
+      "http://localhost:3000/api/employees/register",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, ubicacion: user?.Ubicacion || "" }),
+      }
+    );
 
     const result = await response.json();
     if (result.success) return { success: true };
@@ -122,14 +134,17 @@ ipcMain.handle("register-employee", async (event, data) => {
 
 ipcMain.handle("query-employee-devices", async (event, filter) => {
   try {
-    const response = await fetch("http://localhost:3000/api/employees/devices", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        employeeInfo: filter.employeeInfo,
-        ubicacion: global.currentUser?.Ubicacion || "",
-      }),
-    });
+    const response = await fetch(
+      "http://localhost:3000/api/employees/devices",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          employeeInfo: filter.employeeInfo,
+          ubicacion: global.currentUser?.Ubicacion || "",
+        }),
+      }
+    );
 
     const result = await response.json();
     return result.success ? result.data : [];
@@ -138,7 +153,6 @@ ipcMain.handle("query-employee-devices", async (event, filter) => {
     return [];
   }
 });
-
 
 //----------------CONFIGURACION DE USUARIOS ----------------------------
 
@@ -154,7 +168,6 @@ ipcMain.handle("get-users", async () => {
   }
 });
 
-
 //ELIMINAR USUARIO
 ipcMain.handle("delete-user", async (event, username) => {
   try {
@@ -167,7 +180,6 @@ ipcMain.handle("delete-user", async (event, username) => {
     return { error: err.message };
   }
 });
-
 
 //ACTUALIZAR USUARIO
 ipcMain.handle("update-user", async (event, user) => {
@@ -184,8 +196,6 @@ ipcMain.handle("update-user", async (event, user) => {
   }
 });
 
-
-
 //AGREGAR USUARIO
 ipcMain.handle("add-user", async (event, user) => {
   try {
@@ -200,7 +210,6 @@ ipcMain.handle("add-user", async (event, user) => {
     return { error: err.message };
   }
 });
-
 
 //--------------------ASIGNAR DISPOSITIVO-----------------------
 ipcMain.handle("assign-device", async (event, data) => {
@@ -318,9 +327,9 @@ ipcMain.handle("update-limit", async (event, modelo, nuevoLimite) => {
 //--------------------------DISPOSITIVOS--------------------------
 
 const filtros = {
-  tipoDispositivo: "", 
-  marca: "", 
-  modelo: "", 
+  tipoDispositivo: "",
+  marca: "",
+  modelo: "",
   serialNumber: "",
 };
 

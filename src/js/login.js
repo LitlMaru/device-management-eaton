@@ -11,9 +11,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const errorMessage = document.getElementById('error-message');
   if (response.success) {
     if (response.user.Rol === 'HR') {
-      window.location.href = '../src/hr.html';
+      window.location.href = '../src/hr-menu.html';
     } else {
-      window.location.href = '../src/it.html';
+      window.location.href = '../src/it-menu.html';
     }
   } else {
     errorMessage.textContent = response.message;

@@ -21,6 +21,8 @@
     "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mssql": "^11.0.1"
   }

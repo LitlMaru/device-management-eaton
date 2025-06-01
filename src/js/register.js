@@ -47,7 +47,7 @@ function enviarCorreo(usuario) {
     );
 }*/
 
-  function registrar(event){
+async function registrar(event){
     
     event.preventDefault();
     const name = document.getElementById("name").value.trim();
@@ -62,6 +62,25 @@ function enviarCorreo(usuario) {
     }
 
     const currentDate = new Date().toISOString().split("T")[0];
+
+    const employee = {id, name, dept, position, email, currentDate}
+    try{
+      fetch(`${HOST}:${PORT}/api/employees/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-ubicacion": sessionStorage.getItem("userLocation")
+        },
+        body: JSON.stringify(employee)
+      });
+
+      showMessage("Empleado agregado con éxito", "success");
+      document.getElementById("employee-form").reset();
+    }
+    catch(err){
+      showMessage(`Error: ${message}`, "error")
+    }
+    /*
     ipcRenderer.send("register-employee", () => {id, name, dept, position, email, currentDate})
 
     ipcRenderer.on("employee-added", () => {
@@ -71,7 +90,7 @@ function enviarCorreo(usuario) {
 
     ipcRenderer.on("employee-error", (event, message) => {
     showMessage(`Error: ${message}`, "error");
-    });
+    });*/
 }
 
 function showMessage(message, type) {

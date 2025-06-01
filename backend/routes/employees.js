@@ -5,6 +5,7 @@ const { sql, poolPromise } = require("../dbConfig");
 
 router.post("/register", async (req, res) => {
   const data = req.body;
+  const ubicacion = req.headers["x-ubicacion"]
   try {
     const pool = await poolPromise;
     await pool
@@ -14,7 +15,7 @@ router.post("/register", async (req, res) => {
       .input("Departamento", sql.VarChar, data.dept)
       .input("Posicion", sql.VarChar, data.position)
       .input("Email", sql.VarChar, data.email)
-      .input("Ubicacion", sql.VarChar, data.ubicacion)
+      .input("Ubicacion", sql.VarChar, ubicacion)
       .input("Fecha_Entrada", sql.Date, data.currentDate)
       .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
               VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Email, @Ubicacion, @Fecha_Entrada)`);
@@ -27,7 +28,8 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/devices", async (req, res) => {
-  const { employeeInfo, ubicacion } = req.body;
+  const { employeeInfo} = req.body;
+  const ubicacion = req.headers["x-ubicacion"];
   try {
     const pool = await poolPromise;
     const request = pool.request()
