@@ -30,34 +30,41 @@ let currentUser, HOST, PORT;
 
 async function init() {
   currentUser = await ElectronAPI.invoke("get-current-user");
-  env = await ElectronAPI.getEnv();
+  let env = await ElectronAPI.getEnv();
   HOST = env.HOST;
   PORT = env.PORT;
 }
 
 init();
 
-tableBody = document.getElementById("table-body");
-tableContainer = document.getElementById("device-table");
+let tableBody = document.getElementById("table-body");
+let tableContainer = document.getElementById("device-table-container");
 const resultMsg = document.getElementById("result-message");
 
-async function assignDevice(employeeData) {
-  const response = await fetch(`${HOST}:${PORT}/api/employees/assign-device`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-ubicacion": currentUser.Ubicacion,
-    },
-    body: JSON.stringify(employeeData),
-  });
-  const data = await response.json();
-  if (data.sucess) {
-    resultMsg.textContent = `Dispositivo ${tipoDispositivo} asignado a ${Info_empleado}.`;
-    e.target.reset();
-    tableBody.innerHTML = "";
-    tableContainer.style.display = "none";
-  } else {
-    resultMsg.textContent = "Error al asignar dispositivo.";
+async function assignDevice(employeeData, formElement) {
+  try {
+    const response = await fetch(`${HOST}:${PORT}/api/employees/assign-device`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-ubicacion": currentUser.Ubicacion,
+      },
+      body: JSON.stringify(employeeData),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {  
+      resultMsg.textContent = `Dispositivo ${employeeData.tipoDispositivo} asignado a ${employeeData.Info_empleado}.`;
+      formElement.reset();  
+      tableBody.innerHTML = "";
+      tableContainer.style.display = "none";
+      selectedDeviceID = null; 
+    } else {
+      resultMsg.textContent = "Error al asignar dispositivo.";
+    }
+  } catch (error) {
+    resultMsg.textContent = "Error de red o del servidor: " + error.message;
   }
 }
 
@@ -80,38 +87,7 @@ async function getAvailableDevices(type) {
     alert("Error al obtener los dispositivos disponibles: ", err.message);
   }
 }
-
-document
-  .getElementById("assign-form")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const Info_empleado = document.getElementById("employee-id").value.trim();
-    const tipoDispositivo = document.getElementById("device-type").value;
-
-    if (!selectedDeviceID) {
-      alert("Selecciona un dispositivo de la tabla.");
-      return;
-    }
-
-    const today = new Date();
-    const nextYear = new Date(today);
-    nextYear.setFullYear(today.getFullYear() + 1);
-
-    const formatDate = (date) => date.toISOString().split("T")[0];
-
-    const Fecha_Asignacion = formatDate(today);
-    const Fecha_Cambio = formatDate(nextYear);
-
-    assignDevice({
-      Info_empleado,
-      ID_Dispositivo: selectedDeviceID,
-      Fecha_Asignacion,
-      Fecha_Cambio,
-    });
-  });
-
-deviceSelect = document.getElementById("device-type");
+let deviceSelect = document.getElementById("device-type");
 deviceSelect.addEventListener("change", async () => {
   const type = deviceSelect.value;
   tableBody.innerHTML = "";
@@ -123,7 +99,12 @@ deviceSelect.addEventListener("change", async () => {
   }
 
   const result = await getAvailableDevices(type);
-  const devices = result.devices;
+
+  if (!result || !result.success || !Array.isArray(result.devices)) {
+    tableContainer.style.display = "none";
+    return;
+  }
+    const devices = result.devices;
 
   if (!devices || devices.length === 0) {
     tableContainer.style.display = "none";
@@ -151,3 +132,34 @@ deviceSelect.addEventListener("change", async () => {
     tableBody.appendChild(row);
   });
 });
+
+document
+  .getElementById("assign-form")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const Info_empleado = document.getElementById("employee-id").value.trim();
+    const tipoDispositivo = document.getElementById("device-type").value;
+
+    if (!selectedDeviceID) {
+      alert("Selecciona un dispositivo de la tabla.");
+      return;
+    }
+
+    const today = new Date();
+    const nextYear = new Date(today);
+    nextYear.setFullYear(today.getFullYear() + 1);
+
+    const formatDate = (date) => date.toISOString().split("T")[0];
+
+    const Fecha_Asignacion = formatDate(today);
+    const Fecha_Cambio = formatDate(nextYear);
+
+    await assignDevice({
+      Info_empleado,
+       tipoDispositivo, 
+      ID_Dispositivo: selectedDeviceID,
+      Fecha_Asignacion,
+      Fecha_Cambio,
+    }, e.target);
+  });

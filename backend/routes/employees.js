@@ -102,8 +102,8 @@ router.post("/assign-device", async (req, res) => {
 
     await pool
       .request()
-      .input("ID_Empleado", sql.VarChar, ID_Empleado)
-      .input("ID_Dispositivo", sql.VarChar, ID_Dispositivo)
+      .input("ID_Empleado", sql.Int, ID_Empleado)
+      .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
       .input("Fecha_Asignacion", sql.Date, Fecha_Asignacion)
       .input("Fecha_Cambio", sql.Date, Fecha_Cambio)
       .input("Ubicacion", sql.VarChar, ubicacion).query(`
@@ -111,6 +111,14 @@ router.post("/assign-device", async (req, res) => {
         (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Cambio, Ubicacion)
         VALUES (@ID_Empleado, @ID_Dispositivo, @Fecha_Asignacion, @Fecha_Cambio, @Ubicacion)
       `);
+
+      await pool  
+        .request()
+        .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
+        .query(`
+          UPDATE Dispositivos
+          SET Estado = 'Asignado'
+          WHERE ID_Dispositivo = @ID_Dispositivo`)
 
     res.json({ success: true });
   } catch (error) {
