@@ -1,143 +1,180 @@
 
 
-const ElectronAPI = (() => {
-  function sendMessage(action, data) {
-    return new Promise((resolve, reject) => {
-      const requestId = Math.random().toString(36).slice(2);
 
-      function handler(event) {
-        if (event.data && event.data.requestId === requestId) {
-          window.removeEventListener("message", handler);
-          if (event.data.success) {
-            resolve(event.data.result || event.data.env);
-          } else {
-            reject(new Error(event.data.error));
-          }
-        }
+    let dispositivos = [
+      { id: 1, tipo: "Laptop", modelo: "Toshiba X200", marca: "Toshiba", serial: "123456", estado: "Disponible" },
+      { id: 2, tipo: "Monitor", modelo: "ViewSonic VX2458", marca: "ViewSonic", serial: "654321", estado: "Dañado" },
+      { id: 3, tipo: "Mouse", modelo: "Logitech M220", marca: "Logitech", serial: "A1122", estado: "Disponible" },
+      { id: 4, tipo: "Laptop", modelo: "Dell Inspiron", marca: "Dell", serial: "789123", estado: "Disponible" }
+    ];
+
+    const modelosPorTipo = 
+    {
+      Laptop: ["Toshiba X200", "Dell Inspiron", "HP Pavilion", "Lenovo ThinkPad"],
+      Monitor: ["17in","22in", "24in"],
+      Mouse: ["Ergonomico","Estandar","Innalambrico"],
+      Teclado: ["Ergonomico","Estandar","Innalambrico"], 
+       Cargador: ["Tipo C","Punta Fina","Punta Ancha"],
+        Cable: ["VGA","DVI","HDMI","Red","HDMI"],
+         Charger: ["Broad Tip"],
+          Toner: ["MP C6003", "SP8400A","MP 6054", "M. C6000"],
+            USB: ["A-B"]
+
+    };
+    
+
+    let editarId = null; 
+
+
+    function actualizarModelos() {
+      const tipoSeleccionado = document.getElementById('tipo').value;
+      const modeloSelect = document.getElementById('modelo');
+      modeloSelect.innerHTML = "";
+
+      if (modelosPorTipo[tipoSeleccionado]) {
+        modelosPorTipo[tipoSeleccionado].forEach(modelo => {
+          const option = document.createElement('option');
+          option.value = modelo;
+          option.textContent = modelo;
+          modeloSelect.appendChild(option);
+        });
+      }
+    }
+
+   
+    document.getElementById('tipo').addEventListener('change', actualizarModelos);
+
+
+    function abrirModal() {
+      document.getElementById('modal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+
+      document.getElementById('modalTitle').textContent = 'Agregar Dispositivo';
+
+   
+      document.getElementById('tipo').value = "Laptop";
+      actualizarModelos();
+      document.getElementById('modelo').selectedIndex = 0;
+      document.getElementById('marca').value = "";
+      document.getElementById('serial').value = "";
+      document.getElementById('estado').value = "Disponible";
+
+      editarId = null;
+    }
+
+
+    function cerrarModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+
+    function guardarDispositivo() {
+      const tipo = document.getElementById('tipo').value.trim();
+      const modelo = document.getElementById('modelo').value.trim();
+      const marca = document.getElementById('marca').value.trim();
+      const serial = document.getElementById('serial').value.trim();
+      const estado = document.getElementById('estado').value;
+
+      if (!tipo || !modelo || !marca) {
+        alert("Por favor, complete todos los campos excepto el número de serial que puede estar vacío.");
+        return;
       }
 
-      window.addEventListener("message", handler);
+      if (editarId) {
+  
+        const index = dispositivos.findIndex(d => d.id === editarId);
+        if (index !== -1) {
+          dispositivos[index] = { id: editarId, tipo, modelo, marca, serial, estado };
+        }
+      } else {
+     
+        const nuevoId = dispositivos.length > 0 ? dispositivos[dispositivos.length - 1].id + 1 : 1;
+        dispositivos.push({ id: nuevoId, tipo, modelo, marca, serial, estado });
+      }
 
-      window.parent.postMessage({ action, data, requestId }, "*");
-    });
-  }
+      cerrarModal();
+      aplicarFiltros();
+    }
 
-  return {
-    invoke: (...args) => sendMessage("invoke-ipc", { args }),
-    getEnv: () => sendMessage("get-env"),
-  };
-})();
-
-let currentUser, HOST, PORT;
-
-async function init() {
-  currentUser = await ElectronAPI.invoke("get-current-user");
-  env = await ElectronAPI.getEnv();
-  HOST = env.HOST;
-  PORT = env.PORT;
-}
-
-async function cargarDispositivos() {
-  const filtros = {
-    tipoDispositivo: document.getElementById("deviceTypeSelect").value,
-    marca: document.getElementById("brandSearch").value,
-    modelo: document.getElementById("modelSelect").value,
-    serialNumber: document.getElementById("serialNumberSearch").value,
-  };
-
-  const dispositivos = await ipcRenderer.invoke("get-devices", filtros);
-  const tbody = document.getElementById("deviceTableBody");
+   function mostrarDispositivos(lista) {
+  const tbody = document.querySelector("#deviceTable tbody");
   tbody.innerHTML = "";
 
-  dispositivos.forEach((dispositivo) => {
+  lista.forEach(d => {
     const tr = document.createElement("tr");
 
+    // Asigna color según el estado
+    if (d.estado === "Dañado") {
+      tr.classList.add("row-alert"); // fondo rojo claro
+    } else if (d.estado === "Asignado") {
+      tr.classList.add("row-asignado"); // fondo amarillo claro
+    }
+
     tr.innerHTML = `
-      <td>${dispositivo.Tipo}</td>
-      <td>${dispositivo.Marca}</td>
-      <td>${dispositivo.Modelo}</td>
-      <td>${dispositivo.Serial_Number}</td>
+      <td>${d.id}</td>
+      <td>${d.tipo}</td>
+      <td>${d.modelo}</td>
+      <td>${d.marca}</td>
+      <td>${d.serial || "-"}</td>
+      <td>${d.estado}</td>
+      <td>
+        <button class="btn-edit" onclick="editarDispositivo(${d.id})">Editar</button>
+        <button class="btn-delete" onclick="eliminarDispositivo(${d.id})">Eliminar</button>
+      </td>
     `;
-
-    const accionesTd = document.createElement("td");
-
-    const btnEditar = document.createElement("button");
-    btnEditar.textContent = "Editar SN";
-    btnEditar.className = "btn btn-sm btn-warning me-2";
-    btnEditar.onclick = () =>
-      editarSerial(dispositivo.ID, dispositivo.Serial_Number);
-
-    const btnEliminar = document.createElement("button");
-    btnEliminar.textContent = "Eliminar";
-    btnEliminar.className = "btn btn-sm btn-danger";
-    btnEliminar.onclick = () => eliminarDispositivo(dispositivo.ID);
-
-    accionesTd.appendChild(btnEditar);
-    accionesTd.appendChild(btnEliminar);
-
-    tr.appendChild(accionesTd);
     tbody.appendChild(tr);
   });
 }
+  
+    function editarDispositivo(id) {
+      const dispositivo = dispositivos.find(d => d.id === id);
+      if (!dispositivo) return;
 
-function openSNModal(id, actualSerialNumber) {
-  document.getElementById("modalSN").style.display = "flex";
-  document.getElementById("actual-sn").textContent = actualSerialNumber;
-  document
-    .getElementById("save-sn-btn")
-    .addEventListener("click", updateSerialNumber(id, actualSerialNumber));
-}
+      editarId = id;
+      document.getElementById('modalTitle').textContent = 'Editar Dispositivo';
+      document.getElementById('tipo').value = dispositivo.tipo;
+      actualizarModelos();
+    
+      setTimeout(() => {
+        const modeloSelect = document.getElementById('modelo');
+        for(let i=0; i < modeloSelect.options.length; i++) {
+          if(modeloSelect.options[i].value === dispositivo.modelo) {
+            modeloSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }, 0);
+      document.getElementById('marca').value = dispositivo.marca;
+      document.getElementById('serial').value = dispositivo.serial;
+      document.getElementById('estado').value = dispositivo.estado;
 
-async function updateSerialNumber(id, actualSerialNumber) {
-  newSerialNumber = document.getElementById("input-new-sn").value;
-  document.getElementById("message-box").textContent = newSerialNumber;
-  if (
-    newSerialNumber &&
-    newSerialNumber.trim() !== "" &&
-    newSerialNumber !== actualSerialNumber
-  ) {
-    try{
-      const response = await fetch(`${HOST}:${PORT}/api/devices/serial-number`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({id, newSerialNumber})
-      })
-
-      const data = await response.json();
-      document.getElementById("message-box").textContent = "Número de serie actualizado"
+      abrirModal();
     }
-    catch(err){
-      document.getElementById("message-box").textContent = "Error al actualizar: " +  err
-    }
-    /*const respuesta = await ipcRenderer.invoke("update-serial", {
-      id,
-      nuevoSerial,
-    });
-    if (respuesta.success) {
-      alert("Número de serie actualizado");
-      cargarDispositivos();
-    } else {
-      alert("Error al actualizar: " + respuesta.error);
-    }*/
-  }
-}
 
-function closeSNModal() {
-  document.getElementById("modalSN").style.display = "none";
-  document.getElementById("message-box").textContent = "";
-}
-
-async function eliminarDispositivo(id) {
-  const confirmar = confirm("¿Seguro que deseas eliminar este dispositivo?");
-  if (confirmar) {
-    const respuesta = await ipcRenderer.invoke("delete-device", id);
-    if (respuesta.success) {
-      alert("Dispositivo eliminado");
-      cargarDispositivos();
-    } else {
-      alert("Error al eliminar: " + respuesta.error);
+  
+    function eliminarDispositivo(id) {
+      if (confirm("¿Está seguro de eliminar este dispositivo?")) {
+        dispositivos = dispositivos.filter(d => d.id !== id);
+        aplicarFiltros();
+      }
     }
-  }
-}
+
+    function aplicarFiltros() {
+      const textoFiltro = document.getElementById('serialNumberSearch').value.toLowerCase();
+      const tipoFiltro = document.getElementById('deviceTypeSelect').value;
+      const estadoFiltro = document.getElementById('statusSelect').value;
+
+      let filtrados = dispositivos.filter(d => {
+        const matchSerial = d.serial.toLowerCase().includes(textoFiltro);
+        const matchModelo = d.modelo.toLowerCase().includes(textoFiltro);
+        const matchTipo = tipoFiltro === "" || d.tipo === tipoFiltro;
+        const matchEstado = estadoFiltro === "" || d.estado === estadoFiltro;
+
+        return (matchSerial || matchModelo) && matchTipo && matchEstado;
+      });
+
+      mostrarDispositivos(filtrados);
+    }
+
+
+    mostrarDispositivos(dispositivos);
