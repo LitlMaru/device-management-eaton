@@ -23,11 +23,11 @@
       <div class="sidebar">
         <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
         
-        <div class="menu-item" onclick="cargarPagina('assign-devices.html')">
+        <div class="menu-item" onclick="loadPage('assign-devices.html')">
           Asignar dispositivo <img src="../assets/add-user.svg" alt="">
         </div>
 
-        <div class="menu-item" onclick="cargarPagina('buscar.html')">
+        <div class="menu-item" onclick="loadPage('buscar_it.html')">
           Buscar asignados <img src="../assets/search.svg" alt="">
         </div>
 
@@ -47,40 +47,7 @@
         <iframe src="pages/it-dashboard.html" class="content" id="content"></iframe>
     </div>
 
-    <script>
-        const iframe = document.getElementById("content");
-      
-        iframe.onload = () => {
-            iframe.contentWindow.electron = window.electron;
-        };
-
-        function loadPage(page) {
-            iframe.src = `pages/${page}`;
-        }
-
-        function minimizeWindow() {
-            window.electronAPI.minimize();
-        }
-
-      const fullScreenImage = document.getElementById("img-full-screen");
-      function maximizarVentana() {
-        window.electronAPI.maximize();
-        if (fullScreenImage.src.includes("fullscreenmode.svg"))
-          fullScreenImage.src = "../assets/windowmode.svg";
-        else
-          fullScreenImage.src = "../assets/fullscreenmode.svg";
-      }
-
-        function closeWindow() {
-            window.electronAPI.close();
-        }
-
-        function closeSession() {
-            window.location.href = "login.html";
-        }
-
-    </script>
-    <script src="../it.js"></script>
+    <script src="js/it.js"></script>
   </body>
   </html>
 

@@ -37,22 +37,28 @@ router.post("/", async (req, res) => {
 
 // Actualizar usuario
 router.put("/", async (req, res) => {
-  const { username, clave, rol, ubicacion } = req.body;
+  const { idUsuario, campo, valor } = req.body;
+
+  const camposPermitidos = ["Clave", "Rol", "Ubicacion"];
+  if (!camposPermitidos.includes(campo)) {
+    return res.status(400).json({ success: false, message: "Campo no permitido." });
+  }
+
   try {
     const pool = await poolPromise;
+    const query = `
+      UPDATE Usuarios
+      SET ${campo} = @valor
+      WHERE ID_Usuario = @idUsuario
+    `;
     await pool.request()
-      .input("username", sql.VarChar, username)
-      .input("clave", sql.VarChar, clave)
-      .input("rol", sql.VarChar, rol)
-      .input("ubicacion", sql.VarChar, ubicacion)
-      .query(`
-        UPDATE Usuarios
-        SET Clave = @clave, Rol = @rol, Ubicacion = @ubicacion
-        WHERE Username = @username
-      `);
+      .input("valor", sql.VarChar, valor)
+      .input("idUsuario", sql.Int, idUsuario)
+      .query(query);
+
     res.json({ success: true });
   } catch (err) {
-    console.error(err.message);
+    console.error("Error actualizando usuario:", err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });

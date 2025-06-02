@@ -191,9 +191,9 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/serial-number", async (req, res) => {
   try {
-    const { old_sn, new_sn } = req.body;
+    const { id, newSerialNumber } = req.body;
     await sql.connect(dbConfig);
-    await sql.query`UPDATE Dispositivos SET Serial_Number = ${new_sn} WHERE Serial_Number = ${old_sn}`;
+    await sql.query`UPDATE Dispositivos SET Serial_Number = ${newSerialNumber} WHERE ID_Dispositivo = ${id}`;
     res.json({ success: true });
   } catch (err) {
     console.error(err);

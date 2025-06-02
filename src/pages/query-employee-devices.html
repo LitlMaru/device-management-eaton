@@ -1,71 +1,115 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dispositivos Asignados</title>
-  
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="../css/query-employee-devices.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispositivos Asignados</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="../css/query-employee-devices.css" />
+  </head>
 
   <body>
-  <div class="contenedor-principal">
-    <h1>Dispositivos Asignados</h1>
+    <div class="contenedor-principal">
+      <h1>Dispositivos Asignados</h1>
 
-    <div class="busqueda-exportar">
-      <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
-      <button onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
+      <div class="busqueda-exportar">
+        <input
+          type="text"
+          id="busqueda"
+          placeholder="Buscar por nombre o código..."
+          oninput="filtrarTabla()"
+        />
+        <button onclick="exportarExcel()" class="excel-btn">
+          <img src="../../assets/excel.png" style="width: 16px" alt="" />
+          <span>Exportar a Excel</span>
+        </button>
+      </div>
+
+      <div class="scrollable">
+        <table id="tablaAsignados">
+          <thead>
+            <tr>
+              <th>Empleado</th>
+              <th>Dispositivo</th>
+              <th>Fecha Asignación</th>
+              <th>Fecha Cambio</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Romulo Betances</td>
+              <td>Laptop-XYZ</td>
+              <td>2024-10-01</td>
+              <td>2025-04-15</td>
+              <td class="estado-proceso">En proceso</td>
+              <td>
+                <div class="actions-container">
+                  <button onclick="abrirModal(this)">
+                    Asignar Dispositivos
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <table id="tablaAsignados">
-      <thead>
-        <tr>
-          <th>ID Asignación</th>
-          <th>ID Empleado</th>
-          <th>ID Dispositivo</th>
-          <th>Fecha Asignación</th>
-          <th>Fecha Cambio</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>1001</td>
-          <td>Laptop-XYZ</td>
-          <td>2024-10-01</td>
-          <td>2025-04-15</td>
-          <td class="estado-proceso">En proceso</td>
-          <td><button onclick="abrirModal(this)">Asignar Dispositivos</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="modalAsignacion" class="modal">
-    <div class="modal-content" id="contenidoModal">
-      <h1>Asignar Dispositivos a <span id="userModal"></span></h1>
-      <form id="formDispositivos">
-        <label><input type="checkbox" name="dispositivo" value="Laptop"> Laptop</label>
-        <label><input type="checkbox" name="dispositivo" value="Cargador Laptop"> Cargador Laptop</label>
-        <label><input type="checkbox" name="dispositivo" value="Mouse"> Mouse</label>
-        <label><input type="checkbox" name="dispositivo" value="Teclado"> Teclado</label>
-        <label><input type="checkbox" name="dispositivo" value="Mochila"> Mochila</label>
-        <label><input type="checkbox" name="dispositivo" value="Headset"> Headset</label>
-        <label><input type="checkbox" name="dispositivo" value="Flota"> Flota</label>
-        <label><input type="checkbox" name="dispositivo" value="Cargador Flota"> Cargador Flota</label>
-        <label><input type="checkbox" name="dispositivo" value="Desktop"> Desktop</label>
-        <br />
-        <button type="button" onclick="generarAcuerdo()">Generar Carta de Entrega</button>
-        <button type="button" onclick="cerrarModal()">Cerrar</button>
-      </form>
+    <div id="modalAsignacion" class="modal">
+      <div class="modal-content" id="contenidoModal">
+        <h1>Asignar Dispositivos a <span id="userModal"></span></h1>
+        <form id="formDispositivos">
+          <label
+            ><input type="checkbox" name="dispositivo" value="Laptop" />
+            Laptop</label
+          >
+          <label
+            ><input
+              type="checkbox"
+              name="dispositivo"
+              value="Cargador Laptop"
+            />
+            Cargador Laptop</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Mouse" />
+            Mouse</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Teclado" />
+            Teclado</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Mochila" />
+            Mochila</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Headset" />
+            Headset</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Flota" />
+            Flota</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Cargador Flota" />
+            Cargador Flota</label
+          >
+          <label
+            ><input type="checkbox" name="dispositivo" value="Desktop" />
+            Desktop</label
+          >
+          <br />
+          <button type="button" onclick="generarAcuerdo()">
+            Generar Carta de Entrega
+          </button>
+          <button type="button" onclick="cerrarModal()">Cerrar</button>
+        </form>
+      </div>
     </div>
-  </div>
     <script src="../js/query-employee-devices.js"></script>
-
-</body>
-
+  </body>
 </html>

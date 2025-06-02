@@ -16,7 +16,19 @@
         </button>
       </div>
 
-      <div id="modal" class="modal">
+      <div id="modalSN" class="modal" style="display: none;">
+        <div class="modal-content">
+          <p>Nuevo número de serie: <span id="actual-sn"></span></p>
+          <input type="text" id="input-new-sn">
+          <div class="form-group">
+            <button id="save-sn-btn">Guardar</button>
+            <button onclick="closeSNModal()">Cerrar</button>
+          </div>
+          <div id="message-box"></div>
+        </div>
+      </div>
+
+      <div id="modal" class="modal" style="display: none;">
         <div class="modal-content">
           <h2>Agregar Dispositivo</h2>
           <div class="form-content">
@@ -59,7 +71,7 @@
 
             <div class="form-group">
               <label>Cantidad:</label>
-              <input type="number" class="inputBloqueado" id="cantidad" />
+              <input type="number" id="cantidad" />
             </div>
             <div class="form-group">
               <label>
@@ -115,20 +127,49 @@
         <button onclick="cargarDispositivos()">Aplicar Filtros</button>
       </div>
 
-      <table id="devicesTable">
-        <thead>
-          <tr>
-            <th>Tipo de dispositivo</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Serial Number</th>
-            <th>Acciones</th>
-          </tr>
-          >
-        </thead>
-        <tbody id="devicesTableBody"></tbody>
-      </table>
+      <div class="scrollable">
+        <table id="devicesTable">
+          <thead>
+            <tr>
+              <th>Tipo de dispositivo</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Serial Number</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="devicesTableBody">
+            <tr>
+              <td>Laptop</td>
+              <td>Dell</td>
+              <td>G7</td>
+              <td>edsoaediosd</td>
+              <td><div class="action-buttons">
+                <button class="edit-btn" onclick="openSNModal(1, 31154)">Editar SN</button>
+                <button class="delete-btn">Eliminar dispositivo</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <script src="../src/js/devices.js"></script>
+    <script>
+      function abrirModal(){
+        document.getElementById("modal").style.display = 'flex';
+      }
+
+      function cerrarModal(){
+        document.getElementById("modal").style.display = 'none';
+      }
+
+      function toggleSerialInput() {
+  const tieneSerial = document.getElementById("tieneSerial").checked;
+  document.getElementById("grupoSerial").style.display = tieneSerial
+    ? "flex"
+    : "none";
+  document.getElementById("cantidad").classList.toggle("inputBloqueado");
+}
+    </script>
+    <script src="../js/devices.js"></script>
   </body>
 </html>

@@ -1,60 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispositivos Asignados</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="../css/buscar_it.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dispositivos Asignados</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="../css/buscar_it.css">
-</head>
+  <body>
+    <div class="contenedor-principal">
+      <h1>Dispositivos Asignados</h1>
 
-<body>
- 
-  <div class="contenedor-principal">
-    <h1>Dispositivos Asignados</h1>
-
-    <div class="busqueda-exportar">
-      <div class="busqueda-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="busqueda" placeholder="Buscar por nombre o código...">
+      <div class="busqueda-exportar">
+        <div class="busqueda-container">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="busqueda"
+            placeholder="Buscar por nombre o código..."
+          />
+        </div>
+        <button onclick="exportarExcel()" class="excel-btn">
+          <img src="../../assets/excel.png" style="width: 16px;" alt=""> <span>Exportar a Excel</span>
+        </button>
       </div>
-      <button onclick="exportarExcel()">
-        <i class="fas fa-file-excel"></i> Exportar a Excel
-      </button>
+
+      <div class="scrollable">
+        <table id="tablaAsignados">
+          <thead>
+            <tr>
+              <th>Empleado</th>
+              <th>Dispositivo</th>
+              <th>Fecha Asignación</th>
+              <th>Fecha Cambio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Romulo</td>
+              <td>Laptop-XYZ</td>
+              <td>2024-10-01</td>
+              <td>2025-04-15</td>
+            </tr>
+            <tr>
+              <td>Carlos</td>
+              <td>Tablet-ABC</td>
+              <td>2024-11-12</td>
+              <td>2025-01-22</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <table id="tablaAsignados">
-      <thead>
-        <tr>
-          <th>ID Asignación</th>
-          <th>ID Empleado</th>
-          <th>ID Dispositivo</th>
-          <th>Fecha Asignación</th>
-          <th>Fecha Cambio</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>1001</td>
-          <td>Laptop-XYZ</td>
-          <td>2024-10-01</td>
-          <td>2025-04-15</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>1002</td>
-          <td>Tablet-ABC</td>
-          <td>2024-11-12</td>
-          <td>2025-01-22</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <script src="../js/buscar_it.js"></script>
-</body>
-
+    <script src="../js/buscar_it.js"></script>
+  </body>
 </html>

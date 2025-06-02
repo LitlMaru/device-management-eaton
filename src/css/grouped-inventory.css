@@ -3,11 +3,30 @@
   margin: 0;
   padding: 0;
 }
+html, body{
+    height: 100%;
+}
 body {
   font-family: "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f6f8;
+  background-color: #f4f7fc;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #003973;
+  border-radius: 10px;
+  border: 3px solid #fff;
+}
+::-webkit-scrollbar-button {
+  display: none;
 }
 
 header {
@@ -41,8 +60,9 @@ header {
 }
 
 .container {
+  height: 100%;
   max-width: 1200px;
-  margin: 30px auto;
+  /*margin: 30px auto;*/
   background-color: #fff;
   padding: 25px;
   border-radius: 12px;
@@ -60,8 +80,8 @@ h1 {
   margin-bottom: 20px;
 }
 
-input[type="text"],
 select {
+  margin-top: 20px;
   padding: 10px;
   border: 2px solid #cc0000;
   background-color: #ffe5e5;
@@ -99,7 +119,7 @@ input[type="text"]::placeholder {
   margin-bottom: 6px;
 }
 
-button.export-btn {
+button.excel-btn {
   background-color: #cc0000;
   color: #fff;
   border: none;
@@ -112,10 +132,18 @@ button.export-btn {
   position: relative;
   left: 40%;
   right: 100px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: nowrap;
 }
 
-button.export-btn:hover {
+button.excel-btn:hover {
   background-color: #990000;
+}
+
+.scrollable {
+  overflow-x: scroll;
+  min-width: 400px;
 }
 
 table {
@@ -144,7 +172,7 @@ tr:hover {
 td .action-buttons {
   display: flex;
   gap: 10px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .edit-btn {

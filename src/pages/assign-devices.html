@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Asignar Dispositivo</title>
-  <link rel="stylesheet" href="../css/assign-devices.css">
- 
-</head>
-<body>
-
-  <div class="content-wrapper">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asignar Dispositivo</title>
+    <link rel="stylesheet" href="../css/assign-devices.css" />
+  </head>
+  <body>
     <div class="main-content" id="main-content">
       <h1>Asignar Dispositivo a Empleado</h1>
 
       <form id="assign-form">
         <div class="form-group">
           <label for="employee-id">ID o Nombre del Empleado:</label>
-          <input type="text" id="employee-id" name="employee-id" required placeholder="Ej: 1234" />
+          <input
+            type="text"
+            id="employee-id"
+            name="employee-id"
+            required
+            placeholder="Ej: 1234"
+          />
         </div>
 
         <div class="form-group">
           <label for="device-type">Tipo de Dispositivo:</label>
           <select id="device-type" name="device-type" required>
-            <option value="">Selecciona</option>
+            <option value="" disabled selected hidden>Selecciona</option>
             <option value="Laptop">Laptop</option>
             <option value="Monitor">Monitor</option>
             <option value="Mouse">Mouse</option>
@@ -33,33 +36,38 @@
             <option value="Cargador de Flota">Cargador de Flota</option>
             <option value="Mochila">Mochila</option>
             <option value="Desktop">Desktop</option>
-               <option value="Mini Desktop">Mini Desktop</option>
-
+            <option value="Mini Desktop">Mini Desktop</option>
           </select>
         </div>
 
         <div class="form-group">
-  <label>Selecciona un Dispositivo Disponible:</label>
-  <div id="device-table-container" style="display: none; overflow-y: auto;">
-    <table id="device-table" style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-      <thead>
-        <tr>
-          <th>Marca</th>
-          <th>Modelo</th>
-          <th>Numero de Serie</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </div>
-</div>
+          <label>Selecciona un Dispositivo Disponible:</label>
+          <div
+            id="device-table-container"
+            style="display: none; overflow-y: auto; overflow-x: scroll"
+          >
+            <table
+              id="device-table"
+              style="width: 100%; border-collapse: collapse; margin-top: 1rem"
+            >
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Numero de Serie</th>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+          </div>
+        </div>
 
         <button type="submit">Asignar</button>
       </form>
 
       <div id="result-message"></div>
-  </div>
-<script src="../js/assign-devices.js"></script>
-</body>
+    </div>
+
+    <script src="../js/assign-devices.js"></script>
+  </body>
 </html>

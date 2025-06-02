@@ -1,29 +1,66 @@
-const { session } = require("electron");
+const ElectronAPI = (() => {
+  function sendMessage(action, data) {
+    return new Promise((resolve, reject) => {
+      const requestId = Math.random().toString(36).slice(2);
 
-const HOST = process.env.HOST || "http://localhost";
-const PORT = process.env.PORT || 3000;
+      function handler(event) {
+        if (event.data && event.data.requestId === requestId) {
+          window.removeEventListener("message", handler);
+          if (event.data.success) {
+            resolve(event.data.result || event.data.env);
+          } else {
+            reject(new Error(event.data.error));
+          }
+        }
+      }
+
+      window.addEventListener("message", handler);
+
+      window.parent.postMessage({ action, data, requestId }, "*");
+    });
+  }
+
+  return {
+    invoke: (...args) => sendMessage("invoke-ipc", { args }),
+    getEnv: () => sendMessage("get-env"),
+  };
+})();
+
+let currentUser, HOST, PORT;
+
+async function init() {
+  currentUser = await ElectronAPI.invoke("get-current-user");
+  env = await ElectronAPI.getEnv();
+  HOST = env.HOST;
+  PORT = env.PORT;
+}
+
+init();
+
+tableBody = document.getElementById("table-body");
+tableContainer = document.getElementById("device-table");
 
 async function assignDevice(employeeData) {
   const response = await fetch(`${HOST}:${PORT}/api/employees/assign-device`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-ubicacion": sessionStorage.getItem("userLocation"),
+      "x-ubicacion": currentUser.Ubicacion,
     },
     body: JSON.stringify(employeeData),
   });
   const data = await response.json();
   if (data.sucess) {
-    resultMsg.textContent = `✅ Dispositivo ${tipoDispositivo} asignado a ${Info_empleado}.`;
+    resultMsg.textContent = `Dispositivo ${tipoDispositivo} asignado a ${Info_empleado}.`;
     e.target.reset();
     tableBody.innerHTML = "";
     tableContainer.style.display = "none";
   } else {
-    resultMsg.textContent = "❌ Error al asignar dispositivo.";
+    resultMsg.textContent = "Error al asignar dispositivo.";
   }
 }
 
-async function getAvailableDevices(type) {
+async function getAvailableDevices(deviceType) {
   try {
     const response = await fetch(
       `${HOST}:${PORT}/api/devices/get-available-devices`,
@@ -31,15 +68,15 @@ async function getAvailableDevices(type) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-ubicacion": sessionStorage.getItem("userLocation"),
+          "x-ubicacion": currentUser.Ubicacion,
         },
-        body: JSON.stringify(type),
+        body: JSON.stringify(deviceType),
       }
     );
     const data = await response.json();
     return data;
   } catch (err) {
-    alert("Error al obtener los dispositivos disponibles: ");
+    alert("Error al obtener los dispositivos disponibles: ", err.message);
   }
 }
 
@@ -73,7 +110,8 @@ document
       Fecha_Asignacion,
       Fecha_Cambio,
     });
-    /* const assignmentResult = await ipcRenderer.invoke("assign-device", {
+  });
+/* const assignmentResult = await ipcRenderer.invoke("assign-device", {
         Info_empleado,
         ID_Dispositivo: selectedDeviceSerial,
         Fecha_Asignacion: fechaAsignacion,
@@ -89,43 +127,43 @@ document
         tableContainer.style.display = "none";
       }*/
 
-    deviceSelect.addEventListener("change", async () => {
-      const type = deviceSelect.value;
-      tableBody.innerHTML = "";
-      selectedDeviceSerial = null;
+deviceSelect = 
+deviceSelect.addEventListener("change", async () => {
+  const type = deviceSelect.value;
+  tableBody.innerHTML = "";
+  selectedDeviceSerial = null;
 
-      if (!type) {
-        tableContainer.style.display = "none";
-        return;
-      }
+  if (!type) {
+    tableContainer.style.display = "none";
+    return;
+  }
 
-      const devices = getAvailableDevices(type);
-      
-      if (devices.error || devices.length === 0) {
-        tableContainer.style.display = "none";
-        return;
-      }
+  const devices = getAvailableDevices(type);
 
-      tableContainer.style.display = "block";
+  if (devices.error || devices.length === 0) {
+    tableContainer.style.display = "none";
+    return;
+  }
 
-      devices.forEach((device) => {
-        const row = document.createElement("tr");
-        row.style.cursor = "pointer";
-        row.innerHTML = `
+  tableContainer.style.display = "block";
+
+  devices.forEach((device) => {
+    const row = document.createElement("tr");
+    row.style.cursor = "pointer";
+    row.innerHTML = `
       <td style="padding: 0.5rem;">${device.Marca}</td>
       <td style="padding: 0.5rem;">${device.Modelo}</td>
       <td style="padding: 0.5rem;">${device.Numero_Serie}</td>
     `;
 
-        row.addEventListener("click", () => {
-          document.querySelectorAll("#device-table tbody tr").forEach((r) => {
-            r.style.backgroundColor = "";
-          });
-          row.style.backgroundColor = "#cce5ff";
-          selectedDeviceSerial = device.Numero_Serie;
-        });
-
-        tableBody.appendChild(row);
+    row.addEventListener("click", () => {
+      document.querySelectorAll("#device-table tbody tr").forEach((r) => {
+        r.style.backgroundColor = "";
       });
+      row.style.backgroundColor = "#cce5ff";
+      selectedDeviceSerial = device.Numero_Serie;
     });
+
+    tableBody.appendChild(row);
   });
+});

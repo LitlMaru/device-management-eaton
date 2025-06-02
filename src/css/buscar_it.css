@@ -4,12 +4,32 @@
   padding: 0;
 }
 
-body {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #f4f6f8;
-  color: #333;
+html, body{
+    height: 100%;
 }
 
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #003973;
+  border-radius: 10px;
+  border: 3px solid #fff;
+}
+::-webkit-scrollbar-button {
+  display: none;
+}
 header {
   background: linear-gradient(90deg, #004e92, #000428);
   color: white;
@@ -41,7 +61,8 @@ header {
 
 .contenedor-principal {
   max-width: 1200px;
-  margin: 40px auto;
+  height: 100%;
+  /*margin: 40px auto;*/
   background-color: #fff;
   padding: 30px;
   border-radius: 14px;
@@ -57,8 +78,7 @@ h1 {
 
 .busqueda-exportar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 25px;
@@ -104,8 +124,20 @@ button {
   transition: background-color 0.3s ease;
 }
 
+.excel-btn{
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+}
+
 button:hover {
   background-color: #990000;
+}
+
+.scrollable {
+  overflow-x: scroll;
+  min-width: 400px;
 }
 
 table {
@@ -174,4 +206,3 @@ tbody tr:hover {
 .hidden {
   display: none;
 }
-

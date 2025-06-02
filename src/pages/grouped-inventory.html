@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../css/grouped-inventory.css">
       
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="../js/grouped-inventory.js"></script>
   </body>
 
     
@@ -19,7 +18,7 @@
       <h1>Inventario de Dispositivos Agrupados</h1>
       <div class="search-filter">
         <select id="deviceType">
-          <option value="">Todos</option>
+          <option value="" selected>Tipo de dispositivo</option>
         </select>
       </div>
 
@@ -40,24 +39,32 @@
         </ul>
       </div>
 
-      <button class="export-btn" onclick="exportarExcel()">
-        ⬇ Exportar a Excel
-      </button>
+       <button onclick="exportarExcel()" class="excel-btn">
+          <img src="../../assets/excel.png" style="width: 16px;" alt=""> <span>Exportar a Excel</span>
+        </button>
 
-      <table id="inventoryTable">
+      <div class="scrollable"><table id="inventoryTable">
         <thead>
           <tr>
             <th>Tipo de Dispositivo</th>
             <th>Modelo</th>
             <th>Cantidad</th>
             <th>Límite</th>
-            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <tr>
+            <td>Laptops</td>
+            <td>Pequeña</td>
+            <td>14</td>
+            <td>10</td>
+            <td><div class="action-buttons"><button onclick="toggleModal" class="edit-btn">Cambiar limite</button></div></td>
+          </tr>
+        </tbody>
       </table>
-
+</div>
+      
       <div id="editModal" class="hidden">
         <h3>Editar cantidad mínima</h3>
         <p id="editTitle"></p>
@@ -66,9 +73,6 @@
         <button onclick="toggleModal(false)">Cancelar</button>
       </div>
     </div>
-
-   
-
-
+    <script src="../js/grouped-inventory.js"></script>
   </body>
 </html>

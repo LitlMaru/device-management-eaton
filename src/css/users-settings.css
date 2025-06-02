@@ -1,23 +1,44 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   margin: 0;
-  background: #f7f7f7;
+  background: #f4f7fc;
+  overflow-x: hidden;
+}
+html, body{
+    height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #003973;
+  border-radius: 10px;
+  border: 3px solid #fff;
+}
+::-webkit-scrollbar-button {
+  display: none;
 }
 
 .container {
+  height: 100%;
   max-width: 1100px;
   margin: auto;
   padding: 2rem;
 }
 
 h1 {
-   text-align: center;
+  text-align: center;
   color: #003973;
 }
 
 .top-bar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 1rem;
@@ -36,37 +57,92 @@ select {
 }
 
 .agregar-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 0.6rem 1rem;
+  width: 50%;
+  height: 40px;
+  background-color: #004e92;
+  padding: 0.5rem 2rem;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
 }
 
 .agregar-btn:hover {
-  background-color: #0056b3;
+  background-color: #0264ba;
+  cursor: pointer;
+}
+.scrollable {
+  overflow-x: scroll;
+  min-width: 400px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
-  background:  #003973;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
-th, td {
-  padding: 0.8rem;
-  text-align: left;
-  border-bottom: 1px solid #eee;
+th,
+td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+td[contenteditable="true"] {
+  cursor: text;
+
+  transition: background-color 0.2s;
+}
+
+td[contenteditable="true"]:hover {
+  cursor: pointer;
+  background: rgb(218, 224, 244);
+}
+
+td[contenteditable="true"]:focus{
+  background: rgb(202, 208, 229);
+  outline:none
 }
 
 th {
-  background-color: #003973;
+  background-color: #004e92;
+  color: white;
 }
 
+tr:hover {
+  background-color: #f0f8ff;
+}
+
+.actions-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actions-container button {
+  width: 100%;
+  height: 100%;
+  background-color: #004e92;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.actions-container button:hover {
+  width: 100%;
+  height: 100%;
+  background-color: #0264ba;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 .modal {
   display: none;
   position: fixed;
@@ -74,43 +150,71 @@ th {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
-  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
-  z-index: 1000;
+  align-items: center;
 }
 
 .modal-content {
-  background: #0056b3;
+  background-color: white;
   padding: 2rem;
   border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  width: 400px;
+  max-height: 80%;
+  overflow-y: scroll;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 16px;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .form-group {
   margin-bottom: 1rem;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.3rem;
+.form-group input,
+select {
+  flex-grow: 1;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #003973;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
 }
 
 .actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
 }
 
 .actions button {
-  padding: 0.6rem 1rem;
+  width: 50%;
+  height: 40px;
+  background-color: #004e92;
+  padding: 0.5rem 2rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
   cursor: pointer;
 }
 
+.actions button:hover {
+  background-color: #0264ba;
+}
 .actions .secundario {
   background-color: #ccc;
 }
