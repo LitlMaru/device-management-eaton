@@ -34,18 +34,24 @@ function createWindow() {
   mainWindow.loadFile("src/login.html");
 }
 
-app.whenReady().then(async () => {
-  const serverProcess = exec(
-    `node "${path.join(__dirname, "backend/server.js")}"`,
-    (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Error starting server: ${err.message}`);
-        return;
-      }
-      console.log(`${stdout}`);
-    }
-  );
+const { spawn } = require("child_process");
 
+app.whenReady().then(async () => {
+  const serverProcess = spawn("node", [path.join(__dirname, "backend/server.js")]);
+
+
+
+serverProcess.stdout.on("data", (data) => {
+  console.log(`Backend: ${data}`);
+});
+
+serverProcess.stderr.on("data", (data) => {
+  console.error(`Backend error: ${data}`);
+});
+
+serverProcess.on("exit", (code, signal) => {
+  console.error(`Backend server exited with code ${code} and signal ${signal}`);
+});
   serverProcess.stderr.on("data", (data) => {
     console.error(`Server error: ${data}`);
   });

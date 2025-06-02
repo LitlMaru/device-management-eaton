@@ -1,11 +1,11 @@
 
 const express = require("express");
 const router = express.Router();
-const sql = require("mssql");
-const dbConfig = require("../dbConfig"); 
+const {sql, poolPromise} = require("../dbConfig"); 
 
 router.post("/get-available-devices", async (req, res) => {
   try {
+    console.log("BODY: ", req.body)
     const { deviceType} = req.body; 
     const ubicacion = req.headers["x-ubicacion"];
     const pool = await poolPromise;
@@ -24,10 +24,12 @@ router.post("/get-available-devices", async (req, res) => {
       .input("ID_Tipo", sql.Int, ID_Tipo)
       .input("Ubicacion", sql.VarChar, ubicacion) 
       .query(`
-        SELECT ID_Dispositivo, Marca, Modelo, Serial_Number
-        FROM Dispositivos
-        WHERE ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND Ubicacion = @Ubicacion
+        SELECT d.ID_Dispositivo, d.Marca, m.Modelo, d.Serial_Number
+        FROM Dispositivos d inner join Modelos m ON d.ID_Modelo = m.ID_Modelo
+        WHERE d.ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND d.Ubicacion = @Ubicacion
       `);
+
+    console.log(result.recordset)
 
     res.json({ success: true, devices: result.recordset });
   } catch (error) {

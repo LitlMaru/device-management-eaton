@@ -23,7 +23,7 @@ const ElectronAPI = (() => {
   return {
     invoke: (...args) => sendMessage("invoke-ipc", { args }),
     getEnv: () => sendMessage("get-env"),
-  };  
+  };
 })();
 
 let currentUser, HOST, PORT;
@@ -49,9 +49,10 @@ function filtrarTabla() {
 
 input.addEventListener("input", async function () {
   const filtro = this.value.trim();
-
+console.log("🔍 Fetching from:", `${HOST}:${PORT}/api/employees/devices`);
+console.log("🔍 currentUser.Ubicacion:", currentUser.Ubicacion);
   try {
-    const response = await fetch(`${HOST}:${PORT}/api/employees/device`, {
+    const response = await fetch(`${HOST}:${PORT}/api/employees/devices`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,9 +61,12 @@ input.addEventListener("input", async function () {
       body: JSON.stringify({ employeeInfo: filtro }),
     });
     const data = await response.json();
-    actualizarTablaBusqueda(data);
+    if (!data.success) {
+      throw new Error("Consulta fallida");
+    }
+    actualizarTablaBusqueda(data.data);
   } catch (error) {
-    alert("Error al consultar dispositivos del empleado: ", error.message);
+    alert("Error al consultar dispositivos del empleado: "+ error.message);
     console.log(error.message);
   }
 });
@@ -75,25 +79,27 @@ function actualizarTablaBusqueda(data) {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${item.nombreEmpleado}</td>
-      <td>${item.dispositivo}</td>
-      <td>${item.fechaAsignacion || ""}</td>
-      <td>${item.fechaCambio || ""}</td>
+      <td>${item.ID_Empleado}</td>
+      <td>${item.Nombre}</td>
+      <td>${item.TipoDispositivo}</td>
+      <td>${item.Fecha_asignacion || ""}</td>
+      <td>${item.Fecha_cambio || ""}</td>
     `;
     tbody.appendChild(tr);
   });
 }
 
 function exportarExcel() {
-  const tabla = document.getElementById('tablaAsignados');
+  const tabla = document.getElementById("tablaAsignados");
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.table_to_sheet(tabla, {
     raw: true,
-    cellStyles: true
+    cellStyles: true,
   });
 
-  XLSX.utils.book_append_sheet(wb, ws, 'Dispositivos Asignados');
+  XLSX.utils.book_append_sheet(wb, ws, "Dispositivos Asignados");
 
-  
-  XLSX.writeFile(wb, 'Dispositivos_Asignados.xlsx');
+  XLSX.writeFile(wb, "Dispositivos_Asignados.xlsx");
 }
+
+actualizarTablaBusqueda;

@@ -39,6 +39,7 @@ init();
 
 tableBody = document.getElementById("table-body");
 tableContainer = document.getElementById("device-table");
+const resultMsg = document.getElementById("result-message");
 
 async function assignDevice(employeeData) {
   const response = await fetch(`${HOST}:${PORT}/api/employees/assign-device`, {
@@ -60,7 +61,7 @@ async function assignDevice(employeeData) {
   }
 }
 
-async function getAvailableDevices(deviceType) {
+async function getAvailableDevices(type) {
   try {
     const response = await fetch(
       `${HOST}:${PORT}/api/devices/get-available-devices`,
@@ -70,7 +71,7 @@ async function getAvailableDevices(deviceType) {
           "Content-Type": "application/json",
           "x-ubicacion": currentUser.Ubicacion,
         },
-        body: JSON.stringify(deviceType),
+        body: JSON.stringify({ deviceType: type }),
       }
     );
     const data = await response.json();
@@ -88,12 +89,10 @@ document
     const Info_empleado = document.getElementById("employee-id").value.trim();
     const tipoDispositivo = document.getElementById("device-type").value;
 
-    if (!selectedDeviceSerial) {
+    if (!selectedDeviceID) {
       alert("Selecciona un dispositivo de la tabla.");
       return;
     }
-
-    const resultMsg = document.getElementById("result-message");
 
     const today = new Date();
     const nextYear = new Date(today);
@@ -101,46 +100,32 @@ document
 
     const formatDate = (date) => date.toISOString().split("T")[0];
 
-    const fechaAsignacion = formatDate(today);
-    const fechaCambio = formatDate(nextYear);
+    const Fecha_Asignacion = formatDate(today);
+    const Fecha_Cambio = formatDate(nextYear);
 
     assignDevice({
       Info_empleado,
-      ID_Dispositivo,
+      ID_Dispositivo: selectedDeviceID,
       Fecha_Asignacion,
       Fecha_Cambio,
     });
   });
-/* const assignmentResult = await ipcRenderer.invoke("assign-device", {
-        Info_empleado,
-        ID_Dispositivo: selectedDeviceSerial,
-        Fecha_Asignacion: fechaAsignacion,
-        Fecha_Cambio: fechaCambio,
-      });
 
-      if (assignmentResult?.error) {
-        resultMsg.textContent = "❌ Error al asignar dispositivo.";
-      } else {
-        resultMsg.textContent = `✅ Dispositivo ${tipoDispositivo} asignado a ${Info_empleado}.`;
-        e.target.reset();
-        tableBody.innerHTML = "";
-        tableContainer.style.display = "none";
-      }*/
-
-deviceSelect = 
+deviceSelect = document.getElementById("device-type");
 deviceSelect.addEventListener("change", async () => {
   const type = deviceSelect.value;
   tableBody.innerHTML = "";
-  selectedDeviceSerial = null;
+  selectedDeviceID = null;
 
   if (!type) {
     tableContainer.style.display = "none";
     return;
   }
 
-  const devices = getAvailableDevices(type);
+  const result = await getAvailableDevices(type);
+  const devices = result.devices;
 
-  if (devices.error || devices.length === 0) {
+  if (!devices || devices.length === 0) {
     tableContainer.style.display = "none";
     return;
   }
@@ -153,15 +138,14 @@ deviceSelect.addEventListener("change", async () => {
     row.innerHTML = `
       <td style="padding: 0.5rem;">${device.Marca}</td>
       <td style="padding: 0.5rem;">${device.Modelo}</td>
-      <td style="padding: 0.5rem;">${device.Numero_Serie}</td>
+      <td style="padding: 0.5rem;">${device.Serial_Number}</td>
     `;
-
     row.addEventListener("click", () => {
       document.querySelectorAll("#device-table tbody tr").forEach((r) => {
         r.style.backgroundColor = "";
       });
       row.style.backgroundColor = "#cce5ff";
-      selectedDeviceSerial = device.Numero_Serie;
+      selectedDeviceID = device.ID_Dispositivo;
     });
 
     tableBody.appendChild(row);
