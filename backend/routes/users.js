@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query("SELECT * FROM Usuarios");
-    res.json({ success: true, data: result.recordset });
+    res.json({ success: true, usuarios: result.recordset });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ success: false, message: err.message });

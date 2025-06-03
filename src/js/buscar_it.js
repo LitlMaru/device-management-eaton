@@ -49,8 +49,6 @@ function filtrarTabla() {
 
 input.addEventListener("input", async function () {
   const filtro = this.value.trim();
-console.log("🔍 Fetching from:", `${HOST}:${PORT}/api/employees/devices`);
-console.log("🔍 currentUser.Ubicacion:", currentUser.Ubicacion);
   try {
     const response = await fetch(`${HOST}:${PORT}/api/employees/devices`, {
       method: "POST",

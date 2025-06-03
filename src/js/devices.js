@@ -103,7 +103,6 @@
   lista.forEach(d => {
     const tr = document.createElement("tr");
 
-    // Asigna color según el estado
     if (d.estado === "Dañado") {
       tr.classList.add("row-alert"); // fondo rojo claro
     } else if (d.estado === "Asignado") {

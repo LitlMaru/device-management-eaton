@@ -96,6 +96,7 @@ input[type="text"]::placeholder {
 }
 
 .alert-box {
+  display: none;
   background-color: #ffcccc;
   border: 2px solid #cc0000;
   color: #800000;

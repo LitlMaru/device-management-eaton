@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="../css/grouped-inventory.css">
       
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  </body>
-
-    
 
     
   </head>
@@ -76,7 +73,6 @@
             <th>Tipo de Dispositivo</th>
             <th>Modelo</th>
             <th>Cantidad</th>
-            <th>Ubicación</th>
             <th>Límite</th>
             <th>Acciones</th>
           </tr>
@@ -86,15 +82,14 @@
             <td>Laptops</td>
             <td>Pequeña</td>
             <td>14</td>
-            <th>ICD</th>
             <td>10</td>
-            <td><div class="action-buttons"><button onclick="toggleModal" class="edit-btn">Cambiar limite</button></div></td>
+            <td><div class="action-buttons"><button onclick="toggleModal(true)" class="edit-btn">Cambiar limite</button></div></td>
           </tr>
         </tbody>
       </table>
 </div>
       
-      <div id="editModal" class="hidden">
+      <div id="editModal" class="hidden" role="dialog" aria-modal="true">
         <h3>Editar cantidad mínima</h3>
         <p id="editTitle"></p>
         <input type="number" id="newLimit" min="0" />
