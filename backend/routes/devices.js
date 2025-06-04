@@ -38,10 +38,10 @@ router.post("/get-available-devices", async (req, res) => {
   }
 });
 
-async function getDevicesFiltered(filtros) {
+async function getDevicesFiltered(filtros, ubicacion) {
   try {
     await sql.connect(dbConfig);
-    let baseSQL = `SELECT d.ID_Dispositivo, td.Tipo, m.Modelo, d.Marca, d.Serial_Number, d.Ubicacion
+    let baseSQL = `SELECT d.ID_Dispositivo, td.Tipo as TipoDispositivo, m.Modelo, d.Marca, d.Serial_Number, d.Estado
                    FROM Dispositivos d
                    JOIN Modelos m ON d.ID_Modelo = m.ID_Modelo
                    JOIN TiposDispositivo td ON d.ID_Tipo = td.ID_Tipo`;
@@ -52,8 +52,8 @@ async function getDevicesFiltered(filtros) {
       condiciones.push("td.Tipo = @tipoDispositivo");
       inputs.tipoDispositivo = filtros.tipoDispositivo.trim();
     }
-    if (filtros.marca && filtros.marca.trim() !== "") {
-      condiciones.push("d.Marca LIKE '%' + @marca + '%'");
+    if (filtros.estado && filtros.estado.trim() !== "") {
+      condiciones.push("d.Estado = @estado +");
       inputs.marca = filtros.marca.trim();
     }
     if (filtros.modelo && filtros.modelo.trim() !== "") {
@@ -65,9 +65,7 @@ async function getDevicesFiltered(filtros) {
       inputs.serialNumber = filtros.serialNumber.trim();
     }
 
-    if (condiciones.length > 0) {
-      baseSQL += " WHERE " + condiciones.join(" AND ");
-    }
+    baseSQL += condiciones.length > 0 ? " AND " + condiciones.join(" AND ") : "";
 
     baseSQL += " ORDER BY td.Tipo, d.Marca, m.Modelo";
 
@@ -75,6 +73,7 @@ async function getDevicesFiltered(filtros) {
     for (const key in inputs) {
       request.input(key, sql.VarChar, inputs[key]);
     }
+    request.input("Ubicacion", sql.VarChar, ubicacion)
 
     const result = await request.query(baseSQL);
     return result.recordset;
@@ -86,13 +85,15 @@ async function getDevicesFiltered(filtros) {
 router.get("/", async (req, res) => {
   const filtros = {
     tipoDispositivo: req.query.tipoDispositivo || "",
-    marca: req.query.marca || "",
+    estado: req.query.estado || "",
     modelo: req.query.modelo || "",
     serialNumber: req.query.serialNumber || "",
   };
 
+  ubicacion = req.headers["x-ubicacion"]
+
   try {
-    const devices = await getDevicesFiltered(filtros);
+    const devices = await getDevicesFiltered(filtros, ubicacion);
     res.json(devices);
   } catch (error) {
     console.error(error);

@@ -6,7 +6,7 @@ router.get("/available/:deviceType", async (req, res) => {
   try {
     const pool = await poolPromise;
     const { deviceType } = req.params;
-    const ubicacion = req.headers["x-ubicacion"]; // Usa un header personalizado para enviar la ubicación
+    const ubicacion = req.headers["x-ubicacion"];
 
     const tipo = await pool
       .request()
@@ -85,7 +85,6 @@ console.log(ubicacion)
   }
 });
 
-// Actualizar límite de modelo
 router.put("/limit", async (req, res) => {
   const { currentModel, nuevoLimite } = req.body;
 
