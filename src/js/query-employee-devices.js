@@ -244,7 +244,7 @@ input.addEventListener("input", async function () {
   const filtro = this.value.trim();
 
   try {
-    const response = await fetch(`${HOST}:${PORT}/api/employees/device`, {
+    const response = await fetch(`${HOST}:${PORT}/api/employees/devices`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -253,9 +253,12 @@ input.addEventListener("input", async function () {
       body: JSON.stringify({ employeeInfo: filtro }),
     });
     const data = await response.json();
-    actualizarTablaBusqueda(data);
+    if (!data.success) {
+      throw new Error("Consulta fallida");
+    }
+    actualizarTablaBusqueda(data.data);
   } catch (error) {
-    alert("Error al consultar dispositivos del empleado: ", error.message);
+    alert("Error al consultar dispositivos del empleado: "+ error.message);
     console.log(error.message);
   }
 });
@@ -288,7 +291,31 @@ function actualizarTablaBusqueda(data) {
 
   data.forEach((item) => {
     const tr = document.createElement("tr");
-  
+
+    tr.innerHTML = `
+      <td>${item.nombreEmpleado}</td>
+      <td>${item.dispositivo}</td>
+      <td>${item.fechaAsignacion || ""}</td>
+      <td>${item.fechaCambio || ""}</td>
+      <td class="${item.estado === "En proceso" ? "estado-proceso" : ""}">${
+      item.estado
+    }</td>
+      <td>
+        <div class="actions-container">
+          <button onclick="abrirModal(this)">Asignar Dispositivos</button>
+        </div>
+      </td>
+    `;
+
     tbody.appendChild(tr);
   });
-  }
+}
+
+/*ipcRenderer
+    .invoke("query-employee-devices", { employeeInfo: filtro })
+    .then((resultado) => {
+        actualizarTablaBusqueda(resultado);
+    })
+    .catch((error) => {
+        console.error("Error en consulta:", error);
+    });*/
