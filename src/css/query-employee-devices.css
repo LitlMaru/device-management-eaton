@@ -108,6 +108,13 @@ button.excel-btn:hover {
       font-weight: bold;
     }
 
+    .estado-completado {
+  color: green;
+  font-weight: bold;
+}
+
+
+
     
 .actions-container {
   display: flex;

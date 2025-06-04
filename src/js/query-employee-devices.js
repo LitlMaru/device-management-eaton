@@ -1,3 +1,105 @@
+const STORAGE_KEY = "dispositivosAsignados";
+let filaSeleccionada = null;
+
+function obtenerAsignaciones() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+}
+
+function guardarAsignaciones(asignaciones) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(asignaciones));
+}
+
+function abrirModal(boton) {
+  filaSeleccionada = boton.closest("tr");
+  const empleado = filaSeleccionada.cells[0].innerText;
+
+  document.getElementById("userModal").innerText = empleado;
+  document.getElementById("modalAsignacion").style.display = "flex";
+
+  const asignaciones = obtenerAsignaciones();
+  const asignado = asignaciones[empleado] || [];
+
+  document
+    .querySelectorAll('#formDispositivos input[type="checkbox"]')
+    .forEach((chk) => {
+      chk.checked = asignado.includes(chk.value);
+    });
+}
+
+function guardarCambiosDispositivos() {
+  if (!filaSeleccionada) return;
+
+  const empleado = filaSeleccionada.cells[0].innerText;
+  const checkboxes = document.querySelectorAll('input[name="dispositivo"]');
+  const seleccionados = Array.from(checkboxes)
+    .filter((chk) => chk.checked)
+    .map((chk) => chk.value);
+
+  const asignaciones = obtenerAsignaciones();
+  asignaciones[empleado] = seleccionados;
+  guardarAsignaciones(asignaciones);
+
+  const requeridos = [
+    "Laptop",
+    "Cargador Laptop",
+    "Mouse",
+    "Teclado",
+    "Mochila",
+    "Headset",
+    "Flota",
+    "Cargador Flota",
+    "Desktop",
+  ];
+  const completos = requeridos.every((d) => seleccionados.includes(d));
+
+  const celdaEstado =
+    filaSeleccionada.querySelector(".estado-proceso") ||
+    filaSeleccionada.querySelector(".estado-completado");
+
+  celdaEstado.textContent = completos ? "Completado" : "En proceso";
+  celdaEstado.classList.remove("estado-completado", "estado-proceso");
+  celdaEstado.classList.add(completos ? "estado-completado" : "estado-proceso");
+
+  alert("Cambios guardados correctamente.");
+  cerrarModal();
+}
+
+function cerrarModal() {
+  document.getElementById("modalAsignacion").style.display = "none";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const asignaciones = obtenerAsignaciones();
+  const filas = document.querySelectorAll("#tablaAsignados tbody tr");
+
+  filas.forEach((fila) => {
+    const empleado = fila.cells[0].innerText;
+    const seleccionados = asignaciones[empleado] || [];
+
+    const requeridos = [
+      "Laptop",
+      "Cargador Laptop",
+      "Mouse",
+      "Teclado",
+      "Mochila",
+      "Headset",
+      "Flota",
+      "Cargador Flota",
+      "Desktop",
+    ];
+
+    const completos = requeridos.every((d) => seleccionados.includes(d));
+    const celdaEstado = fila.querySelector(".estado-proceso") || fila.querySelector(".estado-completado");
+
+    celdaEstado.textContent = seleccionados.length
+      ? (completos ? "Completado" : "En proceso")
+      : "En proceso";
+
+    celdaEstado.classList.remove("estado-completado", "estado-proceso");
+    celdaEstado.classList.add(completos ? "estado-completado" : "estado-proceso");
+  });
+});
+
 const ElectronAPI = (() => {
   function sendMessage(action, data) {
     return new Promise((resolve, reject) => {
@@ -38,26 +140,7 @@ async function init() {
 
 init();
 
-let filaSeleccionada = null;
-
-function abrirModal(boton) {
-  filaSeleccionada = boton.closest("tr");
-  const userId = filaSeleccionada.cells[1].innerText;
-
-  document.getElementById("userModal").innerText = userId;
-
-  document.getElementById("modalAsignacion").style.display = "flex";
-}
-
-function cerrarModal() {
-  document.getElementById("modalAsignacion").style.display = "none";
-
-  document
-    .querySelectorAll('#formDispositivos input[type="checkbox"]')
-    .forEach((chk) => (chk.checked = false));
-}
-
-function filtrarTabla() {
+  function filtrarTabla() {
   const filtro = document.getElementById("busqueda").value.toLowerCase();
   const filas = document.querySelectorAll("#tablaAsignados tbody tr");
   filas.forEach((fila) => {
@@ -127,6 +210,15 @@ Número de serie: ${numeroSerie}
 Equipo: ${equipo}
 Marca: ${marca}
 
+Y más utensilios de trabajo como:
+- Cargador De Laptop
+- Mouse
+- Teclado
+- Mochila
+- Headset
+- Flota
+- Cargador De Flota...
+
 A partir de este momento me hago responsable del mismo y acepto cuidarlo siguiendo las recomendaciones de la política de uso de equipos electrónicos, me comprometo a utilizarlo para el desempeño de mis labores, a usarlo con apego a las disposiciones vigentes en esta empresa, a mantenerlo en buen estado y a no proporcionar a terceras personas ni el equipo ni las claves o contraseñas necesarias para su uso.`;
 
   const splitTexto = doc.splitTextToSize(textoCarta, 180);
@@ -174,7 +266,7 @@ function exportarExcel() {
 
   let uri = "data:application/vnd.ms-excel;base64,";
   let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-        <head><meta charset="UTF-8"></head><body>${html}</body></html>`;
+    <head><meta charset="UTF-8"></head><body>${html}</body></html>`;
   let base64 = (s) => window.btoa(unescape(encodeURIComponent(s)));
 
   let link = document.createElement("a");
@@ -192,35 +284,11 @@ window.onclick = function (event) {
 
 function actualizarTablaBusqueda(data) {
   const tbody = document.querySelector("#tablaAsignados tbody");
-  tbody.innerHTML = ""; // Clear existing rows
+  tbody.innerHTML = ""; 
 
   data.forEach((item) => {
     const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${item.nombreEmpleado}</td>
-      <td>${item.dispositivo}</td>
-      <td>${item.fechaAsignacion || ""}</td>
-      <td>${item.fechaCambio || ""}</td>
-      <td class="${item.estado === "En proceso" ? "estado-proceso" : ""}">${
-      item.estado
-    }</td>
-      <td>
-        <div class="actions-container">
-          <button onclick="abrirModal(this)">Asignar Dispositivos</button>
-        </div>
-      </td>
-    `;
-
+  
     tbody.appendChild(tr);
   });
-}
-
-/*ipcRenderer
-    .invoke("query-employee-devices", { employeeInfo: filtro })
-    .then((resultado) => {
-        actualizarTablaBusqueda(resultado);
-    })
-    .catch((error) => {
-        console.error("Error en consulta:", error);
-    });*/
+  }

@@ -14,6 +14,18 @@
     
   </head>
   <body>
+
+    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded shadow w-full max-w-md">
+    <h2 id="editTitle" class="text-xl font-semibold mb-4">Editar límite</h2>
+    <input id="newLimit" type="number" class="w-full border px-3 py-2 mb-4" />
+    <div class="flex justify-end gap-2">
+      <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded">Cancelar</button>
+      <button id="saveLimit" class="bg-blue-600 text-white px-4 py-2 rounded">Guardar</button>
+    </div>
+  </div>
+</div>
+
     <div class="container">
       <h1>Inventario de Dispositivos Agrupados</h1>
       <div class="search-filter">
@@ -102,6 +114,8 @@
         <button onclick="toggleModal(false)">Cancelar</button>
       </div>
     </div>
+
+    
     <script src="../js/grouped-inventory.js"></script>
   </body>
 </html>

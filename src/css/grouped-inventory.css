@@ -29,6 +29,10 @@ body {
   display: none;
 }
 
+.hidden {
+  display: none;
+}
+
 header {
   background: linear-gradient(90deg, #004e92, #000428);
   color: white;
