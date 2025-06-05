@@ -1,119 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dispositivos Asignados</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="../css/query-employee-devices.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dispositivos Asignados</title>
+  <link rel="stylesheet" href="../css/query-employee-devices.css" />
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      width: 350px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px black;
+    }
+    .modal-content h2 {
+      text-align: center;
+    }
+    .checkbox-list label {
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-principal">
+    <h1>Dispositivos Asignados</h1>
 
-  <body>
-    <div class="contenedor-principal">
-      <h1>Dispositivos Asignados</h1>
-
-      <div class="busqueda-exportar">
-        <input
-          type="text"
-          id="busqueda"
-          placeholder="Buscar por nombre o código..."
-          oninput="filtrarTabla()"
-        />
-        <button onclick="exportarExcel()" class="excel-btn">
-          <img src="../../assets/excel.png" style="width: 16px" alt="" />
-          <span>Exportar a Excel</span>
-        </button>
-      </div>
-
-      <div class="scrollable">
-        <table id="tablaAsignados">
-          <thead>
-            <tr>
-              <th>ID Empleado</th>
-              <th>Empleado</th>
-              <th>Dispositivo</th>
-              <th>Fecha Asignación</th>
-              <th>Fecha Cambio</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>123</td>
-              <td>Romulo Betances</td>
-              <td>Laptop-XYZ</td>
-              <td>2024-10-01</td>
-              <td>2025-04-15</td>
-              <td class="estado-proceso">En proceso</td>
-              <td>
-                <div class="actions-container">
-                  <button onclick="abrirModal(this)">
-                    Asignar Dispositivos
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="busqueda-exportar">
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
     </div>
 
-    <div id="modalAsignacion" class="modal">
-      <div class="modal-content" id="contenidoModal">
-        <h1>Asignar Dispositivos a <span id="userModal"></span></h1>
-        <form id="formDispositivos">
-          <label
-            ><input type="checkbox" name="dispositivo" value="Laptop" />
-            Laptop</label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="dispositivo"
-              value="Cargador Laptop"
-            />
-            Cargador Laptop</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Mouse" />
-            Mouse</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Teclado" />
-            Teclado</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Mochila" />
-            Mochila</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Headset" />
-            Headset</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Flota" />
-            Flota</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Cargador Flota" />
-            Cargador Flota</label
-          >
-          <label
-            ><input type="checkbox" name="dispositivo" value="Desktop" />
-            Desktop</label
-          >
-          <br />
-          <button type="button" onclick="generarAcuerdo()">
-            Generar Carta de Entrega
-          </button>
-          <button type="button" onclick="guardarCambiosDispositivos()">Guardar Cambios</button>
-          <button type="button" onclick="cerrarModal()">Cerrar</button>
-        </form>
-      </div>
-    </div>
+    <div class="scrollable">
+      <table id="tablaAsignados">
+        <thead>
+          <tr>
+            <th>ID Empleado</th>
+            <th>Empleado</th>
+            <th>Dispositivo</th>
+            <th>Modelo</th>
+            <th>Fecha Asignación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>123</td>
+            <td>Romulo Betances</td>
+            <td>Laptop-XYZ, Mouse, Teclado</td>
+            <td>XYZ, Ergonomico, Inalambrico</td>
+            <td>2024-10-01</td>
+            <td>
+            <button onclick="verificarDispositivos(this)">Verificar</button>
+            <button onclick="eliminarFila(this)">Eliminar</button>
+            </td>
 
-     <script src="../js/query-employee-devices.js"></script>
-  </body>
+            </tr>
+            <tr>
+            <td>456</td>
+            <td>Anyeny Mejía</td>
+            <td>Headset, Cargador Laptop</td>  
+             <td>XYZ, Ergonomico, Inalambrico</td>          
+            <td>2024-10-01</td>
+           <td>
+            <button onclick="verificarDispositivos(this)">Verificar</button>
+            <button onclick="eliminarFila(this)">Eliminar</button>
+           </td>
+
+          </tr>
+
+          
+          <script src="../js/query-employee-devices.js"></script>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div id="modalAsignacion" class="modal">
+    <div class="modal-content">
+      <h2>Verificación de salida</h2>
+      <p><strong>Empleado:</strong> <span id="userModal"></span></p>
+      <form id="formDispositivos">
+        <div id="listaDispositivos" class="checkbox-list"></div>
+        <br />
+        <button type="button" onclick="guardarEntrega()">Guardar cambios</button>
+        <button type="button" onclick="cerrarModal()">Cerrar</button>
+      </form>
+    </div>
+  </div>
+
+</body>
 </html>
