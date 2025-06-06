@@ -167,12 +167,59 @@ router.post("/", async (req, res) => {
 
 // Update a device info
 router.put("/", async (req, res) => {
-  const {tipoDispositivo, marca, modelo, cantidad, serialNumbers} = req.body;
-   try{
-   
-   }
+  const { IDDispositivo, tipoDispositivo, marca, modelo, serialNumber } = req.body;
+
+  if (!IDDispositivo) {
+    return res.status(400).json({ error: "IDDispositivo es requerido" });
+  }
+
+  try {
+    const updates = [];
+    const inputs = [];
+
+    if (tipoDispositivo !== undefined && tipoDispositivo !== "") {
+      updates.push("TipoDispositivo = @TipoDispositivo");
+      inputs.push({ name: "TipoDispositivo", type: sql.Int, value: tipoDispositivo });
+    }
+
+    if (modelo !== undefined && modelo !== "") {
+      updates.push("Modelo = @Modelo");
+      inputs.push({ name: "Modelo", type: sql.Int, value: modelo });
+    }
+
+    if (marca !== undefined && marca.trim() !== "") {
+      updates.push("Marca = @Marca");
+      inputs.push({ name: "Marca", type: sql.VarChar, value: marca.trim() });
+    }
+
+    if (serialNumber !== undefined && serialNumber.trim() !== "") {
+      updates.push("SerialNumber = @SerialNumber");
+      inputs.push({ name: "SerialNumber", type: sql.VarChar, value: serialNumber.trim() });
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No hay campos para actualizar" });
+    }
+
+    let query = `UPDATE Dispositivos SET ${updates.join(", ")} WHERE IDDispositivo = @IDDispositivo`;
+
+    const request = pool.request();
+    inputs.forEach(({ name, type, value }) => {
+      request.input(name, type, value);
+    });
+    request.input("IDDispositivo", sql.Int, IDDispositivo);
+
+    await request.query(query);
+
+    res.status(200).json({ success: true, message: "Dispositivo actualizado correctamente." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
+//Delete device from database
 router.delete("/:id", async (req, res) => {
   try {
     const ID_Dispositivo = req.params.id;
@@ -292,6 +339,6 @@ router.get("/type-id", async (req, res) => {
     res.status(500).json([]);
   }
 });
-
-module.exports = router;
 */
+module.exports = router;
+
