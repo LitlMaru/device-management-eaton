@@ -208,7 +208,7 @@ function agregarListenersEdicion() {
 }
 
 
-async function agregarUsuario() {
+/*async function agregarUsuario() {
   const username = document.getElementById("username").value.trim();
   const clave = document.getElementById("clave").value.trim();
   const rol = document.getElementById("rol").value;
@@ -236,8 +236,4 @@ async function agregarUsuario() {
   cerrarModal();
 }
 
-async function eliminarUsuario(boton) {
-  const fila = boton.closest("tr");
-  if (fila) fila.remove();
-}
-
+*/
