@@ -71,7 +71,7 @@ input.addEventListener("input", async function () {
 
 function actualizarTablaBusqueda(data) {
   const tbody = document.querySelector("#tablaAsignados tbody");
-  tbody.innerHTML = ""; // Clear existing rows
+  tbody.innerHTML = ""; 
 
   data.forEach((item) => {
     const tr = document.createElement("tr");
@@ -101,3 +101,93 @@ function exportarExcel() {
 }
 
 actualizarTablaBusqueda;
+
+async function generarAcuerdo() {
+  if (!filaSeleccionada) {
+    alert("No se ha seleccionado ninguna fila.");
+    return;
+  }
+
+  const fechaActual = new Date();
+  const fechaFormato = fechaActual.toLocaleDateString("es-ES");
+  const horaFormato = fechaActual.toLocaleTimeString("es-ES");
+
+  const numeroE = filaSeleccionada.cells[0].innerText;
+  const nombreEmpleado = filaSeleccionada.cells[1].innerText;
+
+  
+  const dispositivos = Array.from(
+    filaSeleccionada.cells[3].querySelectorAll("li")
+  ).map(li => li.textContent);
+
+  if (dispositivos.length === 0) {
+    alert("Este empleado no tiene dispositivos asignados.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor("#004e92");
+  doc.text("Eaton Corporation", 105, 20, null, null, "center");
+
+  doc.setFontSize(14);
+  doc.text("Carta de entrega de equipo de trabajo", 105, 30, null, null, "center");
+
+  doc.setDrawColor("#004e92");
+  doc.setLineWidth(0.8);
+  doc.line(15, 35, 195, 35);
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.setTextColor("#333");
+
+  let textoCarta = `Por medio de la presente recibo en fecha ${fechaFormato} a las ${horaFormato} de mi empleador Eaton con carácter de herramienta de trabajo, el cual debo usar para el desempeño de mis funciones.
+
+Datos generales del equipo:
+
+Fecha: ${fechaFormato}
+Hora: ${horaFormato}
+Número E.: ${numeroE}
+Nombre: ${nombreEmpleado}
+
+Dispositivos asignados:\n`;
+
+  dispositivos.forEach((item, index) => {
+    textoCarta += `- ${item}\n`;
+  });
+
+  textoCarta += `
+
+A partir de este momento me hago responsable del mismo y acepto cuidarlo siguiendo las recomendaciones de la política de uso de equipos electrónicos, me comprometo a utilizarlo para el desempeño de mis labores, a usarlo con apego a las disposiciones vigentes en esta empresa, a mantenerlo en buen estado y a no proporcionar a terceras personas ni el equipo ni las claves o contraseñas necesarias para su uso.`;
+
+  const splitTexto = doc.splitTextToSize(textoCarta, 180);
+  doc.text(splitTexto, 15, 45);
+
+  const yFirmas = 45 + splitTexto.length * 6 + 10;
+
+  doc.setDrawColor("#004e92");
+  doc.setLineWidth(0.5);
+  doc.text("Firma de quien entrega:", 30, yFirmas);
+  doc.line(30, yFirmas + 2, 80, yFirmas + 2);
+  doc.text("Firma de quien recibe:", 130, yFirmas);
+  doc.line(130, yFirmas + 2, 180, yFirmas + 2);
+
+
+  doc.setFontSize(9);
+  doc.setTextColor("#999");
+  doc.text("EATON - Confidencial", 105, 290, null, null, "center");
+
+  doc.save(`Carta_Entrega_${nombreEmpleado}_${fechaFormato.replace(/\//g, "-")}.pdf`);
+}
+
+let filaSeleccionada = null;
+document.querySelectorAll("#tablaAsignados tbody tr").forEach(row => {
+  row.addEventListener("click", () => {
+    filaSeleccionada = row;
+    row.classList.add("seleccionada");
+  });
+});
+

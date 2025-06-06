@@ -206,3 +206,23 @@ tbody tr:hover {
 .hidden {
   display: none;
 }
+
+.carta-btn {
+  padding: 8px 16px;
+  background-color: #004e92;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.carta-btn:hover {
+  background-color: #0264ba;
+}
+

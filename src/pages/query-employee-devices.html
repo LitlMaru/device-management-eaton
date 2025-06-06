@@ -5,43 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dispositivos Asignados</title>
   <link rel="stylesheet" href="../css/query-employee-devices.css" />
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background-color: white;
-      padding: 20px;
-      width: 350px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px black;
-    }
-    .modal-content h2 {
-      text-align: center;
-    }
-    .checkbox-list label {
-      display: block;
-      margin-bottom: 5px;
-    }
-  </style>
+
 </head>
 <body>
   <div class="contenedor-principal">
     <h1>Dispositivos Asignados</h1>
 
+   
+
     <div class="busqueda-exportar">
       <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
-    </div>
+      <button id="btnOrdenarNombre" onclick="ordenarPorNombre()">Ordenar A-Z</button>
 
+    </div>
+     
     <div class="scrollable">
       <table id="tablaAsignados">
         <thead>
@@ -62,8 +39,9 @@
             <td>XYZ, Ergonomico, Inalambrico</td>
             <td>2024-10-01</td>
             <td>
-            <button onclick="verificarDispositivos(this)">Verificar</button>
-            <button onclick="eliminarFila(this)">Eliminar</button>
+          <button class="boton-accion boton-verificar" onclick="verificarDispositivos(this)">Verificar</button>
+          <button class="boton-accion boton-eliminar" onclick="eliminarFila(this)">Eliminar</button>
+
             </td>
 
             </tr>
@@ -74,18 +52,15 @@
              <td>XYZ, Ergonomico, Inalambrico</td>          
             <td>2024-10-01</td>
            <td>
-            <button onclick="verificarDispositivos(this)">Verificar</button>
-            <button onclick="eliminarFila(this)">Eliminar</button>
-           </td>
+            <button class="boton-accion boton-verificar" onclick="verificarDispositivos(this)">Verificar</button>
+            <button class="boton-accion boton-eliminar" onclick="eliminarFila(this)">Eliminar</button>
 
-          </tr>
 
-          
-          <script src="../js/query-employee-devices.js"></script>
-        </tbody>
-      </table>
-    </div>
-  </div>
+        </tr>
+      </tbody>
+     </table>
+     </div>
+   </div>
 
 
   <div id="modalAsignacion" class="modal">
@@ -100,6 +75,6 @@
       </form>
     </div>
   </div>
-
+<script src="../js/query-employee-devices.js"></script>
 </body>
 </html>
