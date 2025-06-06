@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Inventario de Dispositivos</title>
-   <link rel="stylesheet" href="../css/devices.css">
+  <link rel="stylesheet" href="../css/devices.css">
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 
@@ -36,9 +40,79 @@
     <div class="modal-content">
       <span class="close" onclick="cerrarModal('modalAgregar')">×</span>
       <h3>Agregar Dispositivos</h3>
-      <label>Nombre:</label><input type="text" id="nombreAgregar"><br><br>
+
+      <label><input type="checkbox" id="esNuevoAgregar" onchange="toggleNuevoAgregar()"> ¿Es un dispositivo nuevo?</label><br><br>
+
+      <div id="nombreSelectContainerAgregar">
+        <label for="tipoDispositivo">Nombre:</label>
+        <select id="tipoDispositivo" name="tipoDispositivo" required>
+          <option value="" disabled selected>Seleccione un tipo</option>
+          <option value="Monitor">Monitor</option>
+          <option value="Mouse">Mouse</option>
+          <option value="Teclado">Teclado</option>
+          <option value="Headset">Headset</option>
+          <option value="Cargador">Cargador</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Mini Desktop">Mini Desktop</option>
+          <option value="Cable">Cable</option>
+          <option value="Dokin">Dokin</option>
+          <option value="Bateria de Laptop">Bateria de Laptop</option>
+          <option value="Bateria de UPS">Bateria de UPS</option>
+          <option value="Memoria Incrustada">Memoria Incrustada</option>
+          <option value="UPS">UPS</option>
+          <option value="Cable DVI">Cable DVI</option>
+          <option value="Tablet">Tablet</option>
+          <option value="Adaptador">Adaptador</option>
+          <option value="PowerCord">PowerCord</option>
+          <option value="FacePlate">FacePlate</option>
+          <option value="Jack Rj45">Jack Rj45</option>
+          <option value="Scanner">Scanner</option>
+          <option value="Charger">Charger</option>
+          <option value="Tóner">Tóner</option>
+          <option value="Display Port">Display Port</option>
+          <option value="Serial">Serial</option>
+          <option value="USB">USB</option>
+        </select>
+      </div>
+
+      <div id="nombreInputContainerAgregar" class="hidden">
+        <label>Nombre:</label>
+        <input type="text" id="nombreAgregarNuevo">
+      </div>
+
       <label>Marca:</label><input type="text" id="marcaAgregar"><br><br>
-      <label>Modelo:</label><input type="text" id="modeloAgregar"><br><br>
+
+      <div id="modeloSelectContainerAgregar">
+        <label for="Modelo">Modelo:</label>
+        <select id="Modelo" name="Modelo" required>
+          <option value="" disabled selected>Seleccione un tipo</option>
+          <option value="XPS 13">XPS 13</option>
+          <option value="MacBook Pro">MacBook Pro</option>
+          <option value="Pavilion 15">Pavilion 15</option>
+          <option value="Ergonómico">Ergonómico</option>
+          <option value="Estándar">Estándar</option>
+          <option value="Inalámbrico">Inalámbrico</option>
+          <option value='17in"'>17in"</option>
+          <option value='22in"'>22in"</option>
+          <option value='24in"'>24in"</option>
+          <option value='5in"'>5in"</option>
+          <option value="Punta Fina">Punta Fina</option>
+          <option value="Punta Ancha">Punta Ancha</option>
+          <option value="Tipo C">Tipo C</option>
+          <option value="A - B">A - B</option>
+          <option value="Broad Tip">Broad Tip</option>
+          <option value="MP C6003">MP C6003</option>
+          <option value="SP8400A">SP8400A</option>
+          <option value="MP6054">MP6054</option>
+          <option value="M. C6000">M. C6000</option>
+        </select>
+      </div>
+
+      <div id="modeloInputContainerAgregar" class="hidden">
+        <label>Modelo:</label>
+        <input type="text" id="modeloAgregarNuevo">
+      </div>
+
       <label>Cantidad:</label><input type="number" id="cantidadAgregar" value="1" min="1"><br><br>
       <label>Seriales (separados por coma si hay varios):</label>
       <textarea id="serialesAgregar" rows="3" placeholder="Ej: S001, S002, S003"></textarea><br><br>
@@ -46,52 +120,38 @@
     </div>
   </div>
 
-  <!-- Modal Editar -->
+  <!-- Modal Editar (sin cambios en esta parte por ahora) -->
   <div class="modal" id="modalEditar">
     <div class="modal-content">
       <span class="close" onclick="cerrarModal('modalEditar')">×</span>
       <h3>Editar Dispositivo</h3>
       <input type="hidden" id="editarIndex">
       <label>Serial:</label><input type="text" id="editarSerial"><br><br>
-      <label>Nombre:</label><input type="text" id="editarNombre"><br><br>
-      <label for="Nombre">Nombre</label>
-  <select id="tipoDispositivo" name="tipoDispositivo" required>
-  <option value="" disabled selected>Seleccione un tipo</option>
-  <option value="Monitor">Monitor</option>
-  <option value="Mouse">Mouse</option>
-  <option value="Teclado">Teclado</option>
-  <option value="Headset">Headset</option>
-  <option value="Cargador">Cargador</option>
-  <option value="Desktop">Desktop</option>
-  <option value="Mini Desktop">Mini Desktop</option>
-  <option value="Cable">Cable</option>
-  <option value="Dokin">Dokin</option>
-  <option value="Bateria de Laptop">Bateria de Laptop</option>
-  <option value="Bateria de UPS">Bateria de UPS</option>
-  <option value="Memoria Incrustada">Memoria Incrustada</option>
-  <option value="UPS">UPS</option>
-  <option value="Cable DVI">Cable DVI</option>
-  <option value="Tablet">Tablet</option>
-  <option value="Adaptador">Adaptador</option>
-  <option value="PowerCord">PowerCord</option>
-  <option value="FacePlate">FacePlate</option>
-  <option value="Jack Rj45">Jack Rj45</option>
-  <option value="Scanner">Scanner</option>
-  <option value="Charger">Charger</option>
-  <option value="Tóner">Tóner</option>
-  <option value="Display Port">Display Port</option>
-  <option value="Serial">Serial</option>
-  <option value="USB">USB</option>
-</select>
-
+      <!-- Se puede replicar la lógica para "nuevo" si deseas -->
+      <label>Nombre:</label>
+      <select id="tipoDispositivo" name="tipoDispositivo" required>
+        <!-- mismas opciones -->
+      </select><br><br>
       <label>Marca:</label><input type="text" id="editarMarca"><br><br>
-      <label>Modelo:</label><input type="text" id="editarModelo"><br><br>
+      <label>Modelo:</label>
+      <select id="Modelo" name="Modelo" required>
+        <!-- mismas opciones -->
+      </select><br><br>
       <button onclick="guardarEdicion()">Guardar Cambios</button>
     </div>
   </div>
 
-  
-<script src="../js/devices.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="../js/devices.js"></script>
+
+  <script>
+    function toggleNuevoAgregar() {
+      const esNuevo = document.getElementById("esNuevoAgregar").checked;
+      document.getElementById("nombreSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
+      document.getElementById("nombreInputContainerAgregar").style.display = esNuevo ? "block" : "none";
+      document.getElementById("modeloSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
+      document.getElementById("modeloInputContainerAgregar").style.display = esNuevo ? "block" : "none";
+    }
+  </script>
 </body>
 </html>
-

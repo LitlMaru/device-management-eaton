@@ -8,6 +8,12 @@
       document.getElementById(id).style.display = 'none';
     }
 
+     document.getElementById('esNuevoCheckbox').addEventListener('change', function () {
+      const esNuevo = this.checked;
+      document.getElementById('nuevoDispositivoInputs').style.display = esNuevo ? 'block' : 'none';
+      document.getElementById('selectExistenteInputs').style.display = esNuevo ? 'none' : 'block';
+    });
+
     function agregarDispositivo() {
       const nombre = document.getElementById('nombreAgregar').value.trim();
       const marca = document.getElementById('marcaAgregar').value.trim();
