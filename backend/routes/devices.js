@@ -1,35 +1,38 @@
-
 const express = require("express");
 const router = express.Router();
-const {sql, poolPromise} = require("../dbConfig"); 
+const { sql, poolPromise } = require("../dbConfig");
 
+// Get available devices by device type
 router.post("/get-available-devices", async (req, res) => {
   try {
-    console.log("BODY: ", req.body)
-    const { deviceType} = req.body; 
+    console.log("BODY: ", req.body);
+    const { deviceType } = req.body;
     const ubicacion = req.headers["x-ubicacion"];
     const pool = await poolPromise;
 
-    const tipoResult = await pool.request()
+    const tipoResult = await pool
+      .request()
       .input("deviceType", sql.VarChar, deviceType)
       .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @deviceType");
 
     if (tipoResult.recordset.length === 0) {
-      return res.status(404).json({ error: "Tipo de dispositivo no encontrado" });
+      return res
+        .status(404)
+        .json({ error: "Tipo de dispositivo no encontrado" });
     }
 
     const ID_Tipo = tipoResult.recordset[0].ID_Tipo;
 
-    const result = await pool.request()
+    const result = await pool
+      .request()
       .input("ID_Tipo", sql.Int, ID_Tipo)
-      .input("Ubicacion", sql.VarChar, ubicacion) 
-      .query(`
+      .input("Ubicacion", sql.VarChar, ubicacion).query(`
         SELECT d.ID_Dispositivo, d.Marca, m.Modelo, d.Serial_Number
         FROM Dispositivos d inner join Modelos m ON d.ID_Modelo = m.ID_Modelo
         WHERE d.ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND d.Ubicacion = @Ubicacion
       `);
 
-    console.log(result.recordset)
+    console.log(result.recordset);
 
     res.json({ success: true, devices: result.recordset });
   } catch (error) {
@@ -38,6 +41,7 @@ router.post("/get-available-devices", async (req, res) => {
   }
 });
 
+// Construct the query to filter devices in Device Table
 async function getDevicesFiltered(filtros, ubicacion) {
   try {
     await sql.connect(dbConfig);
@@ -65,7 +69,8 @@ async function getDevicesFiltered(filtros, ubicacion) {
       inputs.serialNumber = filtros.serialNumber.trim();
     }
 
-    baseSQL += condiciones.length > 0 ? " AND " + condiciones.join(" AND ") : "";
+    baseSQL +=
+      condiciones.length > 0 ? " AND " + condiciones.join(" AND ") : "";
 
     baseSQL += " ORDER BY td.Tipo, d.Marca, m.Modelo";
 
@@ -73,7 +78,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
     for (const key in inputs) {
       request.input(key, sql.VarChar, inputs[key]);
     }
-    request.input("Ubicacion", sql.VarChar, ubicacion)
+    request.input("Ubicacion", sql.VarChar, ubicacion);
 
     const result = await request.query(baseSQL);
     return result.recordset;
@@ -82,6 +87,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
   }
 }
 
+// Get devices
 router.get("/", async (req, res) => {
   const filtros = {
     tipoDispositivo: req.query.tipoDispositivo || "",
@@ -90,7 +96,7 @@ router.get("/", async (req, res) => {
     serialNumber: req.query.serialNumber || "",
   };
 
-  ubicacion = req.headers["x-ubicacion"]
+  ubicacion = req.headers["x-ubicacion"];
 
   try {
     const devices = await getDevicesFiltered(filtros, ubicacion);
@@ -101,6 +107,84 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get model list of a device type
+router.get("/models/:tipoDispositivo", async (req, res) => {
+  const tipoDispositivo = req.params["TipoDispositivo"];
+  const ubicacion = req.headers["x-Ubicacion"];
+
+  try {
+          const pool = await poolPromise();
+    const result = await pool
+      .request()
+      .input("Ubicacion", sql.VarChar, ubicacion)
+      .input("TipoDispositivo", sql.Int, tipoDispositivo)
+      .query(
+        `SELECT m.ID_Modelo, m.Modelo from Modelos inner join TiposDispositivo t ON m.ID_Tipo = t.ID_Tipo WHERE m.tipoDispositivo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
+      );
+
+    return result.recordset();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Add new devices
+router.post("/", async (req, res) => {
+  const { tipoDispositivo, marca, modelo, cantidad, serialNumbers } = req.body;
+  const ubicacion = req.headers["x-ubicacion"]; 
+
+  try {
+    const serials = Array.isArray(serialNumbers)
+      ? serialNumbers
+      : typeof serialNumbers === "string"
+        ? serialNumbers.split(",").map(s => s.trim()).filter(Boolean)
+        : [];
+
+    for (let i = 0; i < cantidad; i++) {
+      const serial = serials[i] || null;
+      const pool = await poolPromise();
+      await pool
+        .request()
+        .input("TipoDispositivo", sql.Int, tipoDispositivo)
+        .input("Modelo", sql.Int, modelo)
+        .input("Marca", sql.VarChar, marca)
+        .input("SerialNumber", sql.VarChar, serial)
+        .input("Ubicacion", sql.VarChar, ubicacion)
+        .query(`
+          INSERT INTO Dispositivos (TipoDispositivo, Modelo, Marca, SerialNumber, Ubicacion)
+          VALUES (@TipoDispositivo, @Modelo, @Marca, @SerialNumber, @Ubicacion)
+        `);
+    }
+
+    res.status(201).json({ success: true, message: "Dispositivos añadidos correctamente." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update a device info
+router.put("/", async (req, res) => {
+  const {tipoDispositivo, marca, modelo, cantidad, serialNumbers} = req.body;
+   try{
+   
+   }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const ID_Dispositivo = req.params.id;
+    await sql.connect(dbConfig);
+    await sql.query`DELETE FROM Dispositivos WHERE ID_Dispositivo = ${ID_Dispositivo}`;
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+/*
 router.post("/serialized", async (req, res) => {
   try {
     const { tipoDispositivo, modelo, marca, serial_number, ubicacion } = req.body;
@@ -179,19 +263,9 @@ router.post("/generic", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
 
-router.delete("/:id", async (req, res) => {
-  try {
-    const ID_Dispositivo = req.params.id;
-    await sql.connect(dbConfig);
-    await sql.query`DELETE FROM Dispositivos WHERE ID_Dispositivo = ${ID_Dispositivo}`;
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
+/*
 router.put("/serial-number", async (req, res) => {
   try {
     const { id, newSerialNumber } = req.body;
@@ -220,3 +294,4 @@ router.get("/type-id", async (req, res) => {
 });
 
 module.exports = router;
+*/

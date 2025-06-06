@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
+// Get available devices of a device type
 router.get("/available/:deviceType", async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -32,7 +33,8 @@ router.get("/available/:deviceType", async (req, res) => {
   }
 });
 
-router.get("/types", async (req, res) => {
+// Get all device types 
+router.get("/device-types", async (req, res) => {
   try {
     await sql.connect(dbConfig);
     const result = await sql.query(
@@ -41,10 +43,11 @@ router.get("/types", async (req, res) => {
     res.json(result.recordset);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al obtener tipos de dispositivo" });
+    res.status(500).json({ error: error.message });
   }
 });
 
+// Get the grouped inventory (quantities, limits of each model)
 router.get("/grouped-inventory", async (req, res) => {
   const deviceType = req.query.deviceType;
   const ubicacion = req.headers["x-ubicacion"];
@@ -85,8 +88,10 @@ console.log(ubicacion)
   }
 });
 
+
+// Update the limit of a model 
 router.put("/limit", async (req, res) => {
-  const { currentModel, nuevoLimite } = req.body;
+  const { modelo, nuevoLimite } = req.body;
 
   if (!modelo || nuevoLimite == null) {
     return res.status(400).json({ error: "Faltan parámetros" });
@@ -95,7 +100,7 @@ router.put("/limit", async (req, res) => {
   try {
     await sql.connect(dbConfig);
     const request = new sql.Request();
-    request.input("modelo", sql.VarChar, currentModel);
+    request.input("modelo", sql.VarChar, modelo);
     request.input("limite", sql.Int, nuevoLimite);
 
     await request.query(

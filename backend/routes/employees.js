@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
-router.post("/register", async (req, res) => {
+//Add a new employee to the database 
+router.post("/add-employee", async (req, res) => {
   const data = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -13,11 +14,10 @@ router.post("/register", async (req, res) => {
       .input("Nombre", sql.VarChar, data.name)
       .input("Departamento", sql.VarChar, data.dept)
       .input("Posicion", sql.VarChar, data.position)
-      .input("Email", sql.VarChar, data.email)
       .input("Ubicacion", sql.VarChar, ubicacion)
       .input("Fecha_Entrada", sql.Date, data.currentDate)
       .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
-              VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Email, @Ubicacion, @Fecha_Entrada)`);
+              VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Ubicacion, @Fecha_Entrada)`);
 
     res.json({ success: true });
   } catch (error) {
@@ -26,13 +26,44 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//Delete employee from the database
+router.delete("/:IDEmpleado", async (req, res) => {
+  const IDEmpleado = req.params["IDEmpleado"];
+  try{
+    const pool = await poolPromise();
+    await pool.request()
+      .input("ID_Empleado", sql.Int, IDEmpleado)
+      .query(`DELETE FROM Empleados WHERE ID_Empleado = @ID_Empleado`);
+    res.status(100);
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({error: err.message});
+  }
+})
+
+//Reassign devices from an old employee to a new one (in case of a replacement from the Register view)
+router.put("/reassign-devices", async (req, res) => {
+  const {IDEmpleadoAnterior, IDEmpleadoNuevo } = req.body;
+  try{
+    const pool = await poolPromise();
+    await pool.request()
+      .input("ID_EmpleadoAnt", sql.Int, IDEmpleadoAnterior)
+      .input("ID_EmpleadoNuevo", sql.Int, IDEmpleadoNuevo)
+      .query(`UPDATE DispositivosAsignados SET ID_Empleado = @ID_EmpleadoNuevo WHERE ID_Empleado = @ID_EmpleadoAnt`)
+    res.status(100);
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({error: err.message});
+  }
+})
+
+//Get the devices assigned to an employee
 router.post("/devices", async (req, res) => {
   const { employeeInfo } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
-    console.log("Petición recibida:");
-    console.log("employeeInfo:", employeeInfo);
-    console.log("ubicacion:", ubicacion);
     const pool = await poolPromise;
     const request = pool
       .request()
@@ -51,7 +82,7 @@ router.post("/devices", async (req, res) => {
   FROM Dispositivos i
   INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo
   INNER JOIN Empleados e ON e.ID_Empleado = d.ID_Empleado
-  INNER JOIN TiposDispositivo t ON i.ID_Tipo = t.ID_Tipo  -- Join to get device type name
+  INNER JOIN TiposDispositivo t ON i.ID_Tipo = t.ID_Tipo  
   WHERE (e.ID_Empleado LIKE @employeeInfoID OR e.Nombre LIKE @employeeInfoName)
     AND i.Ubicacion = @ubicacion
     `);
@@ -78,6 +109,7 @@ router.post("/devices", async (req, res) => {
   }
 });
 
+//Assign a device to an employee
 router.post("/assign-device", async (req, res) => {
   try {
     const pool = await poolPromise;
