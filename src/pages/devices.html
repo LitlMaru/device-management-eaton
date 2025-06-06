@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inventario de Dispositivos</title>
-    <link rel="stylesheet" href="../css/devices.css" />
-    <style>
-      .hidden {
-        display: none;
-      }
-    </style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventario de Dispositivos</title>
+  <link rel="stylesheet" href="../css/devices.css">
   </head>
   <body>
-    <h1>Inventario de Dispositivos</h1>
+
+  <h1>Inventario de Dispositivos</h1>
 
     <div class="controls">
       <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." />
@@ -38,11 +34,11 @@
       <tbody></tbody>
     </table>
 
-    <!-- Modal Agregar -->
-    <div class="modal" id="modalAgregar">
-      <div class="modal-content">
-        <span class="close" onclick="cerrarModal('modalAgregar')">×</span>
-        <h3>Agregar Dispositivos</h3>
+
+  <div class="modal" id="modalAgregar">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalAgregar')">×</span>
+      <h3>Agregar Dispositivos</h3>
 
         <label
           ><input
@@ -141,27 +137,26 @@
       </div>
     </div>
 
-    <!-- Modal Editar (sin cambios en esta parte por ahora) -->
-    <div class="modal" id="modalEditar">
-      <div class="modal-content">
-        <span class="close" onclick="cerrarModal('modalEditar')">×</span>
-        <h3>Editar Dispositivo</h3>
-        <input type="hidden" id="editarIndex" />
-        <label>Serial:</label
-        ><input type="text" id="editarSerial" /><br /><br />
-        <!-- Se puede replicar la lógica para "nuevo" si deseas -->
-        <label>Nombre:</label>
-        <select id="tipoDispositivo" name="tipoDispositivo" required>
-          <!-- mismas opciones --></select
-        ><br /><br />
-        <label>Marca:</label><input type="text" id="editarMarca" /><br /><br />
-        <label>Modelo:</label>
-        <select id="Modelo" name="Modelo" required>
-          <!-- mismas opciones --></select
-        ><br /><br />
-        <button onclick="guardarEdicion()">Guardar Cambios</button>
-      </div>
+
+  <div class="modal" id="modalEditar">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalEditar')">×</span>
+      <h3>Editar Dispositivo</h3>
+      <input type="hidden" id="editarIndex">
+      <label>Serial:</label><input type="text" id="editarSerial"><br><br>
+      
+      <label>Nombre:</label>
+      <select id="tipoDispositivo" name="tipoDispositivo" required>
+     
+      </select><br><br>
+      <label>Marca:</label><input type="text" id="editarMarca"><br><br>
+      <label>Modelo:</label>
+      <select id="Modelo" name="Modelo" required>
+      
+      </select><br><br>
+      <button onclick="guardarEdicion()">Guardar Cambios</button>
     </div>
+  </div>
 
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="../js/devices.js"></script>

@@ -4,6 +4,8 @@
  box-sizing: border-box;
 }
 
+.hidden { display: none; }
+
 body {
   font-family: "Segoe UI", sans-serif;
   margin: 20px;

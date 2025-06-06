@@ -71,3 +71,32 @@
     function cerrarModal() {
       document.getElementById("modalAsignacion").style.display = "none";
     }
+
+    let ordenAscendente = true;
+
+function ordenarPorNombre() {
+  const tabla = document.getElementById("tablaAsignados").getElementsByTagName('tbody')[0];
+  const filas = Array.from(tabla.rows);
+
+  filas.sort((a, b) => {
+    const nombreA = a.cells[1].innerText.toLowerCase();
+    const nombreB = b.cells[1].innerText.toLowerCase();
+
+    if (ordenAscendente) {
+      return nombreA.localeCompare(nombreB);
+    } else {
+      return nombreB.localeCompare(nombreA);
+    }
+  });
+
+  filas.forEach(fila => tabla.appendChild(fila));
+
+  const boton = document.getElementById("btnOrdenarNombre");
+  if (ordenAscendente) {
+    boton.innerText = "Ordenar Z-A";
+  } else {
+    boton.innerText = "Ordenar A-Z";
+  }
+
+  ordenAscendente = !ordenAscendente; 
+}
