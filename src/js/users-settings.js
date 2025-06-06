@@ -1,3 +1,42 @@
+const ElectronAPI = (() => {
+  function sendMessage(action, data) {
+    return new Promise((resolve, reject) => {
+      const requestId = Math.random().toString(36).slice(2);
+
+      function handler(event) {
+        if (event.data && event.data.requestId === requestId) {
+          window.removeEventListener("message", handler);
+          if (event.data.success) {
+            resolve(event.data.result || event.data.env);
+          } else {
+            reject(new Error(event.data.error));
+          }
+        }
+      }
+
+      window.addEventListener("message", handler);
+
+      window.parent.postMessage({ action, data, requestId }, "*");
+    });
+  }
+
+  return {
+    invoke: (...args) => sendMessage("invoke-ipc", { args }),
+    getEnv: () => sendMessage("get-env"),
+  };
+})();
+
+let currentUser, HOST, PORT;
+
+async function init() {
+  currentUser = await ElectronAPI.invoke("get-current-user");
+  env = await ElectronAPI.getEnv();
+  HOST = env.HOST;
+  PORT = env.PORT;
+  cargarUsuarios();
+  }
+init();
+
 function abrirModal() {
   document.getElementById("modal").style.display = "flex";
 }
@@ -17,11 +56,26 @@ function limpiarCampos() {
 async function obtenerUsuarios() {
   try {
     const response = await fetch(`${HOST}:${PORT}/api/users/`);
-    const data = await response.json();
-    return data.usuarios;
-    } catch (err) {
+    
+    if (!response.ok) {
+      throw new Error(`Error del servidor: ${response.status}`);
     }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.usuarios)) {
+      console.warn("Respuesta inesperada del servidor:", data);
+      return [];
+    }
+
+    return data.usuarios;
+
+  } catch (err) {
+    console.error("Error al obtener usuarios:", err);
+    return [];  
   }
+}
+
 
 async function cargarUsuarios(){
    const usuarios = await obtenerUsuarios();
@@ -187,4 +241,3 @@ async function eliminarUsuario(boton) {
   if (fila) fila.remove();
 }
 
-cargarUsuarios();

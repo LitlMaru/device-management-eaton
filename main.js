@@ -14,7 +14,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    frame: false,
+    frame: true,
     titleBarStyle: "default",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -116,6 +116,12 @@ ipcMain.handle("login-user", async (event, credentials) => {
 ipcMain.handle("get-current-user", () => {
   return global.currentUser;
 });
+
+ipcMain.handle("logout", (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  win.close(); 
+  createWindow(); 
+})
 
 ipcMain.handle("register-employee", async (event, data) => {
   try {

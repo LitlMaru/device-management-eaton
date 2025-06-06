@@ -578,5 +578,6 @@ function closeWindow() {
 }
 
 function closeSession() {
-  window.location.href = "login.html";
+   //window.location.href = "login.html";
+  electron.ipcRenderer.invoke("logout")
 }
