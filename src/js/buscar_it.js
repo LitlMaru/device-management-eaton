@@ -191,3 +191,45 @@ document.querySelectorAll("#tablaAsignados tbody tr").forEach(row => {
   });
 });
 
+function verificarDispositivosACambiar() {
+  const hoy = new Date();
+  const tabla = document.getElementById("tablaAsignados").getElementsByTagName("tbody")[0];
+  const filas = tabla.getElementsByTagName("tr");
+
+  let alertas = [];
+
+  for (let fila of filas) {
+    const empleado = fila.cells[1].textContent;
+    const dispositivo = fila.cells[3].textContent;
+    const fechaCambioTexto = fila.cells[5].textContent;
+
+
+    const fechaCambio = new Date(fechaCambioTexto);
+
+  
+    if (
+      !isNaN(fechaCambio) &&
+      fechaCambio.toDateString() === hoy.toDateString()
+    ) {
+      alertas.push(`⚠️ El dispositivo "${dispositivo}" asignado a ${empleado} debe ser cambiado hoy.`);
+    }
+  }
+
+
+  if (alertas.length > 0) {
+    const contenedor = document.createElement("div");
+    contenedor.classList.add("alerta-fecha");
+
+    contenedor.innerHTML = `
+      <div class="alerta-cambio">
+        <strong>🔔 Dispositivos que deben cambiarse hoy:</strong><br>
+        ${alertas.join("<br>")}
+      </div>
+    `;
+
+    document.querySelector(".contenedor-principal").prepend(contenedor);
+  }
+}
+
+
+window.addEventListener("DOMContentLoaded", verificarDispositivosACambiar);

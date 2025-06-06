@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dispositivos Asignados</title>
     <link rel="stylesheet" href="../css/query-employee-devices.css" />
+
+    <!-- Íconos opcionales (Font Awesome) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-papWkqh0uRr14+Z9jS1JrNV7Kh++b3HgbjR0aZPgIMK6J/IXWPoGdSG4XhZ6LPn1z4e5n9GCvXOKMgUvG2hxZw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <div class="contenedor-principal">
@@ -17,8 +26,11 @@
           placeholder="Buscar por nombre o código..."
           oninput="filtrarTabla()"
         />
-        <button id="btnOrdenarNombre" onclick="ordenarPorNombre()">
-          Ordenar A-Z
+        <button type="button" id="btnOrdenarNombre" onclick="ordenarPorNombre()">
+          <i class="fa fa-sort-alpha-down"></i> Ordenar A-Z
+        </button>
+        <button type="button" onclick="exportarExcel()">
+          <i class="fa fa-file-excel"></i> Exportar a Excel
         </button>
       </div>
 
@@ -39,20 +51,24 @@
               <td>123</td>
               <td>Romulo Betances</td>
               <td>Laptop-XYZ, Mouse, Teclado</td>
-              <td>XYZ, Ergonomico, Inalambrico</td>
+              <td>HP ProBook, Logitech M280, Logitech K120</td>
               <td>2024-10-01</td>
               <td>
                 <button
+                  type="button"
                   class="boton-accion boton-verificar"
                   onclick="verificarDispositivos(this)"
+                  title="Verificar dispositivos asignados"
                 >
-                  Verificar
+                  <i class="fa fa-check-circle"></i> Verificar
                 </button>
                 <button
+                  type="button"
                   class="boton-accion boton-eliminar"
                   onclick="eliminarFila(this)"
+                  title="Eliminar asignación"
                 >
-                  Eliminar
+                  <i class="fa fa-trash-alt"></i> Eliminar
                 </button>
               </td>
             </tr>
@@ -60,20 +76,24 @@
               <td>456</td>
               <td>Anyeny Mejía</td>
               <td>Headset, Cargador Laptop</td>
-              <td>XYZ, Ergonomico, Inalambrico</td>
+              <td>Logitech H390, Lenovo USB-C</td>
               <td>2024-10-01</td>
               <td>
                 <button
+                  type="button"
                   class="boton-accion boton-verificar"
                   onclick="verificarDispositivos(this)"
+                  title="Verificar dispositivos asignados"
                 >
-                  Verificar
+                  <i class="fa fa-check-circle"></i> Verificar
                 </button>
                 <button
+                  type="button"
                   class="boton-accion boton-eliminar"
                   onclick="eliminarFila(this)"
+                  title="Eliminar asignación"
                 >
-                  Eliminar
+                  <i class="fa fa-trash-alt"></i> Eliminar
                 </button>
               </td>
             </tr>
@@ -82,7 +102,7 @@
       </div>
     </div>
 
-    <div id="modalAsignacion" class="modal">
+    <div id="modalAsignacion" class="modal oculto">
       <div class="modal-content">
         <h2>Verificación de salida</h2>
         <p><strong>Empleado:</strong> <span id="userModal"></span></p>
@@ -90,12 +110,16 @@
           <div id="listaDispositivos" class="checkbox-list"></div>
           <br />
           <button type="button" onclick="guardarEntrega()">
-            Guardar cambios
+            <i class="fa fa-save"></i> Guardar cambios
           </button>
-          <button type="button" onclick="cerrarModal()">Cerrar</button>
+          <button type="button" onclick="cerrarModal()">
+            <i class="fa fa-times"></i> Cerrar
+          </button>
         </form>
       </div>
     </div>
+
     <script src="../js/query-employee-devices.js"></script>
   </body>
 </html>
+
