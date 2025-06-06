@@ -1,80 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dispositivos Asignados</title>
-  <link rel="stylesheet" href="../css/query-employee-devices.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispositivos Asignados</title>
+    <link rel="stylesheet" href="../css/query-employee-devices.css" />
+  </head>
+  <body>
+    <div class="contenedor-principal">
+      <h1>Dispositivos Asignados</h1>
 
-</head>
-<body>
-  <div class="contenedor-principal">
-    <h1>Dispositivos Asignados</h1>
+      <div class="busqueda-exportar">
+        <input
+          type="text"
+          id="busqueda"
+          placeholder="Buscar por nombre o código..."
+          oninput="filtrarTabla()"
+        />
+        <button id="btnOrdenarNombre" onclick="ordenarPorNombre()">
+          Ordenar A-Z
+        </button>
+      </div>
 
-   
-
-    <div class="busqueda-exportar">
-      <input type="text" id="busqueda" placeholder="Buscar por nombre o código..." oninput="filtrarTabla()" />
-      <button id="btnOrdenarNombre" onclick="ordenarPorNombre()">Ordenar A-Z</button>
-
-    </div>
-     
-    <div class="scrollable">
-      <table id="tablaAsignados">
-        <thead>
-          <tr>
-            <th>ID Empleado</th>
-            <th>Empleado</th>
-            <th>Dispositivo</th>
-            <th>Modelo</th>
-            <th>Fecha Asignación</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>123</td>
-            <td>Romulo Betances</td>
-            <td>Laptop-XYZ, Mouse, Teclado</td>
-            <td>XYZ, Ergonomico, Inalambrico</td>
-            <td>2024-10-01</td>
-            <td>
-          <button class="boton-accion boton-verificar" onclick="verificarDispositivos(this)">Verificar</button>
-          <button class="boton-accion boton-eliminar" onclick="eliminarFila(this)">Eliminar</button>
-
-            </td>
-
+      <div class="scrollable">
+        <table id="tablaAsignados">
+          <thead>
+            <tr>
+              <th>ID Empleado</th>
+              <th>Empleado</th>
+              <th>Dispositivo</th>
+              <th>Modelo</th>
+              <th>Fecha Asignación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>123</td>
+              <td>Romulo Betances</td>
+              <td>Laptop-XYZ, Mouse, Teclado</td>
+              <td>XYZ, Ergonomico, Inalambrico</td>
+              <td>2024-10-01</td>
+              <td>
+                <button
+                  class="boton-accion boton-verificar"
+                  onclick="verificarDispositivos(this)"
+                >
+                  Verificar
+                </button>
+                <button
+                  class="boton-accion boton-eliminar"
+                  onclick="eliminarFila(this)"
+                >
+                  Eliminar
+                </button>
+              </td>
             </tr>
             <tr>
-            <td>456</td>
-            <td>Anyeny Mejía</td>
-            <td>Headset, Cargador Laptop</td>  
-             <td>XYZ, Ergonomico, Inalambrico</td>          
-            <td>2024-10-01</td>
-           <td>
-            <button class="boton-accion boton-verificar" onclick="verificarDispositivos(this)">Verificar</button>
-            <button class="boton-accion boton-eliminar" onclick="eliminarFila(this)">Eliminar</button>
-
-
-        </tr>
-      </tbody>
-     </table>
-     </div>
-   </div>
-
-
-  <div id="modalAsignacion" class="modal">
-    <div class="modal-content">
-      <h2>Verificación de salida</h2>
-      <p><strong>Empleado:</strong> <span id="userModal"></span></p>
-      <form id="formDispositivos">
-        <div id="listaDispositivos" class="checkbox-list"></div>
-        <br />
-        <button type="button" onclick="guardarEntrega()">Guardar cambios</button>
-        <button type="button" onclick="cerrarModal()">Cerrar</button>
-      </form>
+              <td>456</td>
+              <td>Anyeny Mejía</td>
+              <td>Headset, Cargador Laptop</td>
+              <td>XYZ, Ergonomico, Inalambrico</td>
+              <td>2024-10-01</td>
+              <td>
+                <button
+                  class="boton-accion boton-verificar"
+                  onclick="verificarDispositivos(this)"
+                >
+                  Verificar
+                </button>
+                <button
+                  class="boton-accion boton-eliminar"
+                  onclick="eliminarFila(this)"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-<script src="../js/query-employee-devices.js"></script>
-</body>
+
+    <div id="modalAsignacion" class="modal">
+      <div class="modal-content">
+        <h2>Verificación de salida</h2>
+        <p><strong>Empleado:</strong> <span id="userModal"></span></p>
+        <form id="formDispositivos">
+          <div id="listaDispositivos" class="checkbox-list"></div>
+          <br />
+          <button type="button" onclick="guardarEntrega()">
+            Guardar cambios
+          </button>
+          <button type="button" onclick="cerrarModal()">Cerrar</button>
+        </form>
+      </div>
+    </div>
+    <script src="../js/query-employee-devices.js"></script>
+  </body>
 </html>
