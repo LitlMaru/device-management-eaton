@@ -9,6 +9,20 @@
   min-height: 100vh;
 }
 
+.checkbox-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .checkbox-row label {
+      margin-left: 5px;
+    }
+
+    .sub-field {
+      margin-top: 10px;
+    }
+
 html, body{
     height: 100%;
 }
