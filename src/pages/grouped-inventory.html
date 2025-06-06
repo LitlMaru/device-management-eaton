@@ -1,85 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inventario de Dispositivos Agrupados</title>
-    <link rel="stylesheet" href="../css/grouped-inventory.css">
-      
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventario de Dispositivos Agrupados</title>
+  <link rel="stylesheet" href="../css/grouped-inventory.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+ 
+</head>
+<body>
 
-    
-  </head>
-  <body>
+  <div id="modalOverlay" onclick="closePanel()"></div>
 
-    <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded shadow w-full max-w-md">
-    <h2 id="editTitle" class="text-xl font-semibold mb-4">Editar límite</h2>
-    <input id="newLimit" type="number" class="w-full border px-3 py-2 mb-4" />
-    <div class="flex justify-end gap-2">
-      <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded">Cancelar</button>
-      <button id="saveLimit" class="bg-blue-600 text-white px-4 py-2 rounded">Guardar</button>
-    </div>
+  <div id="editPanel">
+    <button class="close-btn" onclick="closePanel()">✖</button>
+    <h2 id="editTitle">Editar límite</h2>
+    <input id="newLimit" type="number" class="panel-input" min="0" />
+    <button id="saveLimit" class="save-btn">Guardar</button>
   </div>
-</div>
 
-    <div class="container">
-      <h1>Inventario de Dispositivos Agrupados</h1>
-      <div class="search-filter">
-        <select id="deviceType">
-          <option value="" selected>Tipo de dispositivo</option>
-                <option value="Laptop">Laptop</option>
-          <option value="Monitor">Monitor</option>
-          <option value="Mouse">Mouse</option>
-          <option value="Teclado">Teclado</option>
-          <option value="Headset">Headset</option>
-          <option value="Cargador">Cargador</option>
-          <option value="Desktop">Desktop</option>
-          <option value="Mini Desktop">Mini Desktop</option>
-          <option value="Cable">Cable</option>
-          <option value="Dokin">Dokin</option>
-          <option value="Bateria de Laptop">Bateria de Laptop</option>
-          <option value="Bateria de UPS">Bateria de UPS</option>
-          <option value="Memoria Incrustada">Memoria Incrustada</option>
-          <option value="UPS">UPS</option>
-          <option value="Cable DVI">Cable DVI</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Adaptador">Adaptador</option>
-          <option value="PowerCord">PowerCord</option>
-          <option value="FacePlate">FacePlate</option>
-          <option value="Jack Rj45">Jack Rj45</option>
-          <option value="Scanner">Scanner</option>
-          <option value="Charger">Charger</option>
-          <option value="Tóner">Tóner</option>
-          <option value="Display Port">Display Port</option>
-          <option value="Serial">Serial</option>
-          <option value="USB">USB</option>
-          
-        </select>
+  <div class="container">
+    <h1>Inventario de Dispositivos Agrupados</h1>
+
+    <div class="search-filter">
+      <select id="deviceType" onchange="filtrarTabla()">
+        <option value="" selected>Tipo de dispositivo</option>
+         <option value="Monitor">Monitor</option>
+  <option value="Mouse">Mouse</option>
+  <option value="Teclado">Teclado</option>
+  <option value="Headset">Headset</option>
+  <option value="Cargador">Cargador</option>
+  <option value="Desktop">Desktop</option>
+  <option value="Mini Desktop">Mini Desktop</option>
+  <option value="Cable">Cable</option>
+  <option value="Dokin">Dokin</option>
+  <option value="Bateria de Laptop">Bateria de Laptop</option>
+  <option value="Bateria de UPS">Bateria de UPS</option>
+  <option value="Memoria Incrustada">Memoria Incrustada</option>
+  <option value="UPS">UPS</option>
+  <option value="Cable DVI">Cable DVI</option>
+  <option value="Tablet">Tablet</option>
+  <option value="Adaptador">Adaptador</option>
+  <option value="PowerCord">PowerCord</option>
+  <option value="FacePlate">FacePlate</option>
+  <option value="Jack Rj45">Jack Rj45</option>
+  <option value="Scanner">Scanner</option>
+  <option value="Charger">Charger</option>
+  <option value="Tóner">Tóner</option>
+  <option value="Display Port">Display Port</option>
+  <option value="Serial">Serial</option>
+  <option value="USB">USB</option>
+      </select>
+    </div>
+
+    <div class="alert-box" style="display:none;">
+      <div class="alert-title">
+        ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están por debajo de la cantidad mínima:
       </div>
+      <ul id="alert-list"></ul>
+    </div>
 
-      <div class="alert-box">
-        <div class="alert-title">
-          ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están
-          por debajo de la cantidad minima:
-        </div>
-        <ul id="alert-list">
-          <li>
-            <strong>Laptop (Dell XPS 13)</strong> – 3 dispositivos restantes
-            (Límite: 5)
-          </li>
-          <li>
-            <strong>Escritorio (HP Pavilion)</strong> – 1 dispositivo restante
-            (Límite: 3)
-          </li>
-        </ul>
-      </div>
+    <button onclick="exportarExcel()" class="excel-btn">
+      <img src="../../assets/excel.png" style="width: 16px;" alt=""> <span>Exportar a Excel</span>
+    </button>
 
-       <button onclick="exportarExcel()" class="excel-btn">
-          <img src="../../assets/excel.png" style="width: 16px;" alt=""> <span>Exportar a Excel</span>
-        </button>
-
-      <div class="scrollable"><table id="inventoryTable">
+    <div class="scrollable">
+      <table id="inventoryTable">
         <thead>
           <tr>
             <th>Tipo de Dispositivo</th>
@@ -91,26 +77,37 @@
         </thead>
         <tbody>
           <tr>
-            <td>Laptops</td>
-            <td>Pequeña</td>
-            <td>14</td>
+            <td>Laptop</td>
+            <td>Dell XPS 13</td>
+            <td>3</td>
+            <td>5</td>
+            <td>
+              <button onclick="openPanel(this.closest('tr'))" class="edit-btn">Cambiar límite</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Desktop</td>
+            <td>HP Pavilion</td>
+            <td>1</td>
+            <td>3</td>
+            <td>
+              <button onclick="openPanel(this.closest('tr'))" class="edit-btn">Cambiar límite</button>
+            </td>
+          </tr>
+          <tr>
+            <td>USB</td>
+            <td>SanDisk Ultra</td>
             <td>10</td>
-            <td><div class="action-buttons"><button onclick="toggleModal(true)" class="edit-btn">Cambiar limite</button></div></td>
+            <td>8</td>
+            <td>
+              <button onclick="openPanel(this.closest('tr'))" class="edit-btn">Cambiar límite</button>
+            </td>
           </tr>
         </tbody>
       </table>
-</div>
-      
-      <div id="editModal" class="hidden" role="dialog" aria-modal="true">
-        <h3>Editar cantidad mínima</h3>
-        <p id="editTitle"></p>
-        <input type="number" id="newLimit" min="0" />
-        <button id="saveLimit">Guardar</button>
-        <button onclick="toggleModal(false)">Cancelar</button>
-      </div>
     </div>
+  </div>
+  <script src="../js/grouped-inventory.js"></script>
 
-    
-    <script src="../js/grouped-inventory.js"></script>
-  </body>
+</body>
 </html>

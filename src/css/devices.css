@@ -1,37 +1,47 @@
-*{
-  box-sizing: border-box;
+
+
+* {
+ box-sizing: border-box;
 }
+
 body {
   font-family: "Segoe UI", sans-serif;
   margin: 20px;
-  background: #fff;
+  background: #f8f9fa;
+  color: #212529;
 }
 
 main {
   padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
+
+
 ::-webkit-scrollbar {
-  width: 14px;
+  width: 12px;
 }
 ::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: #f1f1f1;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #003973;
   border-radius: 10px;
-  border: 3px solid #fff;
+  border: 2px solid #f1f1f1;
 }
 ::-webkit-scrollbar-button {
   display: none;
 }
 
+
 .row-alert {
-  background-color: #ffcccc !important;
+  background-color: #fdecea !important;
+  }
+.row-asignado {
+  background-color: #fff8e1 !important;
 }
 
-.row-asignado {
-  background-color: #fff3cd !important;
-}
 
 .centered-button {
   display: flex;
@@ -39,101 +49,153 @@ main {
   margin-bottom: 25px;
 }
 button#btnAddDevice {
-  font-size: 20px;
-  padding: 12px 24px;
-  cursor: pointer;
-  background-color: #004183;
+  font-size: 18px;
+  padding: 12px 28px;
+  background: linear-gradient(to right, #004e92, #000428);
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   color: white;
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+  transition: 0.3s ease;
 }
 button#btnAddDevice:hover {
-  background-color: #0058b1;
-}
-
-.filters {
-  margin-bottom: 15px;
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.modal input[type="text"],
-.modal input[type="email"],
-.modal input[type="date"]{
-   flex-grow: 1;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid #003973;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  width: 100%;
-  margin-bottom: 8px;
+  background: linear-gradient(to right, #0058b1, #001440);
 }
 
 .filters input,
 .filters select {
-  padding: 8px 12px;
-  border: 1px solid #003973;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  min-width: 200px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  border: 2px solid #004183;
+  border-radius: 10px;
+  min-width: 240px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
 
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #007bff;
-      color: white;
-      user-select: none;
-    }
-    tr.row-alert {
-      background-color: #f8d7da; 
-    }
-    tr:hover {
-      background-color: #f1f1f1;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+th, td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+th {
+  background-color: #004e92;
+  color: white;
+  font-weight: 600;
+}
+tr:hover {
+  background-color: #f5f5f5;
+}
 
-  
-    .btn-edit, .btn-delete {
-      cursor: pointer;
-      padding: 5px 12px;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 14px;
-      margin-right: 6px;
-      transition: background-color 0.3s ease;
-      color: white;
-    }
-    .btn-edit {
-      background-color: #28a745;
-    }
-    .btn-edit:hover {
-      background-color: #1e7e34;
-    }
-    .btn-delete {
-      background-color: #dc3545;
-    }
-    .btn-delete:hover {
-      background-color: #a71d2a;
-    }
+.btn-edit, .btn-delete {
+  cursor: pointer;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-right: 6px;
+  transition: background-color 0.3s ease;
+  color: white;
+}
+#exportBtn {
+  background-color: #dc3545;
+  color: white;
+  font-size: 15px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: -50px;
+  transition: background-color 0.3s ease;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.controls input[type="text"] {
+  padding: 12px 18px;
+  font-size: 1rem;
+  border: 2px solid #004183;
+  border-radius: 10px;
+  min-width: 220px;
+  transition: all 0.3s ease;
+}
+
+.controls input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+.controls button {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.controls button#exportBtn {
+  background-color: #dc3545;
+  color: white;
+  position: absolute;
+  top: -50px;
+  right: 0;
+}
+
+.controls button#exportBtn:hover {
+  background-color: #a71d2a;
+}
+
+.controls button:not(#exportBtn) {
+  background-color: #004183;
+  color: white;
+}
+
+.controls button:not(#exportBtn):hover {
+  background-color: #0058b1;
+}
+
+
+#exportBtn:hover {
+  background-color: #a71d2a;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
+.btn-delete:hover {
+  background-color: #bd2130;
+}
+
 
 .modal {
   display: none;
@@ -141,55 +203,57 @@ button#btnAddDevice:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  padding: 2rem ;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
   width: 400px;
   z-index: 1001;
   max-height: 80%;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  gap: 8px;
+  overflow-y: auto;
 }
 .modal h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin: 0 0 16px;
   font-weight: bold;
-  color: #333;
+  color: #004e92;
   text-align: center;
 }
 .modal label {
   display: block;
   margin-bottom: 6px;
-  font-weight: bold;
-  color: #555;
+  font-weight: 600;
+  color: #333;
 }
-
+.modal input[type="text"],
+.modal input[type="email"],
+.modal input[type="date"],
 .modal select {
-   flex-grow: 1;
-  padding: 0.6rem 0.75rem;
-  border: 1px solid #003973;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
   width: 100%;
-  margin-bottom: 8px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  transition: border 0.3s ease;
+}
+.modal input:focus,
+.modal select:focus {
+  border-color: #004e92;
+  outline: none;
 }
 
 
-.modal button {
-  width: 50%;
+  .modal button {
+  width: 48%;
   height: 40px;
-  background-color: #004e92;
-  padding: 0.5rem 0.5rem;
+    background-color: #004e92;
   border: none;
   border-radius: 8px;
   color: white;
   font-weight: bold;
   cursor: pointer;
-  text-align: center;
-}
+  transition: background-color 0.3s;
+  }
 #btnSave {
   background-color: #007bff;
   margin-right: 4%;
@@ -204,6 +268,7 @@ button#btnAddDevice:hover {
   background-color: #565e64;
 }
 
+
 #overlay {
   display: none;
   position: fixed;
@@ -211,10 +276,78 @@ button#btnAddDevice:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1000;
-}
+  }
+
+
 h1 {
   text-align: center;
   color: #003973;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
+
+
+#exportBtn {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#exportBtn:hover {
+  background-color: #218838;
+}
+
+/* Cerrar modal */
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #dc3545;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #a71d2a;
+}
+
+/* Botones editar y eliminar */
+.btn-edit, .btn-delete {
+  cursor: pointer;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 6px;
+  transition: background-color 0.3s ease;
+  color: white;
+  user-select: none;
+}
+
+.btn-edit {
+  background-color: #28a745;
+}
+
+.btn-edit:hover {
+  background-color: #1e7e34;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
+
+.btn-delete:hover {
+  background-color: #a71d2a;
+}
+

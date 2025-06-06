@@ -1,191 +1,97 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Inventario de Dispositivos</title>
-    <link rel="stylesheet" href="../css/devices.css" />
-  </head>
-  <body>
-    <main>
-      <h1>Dispositivos De Inventario</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventario de Dispositivos</title>
+   <link rel="stylesheet" href="../css/devices.css">
+</head>
+<body>
 
-      <div class="centered-button">
-        <button id="btnAddDevice" onclick="abrirModal()">
-          Agregar Dispositivo
-        </button>
-      </div>
+  <h1>Inventario de Dispositivos</h1>
 
-      <div class="filters">
-        <input
-          type="text"
-          id="serialNumberSearch"
-          placeholder="Buscar por número de serial o modelo"
-          oninput="aplicarFiltros()"
-        />
-        <select id="deviceTypeSelect" onchange="aplicarFiltros()">
-          <option value="">Todos los Tipos</option>
-          <option value="Laptop">Laptop</option>
-          <option value="Monitor">Monitor</option>
-          <option value="Mouse">Mouse</option>
-          <option value="Teclado">Teclado</option>
-          <option value="Headset">Headset</option>
-          <option value="Cargador">Cargador</option>
-          <option value="Desktop">Desktop</option>
-          <option value="Mini Desktop">Mini Desktop</option>
-          <option value="Cable">Cable</option>
-          <option value="Dokin">Dokin</option>
-          <option value="Bateria de Laptop">Bateria de Laptop</option>
-          <option value="Bateria de UPS">Bateria de UPS</option>
-          <option value="Memoria Incrustada">Memoria Incrustada</option>
-          <option value="UPS">UPS</option>
-          <option value="Cable DVI">Cable DVI</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Adaptador">Adaptador</option>
-          <option value="PowerCord">PowerCord</option>
-          <option value="FacePlate">FacePlate</option>
-          <option value="Jack Rj45">Jack Rj45</option>
-          <option value="Scanner">Scanner</option>
-          <option value="Charger">Charger</option>
-          <option value="Tóner">Tóner</option>
-          <option value="Display Port">Display Port</option>
-          <option value="Serial">Serial</option>
-        </select>
+  <div class="controls">
+    <input type="text" id="buscarNombre" placeholder="Buscar por nombre...">
+    <input type="text" id="buscarMarca" placeholder="Buscar por marca...">
+    <input type="text" id="buscarModelo" placeholder="Buscar por modelo...">
+    <button onclick="abrirModalAgregar()">Agregar Dispositivo</button>
+    <button id="exportBtn" onclick="exportarExcel()">📤 Exportar a Excel</button>
+  </div>
 
-        <select id="modelSelect" onchange="aplicarFiltros()">
-          <option value="">Todos los modelos</option>
-        </select>
-        <select id="statusSelect" onchange="aplicarFiltros()">
-          <option value="">Todos los Estados</option>
-          <option value="Disponible">Disponible</option>
-          <option value="Asignar">Asignar</option>
-        </select>
-      </div>
+  <table id="tablaDispositivos">
+    <thead>
+      <tr>
+        <th>Serial</th>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-      <div class="scrollable">
-        <table id="deviceTable">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Tipo</th>
-              <th>Modelo</th>
-              <th>Marca</th>
-              <th>Serial</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <div class="modal" id="modal-eliminar">
-        <h2>Eliminar Dispositivos</h2>
-        <label for="tipo-eliminar">Tipo:</label>
-        <select name="tipo-elimianr" id="tipo-eliminar">
-          <option value="Laptop">Laptop</option>
-          <option value="Monitor">Monitor</option>
-          <option value="Mouse">Mouse</option>
-          <option value="Teclado">Teclado</option>
-          <option value="Headset">Headset</option>
-          <option value="Cargador">Cargador</option>
-          <option value="Desktop">Desktop</option>
-          <option value="Mini Desktop">Mini Desktop</option>
-          <option value="Cable">Cable</option>
-          <option value="Dokin">Dokin</option>
-          <option value="Bateria de Laptop">Bateria de Laptop</option>
-          <option value="Bateria de UPS">Bateria de UPS</option>
-          <option value="Memoria Incrustada">Memoria Incrustada</option>
-          <option value="UPS">UPS</option>
-          <option value="Cable DVI">Cable DVI</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Adaptador">Adaptador</option>
-          <option value="PowerCord">PowerCord</option>
-          <option value="FacePlate">FacePlate</option>
-          <option value="Jack Rj45">Jack Rj45</option>
-          <option value="Scanner">Scanner</option>
-          <option value="Charger">Charger</option>
-          <option value="Tóner">Tóner</option>
-          <option value="Display Port">Display Port</option>
-          <option value="Serial">Serial</option>
-          <option value="USB">USB</option>
-        </select>
-
-        <label for="modelo-eliminar">Modelo:</label>
-        <select name="modelo-eliminar" id="modelo-eliminar"></select>
-
-        <label for="marca-eliminar">Marca:</label>
-        <input type="text" id="marca-eliminar" />
-
-        <div style="display: flex; justify-content: center">
-          <button id="btn-eliminar" onclick="eliminarDispositivo()">
-            Eliminar
-          </button>
-          <button id="btn-cancelar" onclick="cerrarModalEliminar()">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </main>
-
-    <div id="modal" class="modal">
-      <h2 id="modalTitle">Agregar Dispositivo</h2>
-      <label for="tipo">Tipo:</label>
-      <select id="tipo">
-        <option value="Laptop">Laptop</option>
-        <option value="Monitor">Monitor</option>
-        <option value="Mouse">Mouse</option>
-        <option value="Teclado">Teclado</option>
-        <option value="Headset">Headset</option>
-        <option value="Cargador">Cargador</option>
-        <option value="Desktop">Desktop</option>
-        <option value="Mini Desktop">Mini Desktop</option>
-        <option value="Cable">Cable</option>
-        <option value="Dokin">Dokin</option>
-        <option value="Bateria de Laptop">Bateria de Laptop</option>
-        <option value="Bateria de UPS">Bateria de UPS</option>
-        <option value="Memoria Incrustada">Memoria Incrustada</option>
-        <option value="UPS">UPS</option>
-        <option value="Cable DVI">Cable DVI</option>
-        <option value="Tablet">Tablet</option>
-        <option value="Adaptador">Adaptador</option>
-        <option value="PowerCord">PowerCord</option>
-        <option value="FacePlate">FacePlate</option>
-        <option value="Jack Rj45">Jack Rj45</option>
-        <option value="Scanner">Scanner</option>
-        <option value="Charger">Charger</option>
-        <option value="Tóner">Tóner</option>
-        <option value="Display Port">Display Port</option>
-        <option value="Serial">Serial</option>
-        <option value="USB">USB</option>
-      </select>
-
-      <label for="modelo">Modelo:</label>
-      <select id="modelo"></select>
-
-      <label for="marca">Marca:</label>
-      <input type="text" id="marca" />
-
-      <label for="serial">Número de Serial:</label>
-      <input
-        type="text"
-        id="serial"
-        placeholder="Puede dejar vacío si no tiene"
-      />
-
-      <label for="estado">Estado:</label>
-      <select id="estado">
-        <option value="Disponible">Disponible</option>
-        <option value="Asignar">Asignar</option>
-      </select>
-
-      <div class="action-buttons">
-        <button id="btnSave" onclick="guardarDispositivo()">Guardar</button>
-        <button id="btnCancel" onclick="cerrarModal()">Cancelar</button>
-      </div>
+  <!-- Modal Agregar -->
+  <div class="modal" id="modalAgregar">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalAgregar')">×</span>
+      <h3>Agregar Dispositivos</h3>
+      <label>Nombre:</label><input type="text" id="nombreAgregar"><br><br>
+      <label>Marca:</label><input type="text" id="marcaAgregar"><br><br>
+      <label>Modelo:</label><input type="text" id="modeloAgregar"><br><br>
+      <label>Cantidad:</label><input type="number" id="cantidadAgregar" value="1" min="1"><br><br>
+      <label>Seriales (separados por coma si hay varios):</label>
+      <textarea id="serialesAgregar" rows="3" placeholder="Ej: S001, S002, S003"></textarea><br><br>
+      <button onclick="agregarDispositivo()">Guardar</button>
     </div>
-    <div id="overlay" onclick="cerrarModal()"></div>
+  </div>
 
-    <script src="../js/devices.js"></script>
-  </body>
+  <!-- Modal Editar -->
+  <div class="modal" id="modalEditar">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModal('modalEditar')">×</span>
+      <h3>Editar Dispositivo</h3>
+      <input type="hidden" id="editarIndex">
+      <label>Serial:</label><input type="text" id="editarSerial"><br><br>
+      <label>Nombre:</label><input type="text" id="editarNombre"><br><br>
+      <label for="Nombre">Nombre</label>
+  <select id="tipoDispositivo" name="tipoDispositivo" required>
+  <option value="" disabled selected>Seleccione un tipo</option>
+  <option value="Monitor">Monitor</option>
+  <option value="Mouse">Mouse</option>
+  <option value="Teclado">Teclado</option>
+  <option value="Headset">Headset</option>
+  <option value="Cargador">Cargador</option>
+  <option value="Desktop">Desktop</option>
+  <option value="Mini Desktop">Mini Desktop</option>
+  <option value="Cable">Cable</option>
+  <option value="Dokin">Dokin</option>
+  <option value="Bateria de Laptop">Bateria de Laptop</option>
+  <option value="Bateria de UPS">Bateria de UPS</option>
+  <option value="Memoria Incrustada">Memoria Incrustada</option>
+  <option value="UPS">UPS</option>
+  <option value="Cable DVI">Cable DVI</option>
+  <option value="Tablet">Tablet</option>
+  <option value="Adaptador">Adaptador</option>
+  <option value="PowerCord">PowerCord</option>
+  <option value="FacePlate">FacePlate</option>
+  <option value="Jack Rj45">Jack Rj45</option>
+  <option value="Scanner">Scanner</option>
+  <option value="Charger">Charger</option>
+  <option value="Tóner">Tóner</option>
+  <option value="Display Port">Display Port</option>
+  <option value="Serial">Serial</option>
+  <option value="USB">USB</option>
+</select>
+
+      <label>Marca:</label><input type="text" id="editarMarca"><br><br>
+      <label>Modelo:</label><input type="text" id="editarModelo"><br><br>
+      <button onclick="guardarEdicion()">Guardar Cambios</button>
+    </div>
+  </div>
+
+  
+<script src="../js/devices.js"></script>
+</body>
 </html>
+
