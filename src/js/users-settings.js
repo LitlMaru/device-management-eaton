@@ -63,12 +63,12 @@ async function obtenerUsuarios() {
 
     const data = await response.json();
 
-    if (!Array.isArray(data.usuarios)) {
+    if (!Array.isArray(data)) {
       console.warn("Respuesta inesperada del servidor:", data);
       return [];
     }
 
-    return data.usuarios;
+    return data;
 
   } catch (err) {
     console.error("Error al obtener usuarios:", err);
@@ -78,9 +78,9 @@ async function obtenerUsuarios() {
 
 
 async function cargarUsuarios(){
-   const usuarios = await obtenerUsuarios();
+  const usuarios = await obtenerUsuarios();
   const tbody = document.getElementById("cuerpoTablaUsuarios");
-  tbody.innerHTML = ""; 
+  tbody.innerHTML = "";   
 
   usuarios.forEach((usuario) => {
     const tr = document.createElement("tr");
@@ -92,7 +92,7 @@ async function cargarUsuarios(){
       <td contenteditable="true" data-id="${usuario.ID_Usuario}" data-campo="Ubicacion">${usuario.Ubicacion}</td>
       <td>
         <div class="actions-container">
-          <button onclick="eliminarUsuario(${usuario.Username})">Eliminar usuario</button>
+          <button onclick="eliminarUsuario('${usuario.Username}')">Eliminar usuario</button>
         </div>
       </td>
     `;
@@ -115,8 +115,8 @@ async function agregarUsuario() {
   }
 
   try {
-    const usuariosResponse = await fetch(`${HOST}:${PORT}/api/usuarios`);
-    const usuarios = await usuariosResponse.json();
+    const usuarios = await obtenerUsuarios();
+    console.log(usuarios)
 
     const existeUsuario = usuarios.some(u => u.Username.toLowerCase() === username.toLowerCase());
 
@@ -125,7 +125,7 @@ async function agregarUsuario() {
       return;
     }
 
-    const response = await fetch(`${HOST}:${PORT}/api/usuarios`, {
+    const response = await fetch(`${HOST}:${PORT}/api/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, clave, rol, ubicacion })
@@ -152,7 +152,7 @@ async function eliminarUsuario(username) {
   }
 
   try {
-    const response = await fetch(`${HOST}:${PORT}/api/usuarios/${encodeURIComponent(username)}`, {
+    const response = await fetch(`${HOST}:${PORT}/api/users/${encodeURIComponent(username)}`, {
       method: "DELETE"
     });
 
@@ -163,6 +163,8 @@ async function eliminarUsuario(username) {
     }
 
     await cargarUsuarios();
+
+    document.querySelector("td[contenteditable='true']")[0].focus()
   } catch (err) {
     alert("Error al eliminar usuario: " + err.message);
     console.error(err);
@@ -180,7 +182,7 @@ function agregarListenersEdicion() {
       const campo = celda.dataset.campo;
 
       try {
-        const response = await fetch(`${HOST}:${PORT}/api/usuarios`, {
+        const response = await fetch(`${HOST}:${PORT}/api/users`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json"

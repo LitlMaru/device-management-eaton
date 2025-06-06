@@ -53,16 +53,12 @@ async function assignDevice(employeeData, formElement) {
     });
 
     const data = await response.json();
-
-    if (data.success) {  
       resultMsg.textContent = `Dispositivo ${employeeData.tipoDispositivo} asignado a ${employeeData.Info_empleado}.`;
       formElement.reset();  
       tableBody.innerHTML = "";
       tableContainer.style.display = "none";
       selectedDeviceID = null; 
-    } else {
-      resultMsg.textContent = "Error al asignar dispositivo.";
-    }
+
   } catch (error) {
     resultMsg.textContent = "Error de red o del servidor: " + error.message;
   }

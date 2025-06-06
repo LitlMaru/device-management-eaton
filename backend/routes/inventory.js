@@ -12,7 +12,7 @@ router.get("/available/:deviceType", async (req, res) => {
     const tipo = await pool
       .request()
       .input("deviceType", sql.VarChar, deviceType)
-      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @deviceType");
+      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @deviceType");
 
     const ID_Tipo = tipo.recordset[0]?.ID_Tipo;
     if (!ID_Tipo) return res.status(404).json({ error: "Tipo no encontrado" });
@@ -38,7 +38,7 @@ router.get("/device-types", async (req, res) => {
   try {
     await sql.connect(dbConfig);
     const result = await sql.query(
-      "SELECT DISTINCT Tipo FROM TiposDispositivo"
+      "SELECT DISTINCT Tipo FROM TiposDispositivos"
     );
     res.json(result.recordset);
   } catch (error) {
@@ -46,6 +46,29 @@ router.get("/device-types", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Add a new device type
+router.post("/add-type", async (req, res) => {
+  const {tipoDispositivo} = req.body;
+  
+  try{
+    const pool = await poolPromise();
+    await pool.request()
+      .input("TipoDispositivo", sql.VarChar, tipoDispositivo)
+      .query(`INSERT INTO TiposDispositivos values (@TipoDispositivo)`);
+
+    res.status(201).json({success: true, message: "Tipo de dispositivo nuevo añadido"})
+  }
+  catch(err){
+    console.error(err);
+    res.status(400).json({error: err.message})
+  }
+})
+
+//Add a new model
+router.post("/add-model", (req, res) => {
+  console.log("model")
+})
 
 // Get the grouped inventory (quantities, limits of each model)
 router.get("/grouped-inventory", async (req, res) => {
@@ -65,7 +88,7 @@ console.log(ubicacion)
         COUNT(d.ID_Dispositivo) AS Cantidad,
         m.Limite
       FROM Modelos m
-      JOIN TiposDispositivo td ON m.ID_Tipo = td.ID_Tipo
+      JOIN TiposDispositivos td ON m.ID_Tipo = td.ID_Tipo
       LEFT JOIN Dispositivos d ON m.ID_Modelo = d.ID_Modelo
       WHERE m.Ubicacion = @Ubicacion
     `;

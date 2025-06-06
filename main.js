@@ -14,7 +14,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    frame: false,
+    frame: true,
     titleBarStyle: "default",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -91,6 +91,7 @@ const PORT = process.env.PORT || 3000;
 
 ipcMain.handle("login-user", async (event, credentials) => {
   try {
+    console.log(`${HOST}:${PORT}/api/auth/login`)
     const response = await fetch(`${HOST}:${PORT}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

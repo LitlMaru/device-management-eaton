@@ -16,7 +16,7 @@ router.post("/add-employee", async (req, res) => {
       .input("Posicion", sql.VarChar, data.position)
       .input("Ubicacion", sql.VarChar, ubicacion)
       .input("Fecha_Entrada", sql.Date, data.currentDate)
-      .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Email, Ubicacion, Fecha_Entrada)
+      .query(`INSERT INTO Empleados (ID_Empleado, Nombre, Departamento, Posicion, Ubicacion, Fecha_Entrada)
               VALUES (@ID_Empleado, @Nombre, @Departamento, @Posicion, @Ubicacion, @Fecha_Entrada)`);
 
     res.json({ success: true });
@@ -82,7 +82,7 @@ router.post("/devices", async (req, res) => {
   FROM Dispositivos i
   INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo
   INNER JOIN Empleados e ON e.ID_Empleado = d.ID_Empleado
-  INNER JOIN TiposDispositivo t ON i.ID_Tipo = t.ID_Tipo  
+  INNER JOIN TiposDispositivos t ON i.ID_Tipo = t.ID_Tipo  
   WHERE (e.ID_Empleado LIKE @employeeInfoID OR e.Nombre LIKE @employeeInfoName)
     AND i.Ubicacion = @ubicacion
     `);

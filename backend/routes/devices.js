@@ -13,7 +13,7 @@ router.post("/get-available-devices", async (req, res) => {
     const tipoResult = await pool
       .request()
       .input("deviceType", sql.VarChar, deviceType)
-      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @deviceType");
+      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @deviceType");
 
     if (tipoResult.recordset.length === 0) {
       return res
@@ -48,7 +48,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
     let baseSQL = `SELECT d.ID_Dispositivo, td.Tipo as TipoDispositivo, m.Modelo, d.Marca, d.Serial_Number, d.Estado
                    FROM Dispositivos d
                    JOIN Modelos m ON d.ID_Modelo = m.ID_Modelo
-                   JOIN TiposDispositivo td ON d.ID_Tipo = td.ID_Tipo`;
+                   JOIN TiposDispositivos td ON d.ID_Tipo = td.ID_Tipo`;
     const condiciones = [];
     const inputs = {};
 
@@ -90,10 +90,10 @@ async function getDevicesFiltered(filtros, ubicacion) {
 // Get devices
 router.get("/", async (req, res) => {
   const filtros = {
-    tipoDispositivo: req.query.tipoDispositivo || "",
-    estado: req.query.estado || "",
-    modelo: req.query.modelo || "",
-    serialNumber: req.query.serialNumber || "",
+    tipoDispositivo: req.body.tipoDispositivo || "",
+    marca: req.body.estado || "",
+    modelo: req.body.modelo || "",
+    serialNumber: req.body.serialNumber || "",
   };
 
   ubicacion = req.headers["x-ubicacion"];
@@ -119,7 +119,7 @@ router.get("/models/:tipoDispositivo", async (req, res) => {
       .input("Ubicacion", sql.VarChar, ubicacion)
       .input("TipoDispositivo", sql.Int, tipoDispositivo)
       .query(
-        `SELECT m.ID_Modelo, m.Modelo from Modelos inner join TiposDispositivo t ON m.ID_Tipo = t.ID_Tipo WHERE m.tipoDispositivo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
+        `SELECT m.ID_Modelo, m.Modelo from Modelos inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.tipoDispositivo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
       );
 
     return result.recordset();
@@ -241,7 +241,7 @@ router.post("/serialized", async (req, res) => {
 
     const tipoResult = await request
       .input("tipo", sql.VarChar, tipoDispositivo)
-      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @tipo");
+      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @tipo");
     const ID_Tipo = tipoResult.recordset[0]?.ID_Tipo;
 
     const modeloResult = await request
@@ -280,7 +280,7 @@ router.post("/generic", async (req, res) => {
 
     const tipoResult = await request
       .input("tipo", sql.VarChar, tipoDispositivo)
-      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @tipo");
+      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @tipo");
     const ID_Tipo = tipoResult.recordset[0]?.ID_Tipo;
 
     const modeloResult = await request
@@ -332,7 +332,7 @@ router.get("/type-id", async (req, res) => {
     const result = await sql
       .request()
       .input("type", sql.VarChar, type)
-      .query("SELECT ID_Tipo FROM TiposDispositivo WHERE Tipo = @type");
+      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @type");
     res.json(result.recordset[0] || {});
   } catch (err) {
     console.error(err);
