@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Empleados</title>
+    <link rel="stylesheet" href="../css/configuracionEmplea.css">
+</head>
+<body>
+
+<h1>Gestión de Empleados</h1>
+
+<div class="top-bar">
+  <input type="text" id="search" placeholder=" Buscar...">
+  <div class="buttons">
+    <button class="export" onclick="exportToExcel()">📁 Exportar a Excel</button>
+    <button class="sort" onclick="toggleSort()">🔃 Ordenar</button>
+  </div>
+</div>
+
+<table id="employee-table">
+  <thead>
+    <tr>
+      <th>ID Empleado</th>
+      <th>Nombre</th>
+      <th>Departamento</th>
+      <th>Posición</th>
+      <th>Email</th>
+      <th>Fecha Entrada</th>
+      <th>Ubicación</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="employee-body">
+
+  </tbody>
+</table>
+
+<script src="../js/configuracionEmplea.js"></script>
+
+</body>
+</html>
