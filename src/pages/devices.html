@@ -35,7 +35,7 @@
     <tbody></tbody>
   </table>
 
-  <!-- Modal Agregar -->
+
   <div class="modal" id="modalAgregar">
     <div class="modal-content">
       <span class="close" onclick="cerrarModal('modalAgregar')">×</span>
@@ -120,22 +120,22 @@
     </div>
   </div>
 
-  <!-- Modal Editar (sin cambios en esta parte por ahora) -->
+
   <div class="modal" id="modalEditar">
     <div class="modal-content">
       <span class="close" onclick="cerrarModal('modalEditar')">×</span>
       <h3>Editar Dispositivo</h3>
       <input type="hidden" id="editarIndex">
       <label>Serial:</label><input type="text" id="editarSerial"><br><br>
-      <!-- Se puede replicar la lógica para "nuevo" si deseas -->
+      
       <label>Nombre:</label>
       <select id="tipoDispositivo" name="tipoDispositivo" required>
-        <!-- mismas opciones -->
+     
       </select><br><br>
       <label>Marca:</label><input type="text" id="editarMarca"><br><br>
       <label>Modelo:</label>
       <select id="Modelo" name="Modelo" required>
-        <!-- mismas opciones -->
+      
       </select><br><br>
       <button onclick="guardarEdicion()">Guardar Cambios</button>
     </div>
