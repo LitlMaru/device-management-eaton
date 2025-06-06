@@ -1,86 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Registrar empleados</title>
-  <link rel="stylesheet" href="../css/register-employees.css">
-  <style>
-    .checkbox-row {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrar empleados</title>
+    <link rel="stylesheet" href="../css/register-employees.css" />
+    <style>
+      .checkbox-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
 
-    .checkbox-row label {
-      margin-left: 5px;
-    }
+      .checkbox-row label {
+        margin-left: 5px;
+      }
 
-    .sub-field {
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="page-wrapper">
-    <h1 class="page-title">Registrar nuevo empleado</h1>
-    <div class="form-container">
-      <div class="form-wrapper">
-        <form id="employee-form">
-          <div class="form-group">
-            <label for="name">Nombre completo</label>
-            <input type="text" id="name" name="name" placeholder="Ej: Juan Pérez" />
-          </div>
-          <div class="form-group">
-            <label for="employee-id">ID del Empleado</label>
-            <input type="text" id="employee-id" name="employee-id" placeholder="Ej: EMP1234" />
-          </div>
-          <div class="form-group">
-            <label for="department">Departamento</label>
-            <input type="text" id="department" name="department" placeholder="Ej: Recursos Humanos" />
-          </div>
+      .sub-field {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <h1 class="page-title">Registrar nuevo empleado</h1>
+      <div class="form-container">
+        <div class="form-wrapper">
+          <form id="employee-form">
+            <div class="form-group">
+              <label for="name">Nombre completo</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Ej: Juan Pérez"
+              />
+            </div>
+            <div class="form-group">
+              <label for="employee-id">ID del Empleado</label>
+              <input
+                type="text"
+                id="employee-id"
+                name="employee-id"
+                placeholder="Ej: EMP1234"
+              />
+            </div>
+            <div class="form-group">
+              <label for="department">Departamento</label>
+              <input
+                type="text"
+                id="department"
+                name="department"
+                placeholder="Ej: Recursos Humanos"
+              />
+            </div>
 
-          <div class="form-group">
-            <label>¿Posición nueva o reemplazo?</label>
-            <div class="checkbox-row">
-              <div>
-                <input type="checkbox" id="isNew" name="isNew" onclick="togglePositionFields('new')">
-                <label for="isNew">Nueva</label>
+            <div class="form-group">
+              <label>¿Posición nueva o reemplazo?</label>
+              <div class="checkbox-row">
+                <div>
+                  <input
+                    type="checkbox"
+                    id="isNew"
+                    name="isNew"
+                    onclick="togglePositionFields('new')"
+                  />
+                  <label for="isNew">Nueva</label>
+                </div>
+                <div>
+                  <input
+                    type="checkbox"
+                    id="isReplacement"
+                    name="isReplacement"
+                    onclick="togglePositionFields('replacement')"
+                  />
+                  <label for="isReplacement">Reemplazo</label>
+                </div>
               </div>
-              <div>
-                <input type="checkbox" id="isReplacement" name="isReplacement" onclick="togglePositionFields('replacement')">
-                <label for="isReplacement">Reemplazo</label>
+
+              <div
+                class="sub-field"
+                id="new-position-group"
+                style="display: none"
+              >
+                <label for="new-position">Nombre del nuevo puesto</label>
+                <input
+                  type="text"
+                  id="new-position"
+                  name="new-position"
+                  placeholder="Ej: Analista"
+                />
+              </div>
+
+              <div
+                class="sub-field"
+                id="replacement-name-group"
+                style="display: none"
+              >
+                <label for="replacement-name"
+                  >ID de quien será reemplazado</label
+                >
+                <input
+                  type="text"
+                  id="replacement-name"
+                  name="replacement-ID"
+                  placeholder="Ej: E045454"
+                />
               </div>
             </div>
 
-            <div class="sub-field" id="new-position-group" style="display: none;">
-              <label for="new-position">Nombre del nuevo puesto</label>
-              <input type="text" id="new-position" name="new-position" placeholder="Ej: Analista" />
+            <div class="form-group">
+              <label for="ubicacion">Ubicación</label>
+              <select id="ubicacion" name="ubicacion">
+                <option value="">Selecciona una opción</option>
+                <option value="MCB">MCB</option>
+                <option value="MCCB">MCCB</option>
+                <option value="ICD">ICD</option>
+              </select>
             </div>
-
-            <div class="sub-field" id="replacement-name-group" style="display: none;">
-              <label for="replacement-name">ID de quien será reemplazado</label>
-              <input type="text" id="replacement-name" name="replacement-ID" placeholder="Ej: E045454" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="ubicacion">Ubicación</label>
-            <select id="ubicacion" name="ubicacion">
-              <option value="">Selecciona una opción</option>
-              <option value="MCB">MCB</option>
-              <option value="MCCB">MCCB</option>
-              <option value="ICD">ICD</option>
-            </select>
-          </div>
-          <button type="submit" onclick="registrar(event)">Agregar</button>
-          <div id="formMessage" style="display: none"></div>
-        </form>
+            <button type="submit" onclick="registrar(event)">Agregar</button>
+            <div id="formMessage" style="display: none"></div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="../js/register.js"></script>
-</body>
+    <script src="../js/register.js"></script>
+  </body>
 </html>
-
