@@ -3,8 +3,8 @@
   margin: 0;
   padding: 0;
 }
-html, body{
-    height: 100%;
+html, body {
+  height: 100%;
 }
 body {
   font-family: "Segoe UI", sans-serif;
@@ -14,6 +14,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 14px;
 }
@@ -71,6 +72,7 @@ header {
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative; /* Para que el panel editPanel no desborde */
 }
 
 h1 {
@@ -134,12 +136,13 @@ button.excel-btn {
   font-weight: bold;
   margin-bottom: 15px;
   transition: background 0.3s ease;
-  position: relative;
-  left: 40%;
-  right: 100px;
   display: flex;
   gap: 4px;
-  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
 }
 
 button.excel-btn:hover {
@@ -147,7 +150,7 @@ button.excel-btn:hover {
 }
 
 .scrollable {
-  overflow-x: scroll;
+  overflow-x: auto;
   min-width: 400px;
 }
 
@@ -180,8 +183,6 @@ td .action-buttons {
   justify-content: center;
 }
 
-
-
 .edit-btn {
   width: 100%;
   height: 100%;
@@ -191,13 +192,133 @@ td .action-buttons {
   border-radius: 4px;
   color: white;
   font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .edit-btn:hover {
   background-color: #0264ba;
+}
+
+/* Panel azul fijo lateral izquierdo para editar límite */
+#editPanel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background-color: #004e92;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  padding: 20px;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+#editPanel.show {
+  transform: translateX(0);
+}
+
+#editPanel h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+#editPanel input.panel-input {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+#editPanel .save-btn {
+  background-color: #cc0000;
+  border: none;
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#editPanel .save-btn:hover {
+  background-color: #990000;
+}
+
+#editPanel .close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 24px;
+  align-self: flex-end;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+#editPanel .close-btn:hover {
+  transform: rotate(90deg);
+}
+
+#editPanel, #modalOverlay {
+  display: none;
+}
+
+#modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+#editPanel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #0a529e;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  color: white;
+  z-index: 1001;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  float: right;
   cursor: pointer;
 }
 
-.hidden {
-  display: none;
+.panel-input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
 }
+.save-btn {
+  background-color: #0062cc;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+}
+.save-btn:hover {
+  background-color: #004a99;
+}
+

@@ -19,10 +19,9 @@ async function obtenerUsuarios() {
     const response = await fetch(`${HOST}:${PORT}/api/users/`);
     const data = await response.json();
     return data.usuarios;
-  } catch (err) {
-    alert("Error al cargar usuarios: ", err.message);
+    } catch (err) {
+    }
   }
-}
 
 async function cargarUsuarios(){
    const usuarios = await obtenerUsuarios();
