@@ -14,7 +14,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 14px;
 }
@@ -64,16 +63,15 @@ header {
   transform: scale(1.2);
 }
 
-.container {
+  .container {
   height: 100%;
-  max-width: 1200px;
-  /*margin: 30px auto;*/
+    max-width: 1200px;
   background-color: #fff;
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  position: relative; /* Para que el panel editPanel no desborde */
-}
+  position: relative; 
+  }
 
 h1 {
   text-align: center;
@@ -200,7 +198,7 @@ td .action-buttons {
   background-color: #0264ba;
 }
 
-/* Panel azul fijo lateral izquierdo para editar límite */
+
 #editPanel {
   position: fixed;
   top: 0;
