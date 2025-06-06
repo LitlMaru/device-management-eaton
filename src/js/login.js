@@ -30,3 +30,25 @@ togglePassword.addEventListener('click', () => {
   passwordInput.type = isPasswordVisible ? 'text' : 'password';
   toggleImage.src = isPasswordVisible ? '../assets/hide.png' : '../assets/show.png';
 });
+
+
+
+function minimizeWindow() {
+  window.electronAPI.minimize();
+}
+
+fullScreenImage = document.getElementById("img-full-screen");
+function fullScreen() {
+  window.electronAPI.maximize();
+  if (fullScreenImage.src.includes("fullscreenmode.svg"))
+    fullScreenImage.src = "../assets/windowmode.svg";
+  else fullScreenImage.src = "../assets/fullscreenmode.svg";
+}
+
+function closeWindow() {
+  window.electronAPI.close();
+}
+
+function closeSession() {
+  window.location.href = "login.html";
+}

@@ -117,6 +117,12 @@ ipcMain.handle("get-current-user", () => {
   return global.currentUser;
 });
 
+ipcMain.handle("logout", (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  win.close(); 
+  createWindow(); 
+})
+
 ipcMain.handle("register-employee", async (event, data) => {
   try {
     const user = global.currentUser;
