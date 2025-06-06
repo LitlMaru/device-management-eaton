@@ -2,15 +2,15 @@ let ascending = true;
 
   const employees = [
     {
-      id: 1, nombre: "Juan Pérez", departamento: "TI", posicion: "Desarrollador", email: "juan@empresa.com",
+      id: 1, nombre: "Juan Pérez", departamento: "TI", posicion: "Desarrollador", 
       fecha: "2022-03-15", ubicacion: "Oficina 1"
     },
     {
-      id: 2, nombre: "Ana Gómez", departamento: "Recursos Humanos", posicion: "Analista", email: "ana@empresa.com",
+      id: 2, nombre: "Ana Gómez", departamento: "Recursos Humanos", posicion: "Analista", 
       fecha: "2021-08-10", ubicacion: "Oficina 2"
     },
     {
-      id: 3, nombre: "Luis Herrera", departamento: "Ventas", posicion: "Ejecutivo", email: "luis@empresa.com",
+      id: 3, nombre: "Luis Herrera", departamento: "Ventas", posicion: "Ejecutivo", 
       fecha: "2023-01-05", ubicacion: "Sucursal Norte"
     }
   ];
@@ -25,7 +25,6 @@ let ascending = true;
           <td>${emp.nombre}</td>
           <td>${emp.departamento}</td>
           <td>${emp.posicion}</td>
-          <td>${emp.email}</td>
           <td>${emp.fecha}</td>
           <td>${emp.ubicacion}</td>
           <td>
