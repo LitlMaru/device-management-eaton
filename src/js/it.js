@@ -581,3 +581,19 @@ function closeSession() {
    //window.location.href = "login.html";
   electron.ipcRenderer.invoke("logout")
 }
+
+document.addEventListener('focusin', (e) => {
+  console.log('Focused:', e.target);
+});
+
+window.addEventListener('blur', () => {
+  console.log('Window blurred');
+});
+window.addEventListener('focus', () => {
+  console.log('Window focused');
+});
+
+/*
+setInterval(() => {
+  iframe.contentWindow.focus();
+}, 1000);*/

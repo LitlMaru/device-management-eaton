@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
+const { pool } = require("mssql");
 
 // Get available devices by device type
 router.post("/get-available-devices", async (req, res) => {
@@ -32,9 +33,7 @@ router.post("/get-available-devices", async (req, res) => {
         WHERE d.ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND d.Ubicacion = @Ubicacion
       `);
 
-    console.log(result.recordset);
-
-    res.json({ success: true, devices: result.recordset });
+    res.json(result.recordset);
   } catch (error) {
     console.error("Error al obtener dispositivos:", error.message);
     res.status(500).json({ error: error.message });
@@ -44,8 +43,8 @@ router.post("/get-available-devices", async (req, res) => {
 // Construct the query to filter devices in Device Table
 async function getDevicesFiltered(filtros, ubicacion) {
   try {
-    await sql.connect(dbConfig);
-    let baseSQL = `SELECT d.ID_Dispositivo, td.Tipo as TipoDispositivo, m.Modelo, d.Marca, d.Serial_Number, d.Estado
+    const pool = await poolPromise;
+    let baseSQL = `SELECT d.ID_Dispositivo, td.ID_Tipo, td.Tipo as TipoDispositivo, m.ID_Modelo, m.Modelo, d.Marca, d.Serial_Number, d.Estado
                    FROM Dispositivos d
                    JOIN Modelos m ON d.ID_Modelo = m.ID_Modelo
                    JOIN TiposDispositivos td ON d.ID_Tipo = td.ID_Tipo`;
@@ -74,7 +73,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
 
     baseSQL += " ORDER BY td.Tipo, d.Marca, m.Modelo";
 
-    const request = new sql.Request();
+    const request =  await pool.request()
     for (const key in inputs) {
       request.input(key, sql.VarChar, inputs[key]);
     }
@@ -88,10 +87,11 @@ async function getDevicesFiltered(filtros, ubicacion) {
 }
 
 // Get devices
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
+   console.log("devices");
   const filtros = {
     tipoDispositivo: req.body.tipoDispositivo || "",
-    marca: req.body.estado || "",
+    marca: req.body.marca || "",
     modelo: req.body.modelo || "",
     serialNumber: req.body.serialNumber || "",
   };
@@ -100,7 +100,9 @@ router.get("/", async (req, res) => {
 
   try {
     const devices = await getDevicesFiltered(filtros, ubicacion);
+   
     res.json(devices);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -109,20 +111,19 @@ router.get("/", async (req, res) => {
 
 // Get model list of a device type
 router.get("/models/:tipoDispositivo", async (req, res) => {
-  const tipoDispositivo = req.params["TipoDispositivo"];
-  const ubicacion = req.headers["x-Ubicacion"];
-
+  const tipoDispositivo = req.params["tipoDispositivo"];
+  const ubicacion = req.headers["x-ubicacion"];
   try {
-          const pool = await poolPromise();
+    const pool = await poolPromise;
     const result = await pool
       .request()
       .input("Ubicacion", sql.VarChar, ubicacion)
       .input("TipoDispositivo", sql.Int, tipoDispositivo)
       .query(
-        `SELECT m.ID_Modelo, m.Modelo from Modelos inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.tipoDispositivo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
+        `SELECT m.ID_Modelo, m.Modelo from Modelos m inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.ID_Tipo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
       );
-
-    return result.recordset();
+    console.log(result.recordset)
+    res.json(result.recordset);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -130,8 +131,8 @@ router.get("/models/:tipoDispositivo", async (req, res) => {
 });
 
 // Add new devices
-router.post("/", async (req, res) => {
-  const { tipoDispositivo, marca, modelo, cantidad, serialNumbers } = req.body;
+router.post("/add-device", async (req, res) => {
+  const { tipoID, marca, modeloID, cantidad, serialNumbers } = req.body;
   const ubicacion = req.headers["x-ubicacion"]; 
 
   try {
@@ -146,8 +147,8 @@ router.post("/", async (req, res) => {
       const pool = await poolPromise();
       await pool
         .request()
-        .input("TipoDispositivo", sql.Int, tipoDispositivo)
-        .input("Modelo", sql.Int, modelo)
+        .input("TipoDispositivo", sql.Int, tipoID)
+        .input("Modelo", sql.Int, modeloID)
         .input("Marca", sql.VarChar, marca)
         .input("SerialNumber", sql.VarChar, serial)
         .input("Ubicacion", sql.VarChar, ubicacion)
@@ -174,11 +175,13 @@ router.put("/", async (req, res) => {
   }
 
   try {
+    const pool = await poolPromise;
+    const request = pool.request();
     const updates = [];
     const inputs = [];
 
     if (tipoDispositivo !== undefined && tipoDispositivo !== "") {
-      updates.push("TipoDispositivo = @TipoDispositivo");
+      updates.push("ID_Tipo = @TipoDispositivo");
       inputs.push({ name: "TipoDispositivo", type: sql.Int, value: tipoDispositivo });
     }
 
@@ -193,7 +196,7 @@ router.put("/", async (req, res) => {
     }
 
     if (serialNumber !== undefined && serialNumber.trim() !== "") {
-      updates.push("SerialNumber = @SerialNumber");
+      updates.push("Serial_Number = @SerialNumber");
       inputs.push({ name: "SerialNumber", type: sql.VarChar, value: serialNumber.trim() });
     }
 
@@ -201,9 +204,8 @@ router.put("/", async (req, res) => {
       return res.status(400).json({ error: "No hay campos para actualizar" });
     }
 
-    let query = `UPDATE Dispositivos SET ${updates.join(", ")} WHERE IDDispositivo = @IDDispositivo`;
+    let query = `UPDATE Dispositivos SET ${updates.join(", ")} WHERE ID_Dispositivo = @IDDispositivo`;
 
-    const request = pool.request();
     inputs.forEach(({ name, type, value }) => {
       request.input(name, type, value);
     });

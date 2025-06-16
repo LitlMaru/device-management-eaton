@@ -123,6 +123,16 @@ input[type="text"]::placeholder {
   margin-bottom: 6px;
 }
 
+.alert-title {
+  font-weight: bold;
+  user-select: none;
+}
+
+#arrow-icon {
+  display: inline-block;
+  margin-left: 8px;
+}
+
 button.excel-btn {
   background-color: #cc0000;
   color: #fff;

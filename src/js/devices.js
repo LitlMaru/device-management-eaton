@@ -34,6 +34,7 @@ async function init() {
   env = await ElectronAPI.getEnv();
   HOST = env.HOST;
   PORT = env.PORT;
+  showDevices();
 }
 
 init();
@@ -41,24 +42,133 @@ init();
 const dispositivos = [];
 
 function abrirModalAgregar() {
-  document.getElementById("modalAgregar").style.display = "flex";
+  const template = document.getElementById("modalAgregar");
+  const content = template.content.cloneNode(true);
+
+  const modalContent = document.getElementById("modal-content");
+  modalContent.innerHTML = "";
+  modalContent.appendChild(content);
+  document.getElementById("modalOverlay").classList.add("active");
 }
 
-function cerrarModal(id) {
-  document.getElementById(id).style.display = "none";
+function mostrarInputNuevoTipo() {
+  document
+    .getElementById("nombreSelectContainerAgregar")
+    .classList.add("hidden");
+  document
+    .getElementById("nombreInputContainerAgregar")
+    .classList.remove("hidden");
 }
 
-document
-  .getElementById("esNuevoCheckbox")
-  .addEventListener("change", function () {
-    const esNuevo = this.checked;
-    document.getElementById("nuevoDispositivoInputs").style.display = esNuevo
-      ? "block"
-      : "none";
-    document.getElementById("selectExistenteInputs").style.display = esNuevo
-      ? "none"
-      : "block";
+function cancelarNuevoTipo() {
+  document
+    .getElementById("nombreSelectContainerAgregar")
+    .classList.remove("hidden");
+  document
+    .getElementById("nombreInputContainerAgregar")
+    .classList.add("hidden");
+  document.getElementById("nombreAgregarNuevo").value = "";
+}
+
+function mostrarInputNuevoModelo() {
+  document
+    .getElementById("modeloSelectContainerAgregar")
+    .classList.add("hidden");
+  document
+    .getElementById("modeloInputContainerAgregar")
+    .classList.remove("hidden");
+}
+
+function cancelarNuevoModelo() {
+  document
+    .getElementById("modeloSelectContainerAgregar")
+    .classList.remove("hidden");
+  document
+    .getElementById("modeloInputContainerAgregar")
+    .classList.add("hidden");
+  document.getElementById("modeloAgregarNuevo").value = "";
+}
+
+function cerrarModal() {
+  const overlay = document.getElementById("modalOverlay");
+  overlay.classList.remove("active");
+
+  // Optional: clear modal content to avoid stale event listeners or data
+  const modalContent = document.getElementById("modal-content");
+  modalContent.innerHTML = "";
+}
+
+async function openDeleteModal() {
+  const template = document.getElementById("modalEliminar");
+  const content = template.content.cloneNode(true);
+
+  const modalContent = document.getElementById("modal-content");
+  modalContent.innerHTML = "";
+  modalContent.appendChild(content);
+  document.getElementById("modalOverlay").classList.add("active");
+
+  let typeSelect = document.getElementById("eliminarTipo");
+  const modelSelect = document.getElementById("eliminarModelo");
+
+  typeSelect.replaceWith(typeSelect.cloneNode(true));
+  typeSelect = document.getElementById("eliminarTipo");
+
+  await fillTypeSelect(typeSelect);
+  await fillModelSelect(modelSelect, 1);
+
+  typeSelect.addEventListener("change", async () => {
+    await fillModelSelect(modelSelect, typeSelect.value);
   });
+}
+async function fillTypeSelect(selectElement) {
+  const types = await getDeviceTypes();
+  selectElement.innerHTML = "";
+  types.forEach((type) => {
+    const option = document.createElement("option");
+    option.value = type.ID_Tipo;
+    option.textContent = type.Tipo;
+    selectElement.appendChild(option);
+  });
+}
+
+async function fillModelSelect(selectElement, typeID) {
+  const models = await getModels(typeID);
+  selectElement.innerHTML = "";
+  models.forEach((model) => {
+    const option = document.createElement("option");
+    option.value = model.ID_Modelo;
+    option.textContent = model.Modelo;
+    selectElement.appendChild(option);
+  });
+}
+
+async function openEditModal(deviceID, typeID, modelID) {
+  const template = document.getElementById("modalEditar");
+  const content = template.content.cloneNode(true);
+
+  const modalContent = document.getElementById("modal-content");
+  modalContent.innerHTML = "";
+  modalContent.appendChild(content);
+  document.getElementById("modalOverlay").classList.add("active");
+
+  modalContent.dataset.deviceID = deviceID;
+
+  let deviceTypeSelect = document.getElementById("editarTipoDispositivo");
+  const modelSelect = document.getElementById("editarModelo");
+
+  deviceTypeSelect.replaceWith(deviceTypeSelect.cloneNode(true));
+  deviceTypeSelect = document.getElementById("editarTipoDispositivo");
+
+  await fillTypeSelect(deviceTypeSelect);
+
+  deviceTypeSelect.value = typeID;
+
+  deviceTypeSelect.addEventListener("change", async () => {
+    await fillModelSelect(modelSelect, deviceTypeSelect.value);
+  });
+
+  fillModelSelect(modelSelect, typeID);
+}
 
 function agregarDispositivo() {
   const nombre = document.getElementById("nombreAgregar").value.trim();
@@ -75,7 +185,7 @@ function agregarDispositivo() {
     dispositivos.push({ serial, nombre, marca, modelo });
   }
 
-  cerrarModal("modalAgregar");
+  cerrarModal();
   renderTabla();
   document.getElementById("serialesAgregar").value = "";
 }
@@ -107,7 +217,7 @@ function renderTabla() {
             <td>${d.marca}</td>
             <td>${d.modelo}</td>
             <td>
-              <button onclick="editarDispositivo(${i})">Editar</button>
+              <button onclick="openEditModal(${i})">Editar</button>
               <button onclick="eliminarDispositivo(${i})">Eliminar</button>
             </td>`;
       tbody.appendChild(fila);
@@ -131,7 +241,7 @@ function guardarEdicion() {
   dispositivos[i].nombre = document.getElementById("editarNombre").value.trim();
   dispositivos[i].marca = document.getElementById("editarMarca").value.trim();
   dispositivos[i].modelo = document.getElementById("editarModelo").value.trim();
-  cerrarModal("modalEditar");
+  cerrarModal();
   renderTabla();
 }
 
@@ -160,47 +270,232 @@ async function getDevices() {
 
   try {
     const response = await fetch(`${HOST}:${PORT}/api/devices/`, {
-      method: "GET",
+      method: "POST",
       headers: {
+        "Content-Type": "application/json",
         "x-ubicacion": currentUser.Ubicacion,
       },
       body: JSON.stringify({ tipoDispositivo, marca, modelo, serialNumber }),
     });
 
-    const data = await result.json();
+    const data = await response.json();
     return data;
   } catch (error) {
-    alert("Error al cargar dispositivos: ", error.message);
+    console.log(error);
+    alert("Error al cargar dispositivos: " + error.message);
   }
 }
 
-async function addDevice(){
-
-}
+async function addDevice() {}
 
 async function deleteDevice(id) {
-  try{
+  try {
     await fetch(`${HOST}:${PORT}/api/devices/${id}`, {
-      method: "DELETE"
-    })
-  } catch(err){
+      method: "DELETE",
+    });
+  } catch (err) {
     console.log(err);
-    alert("Error al eliminar dispositivos: ", err.messge)
+    alert("Error al eliminar dispositivos: ", err.messge);
   }
 }
 
-async function updateDevice(){
+async function updateDevice() {
+  const deviceID = document.getElementById("modalEditar").dataset.deviceID;
+  const newSerial = document.getElementById("editarSerial").value;
+  const newDeviceType = document.getElementById("editarTipoDispositivo").value;
+  const newBrand = document.getElementById("editarMarca").value;
+  const newModel = document.getElementById("editarModelo").value;
 
+  try {
+    await fetch(`${HOST}:${PORT}/api/devices/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        IDDispositivo: deviceID,
+        tipoDispositivo: newDeviceType,
+        marca: newBrand,
+        modelo: newModel,
+        serialNumber: newSerial,
+      }),
+    });
+    showDevices();
+  } catch (err) {
+    console.log(err);
+    alert("Error al actualizar dispositivo: " + err.message);
+  }
+
+  cerrarModal();
 }
 
-async function showDevices(data){
+async function showDevices() {
+  data = await getDevices();
+  const tbody = document.querySelector("#tablaDispositivos tbody");
+  tbody.innerHTML = "";
 
+  data.forEach((device) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${device.ID_Dispositivo}</td>
+      <td>${device.TipoDispositivo}</td>
+      <td>${device.Marca}</td>
+      <td>${device.Modelo}</td>
+      <td>${device.Serial_Number}</td>
+      <td>
+        <div class="action-buttons">
+        <button onclick="openEditModal(${device.ID_Dispositivo}, ${device.ID_Tipo}, ${device.ID_Modelo})">Editar</button>
+        <button onclick="deleteDevice(${device.ID_Dispositivo})">Eliminar</button>
+        </div>
+      </td>`;
+
+    tbody.append(tr);
+  });
 }
 
-async function addType(){
+async function getDeviceTypes() {
+  try {
+    const response = await fetch(`${HOST}:${PORT}/api/inventory/device-types`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
 
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+    alert("Error al obtener tipos de dispositivo: " + err.message);
+  }
 }
 
-async function addModel(){
+async function getModels(deviceTypeID) {
+  const url = `${HOST}:${PORT}/api/devices/models/${deviceTypeID}`;
+  try {
+    const response = await fetch(
+      `${HOST}:${PORT}/api/devices/models/${deviceTypeID}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-ubicacion": currentUser.Ubicacion,
+        },
+      }
+    );
 
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+    alert(
+      "Error al obtener modelos para el tipo de dispositivo seleccionado: " +
+        err.message
+    );
+  }
+}
+
+async function addType(newType) {
+  try {
+    const response = await fetch(`${HOST}:${PORT}/api/inventory/add-type`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tipoDispositivo: newType }),
+    });
+
+    const typeID = response.json();
+    return typeID;
+  } catch (err) {
+    console.log(err);
+    alert("Error al agregar nuevo tipo: " + err.message);
+    return;
+  }
+}
+
+async function addModel(newModel, typeID) {
+  try {
+    const response = await fetch(`${HOST}:${PORT}/api/inventory/add-model`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-ubicacion": currentUser.Ubicacion,
+      },
+      body: JSON.stringify({ modelo: newModel, ID_Tipo: typeID }),
+    });
+
+    const typeID = response.json();
+    return typeID;
+  } catch (err) {
+    console.log(err);
+    alert("Error al agregar nuevo modelo: " + err.message);
+    return;
+  }
+}
+
+async function addDevice() {
+  const tipoSelectVisible = !document
+    .getElementById("nombreSelectContainerAgregar")
+    .classList.contains("hidden");
+  const modeloSelectVisible = !document
+    .getElementById("modeloSelectContainerAgregar")
+    .classList.contains("hidden");
+
+  let tipoID;
+  if (tipoSelectVisible) {
+    tipoID = document.getElementById("tipoDispositivo").value;
+  } else {
+    const nuevoTipo = document
+      .getElementById("nombreAgregarNuevo")
+      .value.trim();
+    tipoID = await addType(nuevoTipo);
+  }
+
+  let modeloID;
+  if (modeloSelectVisible) {
+    modeloID = document.getElementById("Modelo").value;
+  } else {
+    const nuevoModelo = document
+      .getElementById("modeloAgregarNuevo")
+      .value.trim();
+    modeloID = await addModel(nuevoModelo, tipoID);
+  }
+
+  const marca = document.getElementById("marcaAgregar").value;
+  const cantidad = parseInt(document.getElementById("cantidadAgregar").value);
+  const serialNumbers = document.getElementById("serialesAgregar").value;
+
+  try {
+    await fetch(`${HOST}:${PORT}/api/device/add-device`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-ubicacion": currentUser.Ubicacion,
+      },
+      body: JSON.stringify({
+        tipoID,
+        marca,
+        modeloID,
+        cantidad,
+        serialNumbers,
+      }),
+    });
+  } catch (err) {
+    console.log(err);
+    alert("Error al agregar dispositivo: " + err.message);
+  }
+}
+
+async function deleteDevice(deviceID) {
+  try {
+    await fetch(`${HOST}:${PORT}/api/devices/${deviceID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    alert("Error al eliminar dispositivos: ");
+  }
 }

@@ -193,3 +193,35 @@ tr:hover {
     flex-direction: column;
   }
 }
+
+
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.tab {
+  background-color: white;
+  color: #003973;
+  border: 2px solid #003973;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  background-color: #003973;
+  color: white;
+}
+
+.tab.active {
+  background-color: #003973;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 89, 177, 0.2);
+}

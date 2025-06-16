@@ -9,64 +9,94 @@
   <body>
     <div class="main-content" id="main-content">
       <h1>Asignar Dispositivo a Empleado</h1>
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('asignar')">
+          Asignar nuevo D.
+        </button>
+        <button class="tab" onclick="showTab('reasignar')">
+          Reasignar Disp.
+        </button>
+      </div>
 
-      <form id="assign-form">
-        <div class="form-group">
-          <label for="employee-id">ID o Nombre del Empleado:</label>
-          <input
-            type="text"
-            id="employee-id"
-            name="employee-id"
-            required
-            placeholder="Ej: 1234"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="device-type">Tipo de Dispositivo:</label>
-          <select id="device-type" name="device-type" required>
-            <option value="" disabled selected hidden>Selecciona</option>
-            <option value="Laptop">Laptop</option>
-            <option value="Monitor">Monitor</option>
-            <option value="Mouse">Mouse</option>
-            <option value="Teclado">Teclado</option>
-            <option value="Headset">Headset</option>
-            <option value="Cargador de Laptop">Cargador de Laptop</option>
-            <option value="Flota">Flota</option>
-            <option value="Cargador de Flota">Cargador de Flota</option>
-            <option value="Mochila">Mochila</option>
-            <option value="Desktop">Desktop</option>
-            <option value="Mini Desktop">Mini Desktop</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Selecciona un Dispositivo Disponible:</label>
-          <div
-            id="device-table-container"
-            style="display: none; overflow-y: auto; overflow-x: scroll"
-          >
-            <table
-              id="device-table"
-              style="width: 100%; border-collapse: collapse; margin-top: 1rem"
-            >
-              <thead>
-                <tr>
-                  <th>Marca</th>
-                  <th>Modelo</th>
-                  <th>Numero de Serie</th>
-                </tr>
-              </thead>
-              <tbody id="table-body"></tbody>
-            </table>
+      <!--ASIGNAR NUEVO DISPOSITIVO-->
+      <div class="tab-content" id="asignar" style="display: block">
+        <form id="assign-form">
+          <div class="form-group">
+            <label for="employee-id">ID o Nombre del Empleado:</label>
+            <input
+              type="text"
+              id="employee-id"
+              name="employee-id"
+              required
+              placeholder="Ej: 1234"
+            />
           </div>
+
+          <div class="form-group">
+            <label for="device-type">Tipo de Dispositivo:</label>
+            <select id="device-type" name="device-type" required>
+              <option value="" disabled selected hidden>Selecciona</option>
+              <option value="Laptop">Laptop</option>
+              <option value="Monitor">Monitor</option>
+              <option value="Mouse">Mouse</option>
+              <option value="Teclado">Teclado</option>
+              <option value="Headset">Headset</option>
+              <option value="Cargador de Laptop">Cargador de Laptop</option>
+              <option value="Flota">Flota</option>
+              <option value="Cargador de Flota">Cargador de Flota</option>
+              <option value="Mochila">Mochila</option>
+              <option value="Desktop">Desktop</option>
+              <option value="Mini Desktop">Mini Desktop</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Selecciona un Dispositivo Disponible:</label>
+            <div
+              id="device-table-container"
+              style="display: none; overflow-y: auto; overflow-x: scroll"
+            >
+              <table
+                id="device-table"
+                style="width: 100%; border-collapse: collapse; margin-top: 1rem"
+              >
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Numero de Serie</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <button type="submit">Asignar</button>
+          <button onclick="generateLetter()">Generar carta de compromiso</button>
+        </form>
+
+        <div id="result-message"></div>
+      </div>
+
+    <!--REASIGNAR DISPOSITIVOS-->
+    <div class="tab-content" id="reasignar" style="display: none;">
+      <label>ID del Empleado:
+        <input type="text" id="empleadoOrigen" />
+      </label>
+
+      <h4>Dispositivos Asignados</h4>
+      <table id="reassignTablePreview">
+      </table>
+
+      <label>ID del Empleado a Reasignar:
+        <input type="text" id="empleadoDestino" />
+      </label>
+
+      <button onclick="reassignDevices()">Reasignar</button>
+    </div>
         </div>
 
-        <button type="submit">Asignar</button>
-      </form>
-
-      <div id="result-message"></div>
-    </div>
 
     <script src="../js/assign-devices.js"></script>
   </body>
