@@ -14,7 +14,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
-    frame: false,
+    frame: true,
     titleBarStyle: "default",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -37,23 +37,29 @@ function createWindow() {
 const { spawn } = require("child_process");
 
 app.whenReady().then(async () => {
-  const serverProcess = spawn("node", [path.join(__dirname, "backend/server.js")]);
+  const serverProcess = spawn("node", [
+    path.join(__dirname, "backend/server.js"),
+  ]);
 
+  serverProcess.stdout.on("data", (data) => {
+    console.log(`Backend: ${data}`);
+  }); 
 
-
-serverProcess.stdout.on("data", (data) => {
-  console.log(`Backend: ${data}`);
-});
-
-serverProcess.stderr.on("data", (data) => {
-  console.error(`Backend error: ${data}`);
-});
-
-serverProcess.on("exit", (code, signal) => {
-  console.error(`Backend server exited with code ${code} and signal ${signal}`);
-});
   serverProcess.stderr.on("data", (data) => {
-    console.error(`Server error: ${data}`);
+    console.error(`Backend error: ${data}`);
+  });
+
+  serverProcess.on("exit", (code, signal) => {
+    console.error(
+      `Backend server exited with code ${code} and signal ${signal}`
+    );
+  });
+  serverProcess.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+  });
+
+  serverProcess.on("unhandledRejection", (reason, promise) => {
+    console.error("Unhandled Rejection:", reason);
   });
 
   createWindow();
@@ -91,6 +97,7 @@ const PORT = process.env.PORT || 3000;
 
 ipcMain.handle("login-user", async (event, credentials) => {
   try {
+    console.log(`${HOST}:${PORT}/api/auth/login`);
     const response = await fetch(`${HOST}:${PORT}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -100,7 +107,7 @@ ipcMain.handle("login-user", async (event, credentials) => {
     const result = await response.json();
     if (result.success) {
       global.currentUser = result.user;
-     /* global.sharedObject = {
+      /* global.sharedObject = {
         userLocation: result.user.Ubicacion,
       };*/
       return { success: true, user: result.user };
@@ -119,9 +126,9 @@ ipcMain.handle("get-current-user", () => {
 
 ipcMain.handle("logout", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
-  win.close(); 
-  createWindow(); 
-})
+  win.close();
+  createWindow();
+});
 
 ipcMain.handle("register-employee", async (event, data) => {
   try {

@@ -41,100 +41,22 @@
       </button>
     </div>
 
-    <div class="scrollable">
-      <table id="tablaAsignados">
-        <thead>
-          <tr>
-            <th>ID de Empleado</th>
-            <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
-              Empleado
-              <span class="sort-icons">
-                <i class="fas fa-caret-up"></i>
-                <i class="fas fa-caret-down"></i>
-              </span>
-            </th>
-            <th>Ubicación</th>
-            <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
-              Dispositivo
-              <span class="sort-icons">
-                <i class="fas fa-caret-up"></i>
-                <i class="fas fa-caret-down"></i>
-              </span>
-            </th>
-            <th>Fecha Asignación</th>
-            <th>Fecha Cambio</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="scrollable">
+        <table id="tablaAsignados">
+          <thead>
+            <tr>
+              <th>ID de Empleado</th>
+              <th>Empleado</th>
+              <th>Ubicación</th>
+              <th>Dispositivo</th>
+              <th>Fecha Asignación</th>
+              <th>Fecha Cambio</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
-  </div>
-
-
-  <div class="tab-content" id="historial">
-    <div class="busqueda-exportar" style="justify-content: flex-end;">
-      <button onclick="exportarExcel('tablaHistorial')" class="excel-btn" title="Exportar tabla a Excel">
-        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
-        <span>Exportar a Excel</span>
-      </button>
-    </div>
-    <div class="scrollable">
-      <table id="tablaHistorial">
-        <thead>
-          <tr>
-            <th class="sortable" onclick="sortTable(0, 'tablaHistorial')">
-              Dispositivo
-              <span class="sort-icons">
-                <i class="fas fa-caret-up"></i>
-                <i class="fas fa-caret-down"></i>
-              </span>
-            </th>
-            <th>Empleado Anterior</th>
-            <th>Empleado Nuevo</th>
-            <th>Fecha Cambio</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
- 
-  <div class="tab-content" id="pendientes">
-    <div class="busqueda-exportar" style="justify-content: flex-end;">
-      <button onclick="exportarExcel('tablaPendientes')" class="excel-btn" title="Exportar tabla a Excel">
-        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
-        <span>Exportar a Excel</span>
-      </button>
-    </div>
-    <div class="scrollable">
-      <table id="tablaPendientes">
-        <thead>
-          <tr>
-            <th>ID Empleado</th>
-            <th class="sortable" onclick="sortTable(1, 'tablaPendientes')">
-              Empleado
-              <span class="sort-icons">
-                <i class="fas fa-caret-up"></i>
-                <i class="fas fa-caret-down"></i>
-              </span>
-            </th>
-            <th class="sortable" onclick="sortTable(2, 'tablaPendientes')">
-              Dispositivo
-              <span class="sort-icons">
-                <i class="fas fa-caret-up"></i>
-                <i class="fas fa-caret-down"></i>
-              </span>
-            </th>
-            <th>Fecha Asignación</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
 
  
   <div id="modalReasignar">

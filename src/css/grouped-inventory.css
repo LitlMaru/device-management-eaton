@@ -3,8 +3,8 @@
   margin: 0;
   padding: 0;
 }
-html, body {
-  height: 100%;
+html, body{
+    height: auto;
 }
 body {
   font-family: "Segoe UI", sans-serif;
@@ -65,7 +65,6 @@ header {
 
   .container {
   height: 100%;
-    max-width: 1200px;
   background-color: #fff;
   padding: 25px;
   border-radius: 12px;
@@ -122,6 +121,16 @@ input[type="text"]::placeholder {
 
 .alert-box li {
   margin-bottom: 6px;
+}
+
+.alert-title {
+  font-weight: bold;
+  user-select: none;
+}
+
+#arrow-icon {
+  display: inline-block;
+  margin-left: 8px;
 }
 
 button.excel-btn {

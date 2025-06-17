@@ -1,3 +1,5 @@
+// Get backend variables (HOST, PORT, currentUser)
+
 const ElectronAPI = (() => {
   function sendMessage(action, data) {
     return new Promise((resolve, reject) => {
@@ -41,6 +43,14 @@ let tableBody = document.getElementById("table-body");
 let tableContainer = document.getElementById("device-table-container");
 const resultMsg = document.getElementById("result-message");
 
+function showTab(tabId) {
+  document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(tc => tc.style.display = "none");
+
+  document.querySelector(`#${tabId}`).style.display = "block";
+  document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add("active");
+}
+
 async function assignDevice(employeeData, formElement) {
   try {
     const response = await fetch(`${HOST}:${PORT}/api/employees/assign-device`, {
@@ -53,16 +63,12 @@ async function assignDevice(employeeData, formElement) {
     });
 
     const data = await response.json();
-
-    if (data.success) {  
       resultMsg.textContent = `Dispositivo ${employeeData.tipoDispositivo} asignado a ${employeeData.Info_empleado}.`;
       formElement.reset();  
       tableBody.innerHTML = "";
       tableContainer.style.display = "none";
       selectedDeviceID = null; 
-    } else {
-      resultMsg.textContent = "Error al asignar dispositivo.";
-    }
+
   } catch (error) {
     resultMsg.textContent = "Error de red o del servidor: " + error.message;
   }
@@ -87,6 +93,8 @@ async function getAvailableDevices(type) {
     alert("Error al obtener los dispositivos disponibles: ", err.message);
   }
 }
+
+
 let deviceSelect = document.getElementById("device-type");
 deviceSelect.addEventListener("change", async () => {
   const type = deviceSelect.value;
@@ -120,6 +128,7 @@ deviceSelect.addEventListener("change", async () => {
       <td style="padding: 0.5rem;">${device.Marca}</td>
       <td style="padding: 0.5rem;">${device.Modelo}</td>
       <td style="padding: 0.5rem;">${device.Serial_Number}</td>
+      <td><button onclick= "addToDestiny(${JSON.stringify()})">
     `;
     row.addEventListener("click", () => {
       document.querySelectorAll("#device-table tbody tr").forEach((r) => {
@@ -157,7 +166,7 @@ document
 
     await assignDevice({
       Info_empleado,
-       tipoDispositivo, 
+      tipoDispositivo, 
       ID_Dispositivo: selectedDeviceID,
       Fecha_Asignacion,
       Fecha_Cambio,

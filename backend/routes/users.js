@@ -2,19 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
-// Obtener todos los usuarios
+// Get users
 router.get("/", async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request().query("SELECT * FROM Usuarios");
-    res.json({ success: true, usuarios: result.recordset });
+    res.json(result.recordset);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Agregar nuevo usuario
+// Add a new user
 router.post("/", async (req, res) => {
   const { username, clave, rol, ubicacion } = req.body;
   try {
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Actualizar usuario
+// Update user (allowed fields: password, role, location)
 router.put("/", async (req, res) => {
   const { idUsuario, campo, valor } = req.body;
 
@@ -63,7 +63,7 @@ router.put("/", async (req, res) => {
   }
 });
 
-// Eliminar usuario
+// Delete user (by username)
 router.delete("/:username", async (req, res) => {
   const { username } = req.params;
   try {
