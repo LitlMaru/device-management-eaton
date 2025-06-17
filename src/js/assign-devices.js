@@ -39,8 +39,10 @@ async function init() {
 
 init();
 
-let tableBody = document.getElementById("table-body");
-let tableContainer = document.getElementById("device-table-container");
+let availableTableBody = document.querySelector("#availableDevicesTable tbody");
+let availableTableContainer = document.getElementById("availableDevicesContainer");
+let assignTableBody = document.querySelector("#assignDevicesTable tbody");
+let assignTableContainer = document.getElementById("assignDevicesContainer");
 const resultMsg = document.getElementById("result-message");
 
 function showTab(tabId) {
@@ -98,49 +100,79 @@ async function getAvailableDevices(type) {
 let deviceSelect = document.getElementById("device-type");
 deviceSelect.addEventListener("change", async () => {
   const type = deviceSelect.value;
-  tableBody.innerHTML = "";
+  availableTableBody.innerHTML = "";
   selectedDeviceID = null;
 
   if (!type) {
-    tableContainer.style.display = "none";
+    availableTableContainer.style.display = "none";
     return;
   }
 
-  const result = await getAvailableDevices(type);
-
-  if (!result || !result.success || !Array.isArray(result.devices)) {
-    tableContainer.style.display = "none";
+  const devices = await getAvailableDevices(type);
+  if (!devices  || !Array.isArray(devices)) {
+    availableTableContainer.style.display = "none";
     return;
   }
-    const devices = result.devices;
 
   if (!devices || devices.length === 0) {
     tableContainer.style.display = "none";
     return;
   }
 
-  tableContainer.style.display = "block";
+  availableTableContainer.style.display = "block";
+  assignTableContainer.style.display = "block";
 
   devices.forEach((device) => {
     const row = document.createElement("tr");
     row.style.cursor = "pointer";
     row.innerHTML = `
-      <td style="padding: 0.5rem;">${device.Marca}</td>
-      <td style="padding: 0.5rem;">${device.Modelo}</td>
-      <td style="padding: 0.5rem;">${device.Serial_Number}</td>
-      <td><button onclick= "addToDestiny(${JSON.stringify()})">
+      <td>${device.Marca}</td>
+      <td>${device.Modelo}</td>
+      <td>${device.Serial_Number}</td>
+      <td class="td-button"><button onclick='addToDestiny(${JSON.stringify(device)})'>+</button></td>
     `;
-    row.addEventListener("click", () => {
+    /*row.addEventListener("click", () => {
       document.querySelectorAll("#device-table tbody tr").forEach((r) => {
         r.style.backgroundColor = "";
       });
       row.style.backgroundColor = "#cce5ff";
       selectedDeviceID = device.ID_Dispositivo;
-    });
+    });*/
 
-    tableBody.appendChild(row);
+
+    availableTableBody.appendChild(row);
   });
 });
+
+function addToDestiny(device){
+
+  let repeated;
+  assignTableBody.querySelectorAll("tr").forEach((row) => {
+    if(row.dataset.ID_Dispositivo == device.ID_Dispositivo) {repeated = true}
+  })
+
+  if(!repeated){
+ const tr = document.createElement('tr');
+  tr.innerHTML = `
+   <td>${device.Marca}</td>
+   <td>${device.Modelo}</td>
+   <td>${device.Serial_Number}</td>
+   <td class="td-button"><button class='remove-device-btn'>-</button></td>
+  `
+  tr.querySelector(".remove-device-btn").addEventListener('click', () => {
+    tr.remove();
+  })
+
+  tr.dataset.ID_Dispositivo = device.ID_Dispositivo
+  assignTableBody.appendChild(tr)
+
+  }
+ 
+}
+
+function resetSelection() {
+  assignTableBody.innerHTML = "";
+}
 
 document
   .getElementById("assign-form")

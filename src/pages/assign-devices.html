@@ -9,13 +9,15 @@
   <body>
     <div class="main-content" id="main-content">
       <h1>Asignar Dispositivo a Empleado</h1>
-      <div class="tabs">
-        <button class="tab active" onclick="showTab('asignar')">
-          Asignar nuevo D.
-        </button>
-        <button class="tab" onclick="showTab('reasignar')">
-          Reasignar Disp.
-        </button>
+      <div class="tabs-container">
+        <div class="tabs segmented">
+          <button class="tab active" onclick="showTab('asignar')">
+            Asignar nuevo dispositivo
+          </button>
+          <button class="tab" onclick="showTab('reasignar')">
+            Reasignar Dispositivos
+          </button>
+        </div>
       </div>
 
       <!--ASIGNAR NUEVO DISPOSITIVO-->
@@ -53,11 +55,11 @@
           <div class="form-group">
             <label>Selecciona un Dispositivo Disponible:</label>
             <div
-              id="device-table-container"
+              id="availableDevicesContainer"
               style="display: none; overflow-y: auto; overflow-x: scroll"
             >
               <table
-                id="device-table"
+                id="availableDevicesTable"
                 style="width: 100%; border-collapse: collapse; margin-top: 1rem"
               >
                 <thead>
@@ -65,38 +67,72 @@
                     <th>Marca</th>
                     <th>Modelo</th>
                     <th>Numero de Serie</th>
+                    <th></th>
                   </tr>
                 </thead>
-                <tbody id="table-body"></tbody>
+                <tbody></tbody>
               </table>
             </div>
           </div>
 
-          <button type="submit">Asignar</button>
-          <button onclick="generateLetter()">Generar carta de compromiso</button>
+          <div class="center-button">
+            <button class="reset-button" onclick="resetSelection()">
+              Resetear Dispositivos
+            </button>
+          </div>
+          <h4>Dispositivos a Asignar</h4>
+
+          <div
+            id="assignDevicesContainer"
+            style="display: none; overflow-y: auto; overflow-x: scroll"
+          >
+            <table id="assignDevicesTable">
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Numero de Serie</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="assign-buttons-container">
+ <button type="submit">Asignar</button>
+          <button onclick="generateLetter()">
+            Generar carta de compromiso
+          </button>
+          </div>
+         
         </form>
 
         <div id="result-message"></div>
       </div>
 
-    <!--REASIGNAR DISPOSITIVOS-->
-    <div class="tab-content" id="reasignar" style="display: none;">
-      <label>ID del Empleado:
-        <input type="text" id="empleadoOrigen" />
-      </label>
-
-      <h4>Dispositivos Asignados</h4>
-      <table id="reassignTablePreview">
-      </table>
-
-      <label>ID del Empleado a Reasignar:
-        <input type="text" id="empleadoDestino" />
-      </label>
-
-      <button onclick="reassignDevices()">Reasignar</button>
-    </div>
+      <!--REASIGNAR DISPOSITIVOS-->
+      <div class="tab-content" id="reasignar" style="display: none">
+        <div class="form-group">
+          <label>ID del Empleado:</label>
+          <input type="text" id="empleadoOrigen" />
         </div>
 
+        <h4>Dispositivos Asignados</h4>
+        <table id="reassignTablePreview"></table>
+
+        <div class="form-group">
+          <label>ID del Empleado a Reasignar: </label>
+          <input type="text" id="empleadoDestino" />
+        </div>
+
+        <div class="center-button">
+          <button class="reassign-button" onclick="reassignDevices()">
+            Reasignar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="../js/assign-devices.js"></script>
   </body>

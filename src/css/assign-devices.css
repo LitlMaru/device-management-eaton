@@ -127,9 +127,15 @@ select:focus {
   outline: none;
 }
 
-button[type="submit"] {
+.center-button{
+  display: flex;
+  justify-content: center;
   width: 100%;
-  padding: 0.8rem;
+  margin: 1rem;
+}
+
+.reset-button, .reassign-button {
+  padding: 0.8rem 1.6rem;
   background-color: #003973;
   color: white;
   font-size: 1rem;
@@ -139,7 +145,32 @@ button[type="submit"] {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button[type="submit"]:hover {
+.reset-button:hover, .reassign-button:hover{
+  background-color: #0058b1;
+}
+
+.assign-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.assign-buttons-container button{
+  width: 200px;
+  padding: 0.6rem;
+  background-color: #003973;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.assign-buttons-container button:hover {
   background-color: #0058b1;
   transform: translateY(-2px);
 }
@@ -169,13 +200,33 @@ table {
   max-height: 300px;
   overflow-y: auto;
 }
+
 th,
 td {
-  padding: 14px;
+  padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ccc;
 }
 
+.td-button{
+  padding: 0px;
+  display: flex;
+  justify-content: end;
+}
+
+.td-button button{
+  width: 50px;
+  aspect-ratio: 1/1;
+  background-color: #0058b1;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.td-button button:hover{
+  background-color: #0f76dd;
+}
 th {
   background-color: #004e92;
   color: white;
@@ -184,6 +235,9 @@ th {
   z-index: 10;
 }
 
+tr{
+  height: auto;
+}
 tr:hover {
   background-color: #f0f8ff;
 }
@@ -195,33 +249,46 @@ tr:hover {
 }
 
 
-
-.tabs {
+.tabs-container{
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
+}
+.tabs.segmented {
+  display: inline-flex;
+  justify-content: center;
+  border: 2px solid #003973;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1.5rem auto;
 }
 
-.tab {
+.tabs.segmented .tab {
+  border: none;
   background-color: white;
   color: #003973;
-  border: 2px solid #003973;
   padding: 0.6rem 1.2rem;
-  border-radius: 10px;
-  cursor: pointer;
   font-weight: bold;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  cursor: pointer;
+  flex: 1;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.tab:hover {
+.tabs.segmented .tab:not(:last-child) {
+  border-right: 1px solid #003973;
+}
+
+.tabs.segmented .tab.active {
   background-color: #003973;
   color: white;
 }
 
-.tab.active {
-  background-color: #003973;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 89, 177, 0.2);
+#reasignar {
+  display: flex;
+  flex-direction: column;
+}
+
+#reasignar button{
+  display: block;
+
 }
