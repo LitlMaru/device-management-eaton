@@ -1,235 +1,213 @@
-const ElectronAPI = (() => {
-  function sendMessage(action, data) {
-    return new Promise((resolve, reject) => {
-      const requestId = Math.random().toString(36).slice(2);
+ const asignaciones = [
+      { idEmpleado: "001", empleado: "Ana López", ubicacion: "ICD", dispositivo: "Laptop Dell", fechaAsignacion: "2023-05-30" },
+      { idEmpleado: "002", empleado: "Carlos Ruiz", ubicacion: "MCB", dispositivo: "Tablet Samsung", fechaAsignacion: "2022-04-10" },
+      { idEmpleado: "003", empleado: "Luis Pérez", ubicacion: "MCCB", dispositivo: "Laptop HP", fechaAsignacion: "2024-06-01" },
+      { idEmpleado: "004", empleado: "Marta Gómez", ubicacion: "ICD", dispositivo: "Monitor LG", fechaAsignacion: "2023-11-15" },
+      { idEmpleado: "005", empleado: "Juan Ramírez", ubicacion: "MCB", dispositivo: "Teclado Logitech", fechaAsignacion: "2023-01-20" }
+    ];
 
-      function handler(event) {
-        if (event.data && event.data.requestId === requestId) {
-          window.removeEventListener("message", handler);
-          if (event.data.success) {
-            resolve(event.data.result || event.data.env);
-          } else {
-            reject(new Error(event.data.error));
-          }
+    const historial = [
+      { dispositivo: "Laptop Dell", empleadoAnterior: "Ana López", empleadoNuevo: "José Martínez", fechaCambio: "2023-12-01" },
+      { dispositivo: "Tablet Samsung", empleadoAnterior: "Carlos Ruiz", empleadoNuevo: "María Fernández", fechaCambio: "2024-01-15" }
+    ];
+
+    let dispositivoReasignar = null;
+    let ordenActual = {}; 
+
+    function showTab(tabId) {
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add("active");
+    }
+
+    function exportarExcel(tablaID) {
+      const table = document.getElementById(tablaID);
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Hoja1" });
+      XLSX.writeFile(wb, tablaID + ".xlsx");
+    }
+
+    function cargarAsignaciones() {
+      const tbody = document.querySelector("#tablaAsignados tbody");
+      tbody.innerHTML = "";
+
+      asignaciones.forEach((item, index) => {
+        const tr = document.createElement("tr");
+
+        const fechaAsignacion = new Date(item.fechaAsignacion);
+        const unAñoDespues = new Date(fechaAsignacion);
+        unAñoDespues.setFullYear(unAñoDespues.getFullYear() + 1);
+        const fechaActual = new Date();
+
+        let cambioTexto = "";
+        let clase = "";
+
+        if (fechaActual >= unAñoDespues) {
+          cambioTexto = "Pendiente";
+          clase = "rojo";
+        } else {
+          cambioTexto = unAñoDespues.toISOString().split("T")[0];
         }
+
+        tr.innerHTML = `
+          <td>${item.idEmpleado}</td>
+          <td>${item.empleado}</td>
+          <td>${item.ubicacion}</td>
+          <td>${item.dispositivo}</td>
+          <td>${item.fechaAsignacion}</td>
+          <td class="${clase}">${cambioTexto}</td>
+          <td><button class="accion-btn" onclick="abrirModal(${index})">Reasignar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      cargarPendientes();
+    }
+
+    function cargarPendientes() {
+      const tbody = document.querySelector("#tablaPendientes tbody");
+      tbody.innerHTML = "";
+
+      asignaciones.forEach(item => {
+        const fechaAsignacion = new Date(item.fechaAsignacion);
+        const unAñoDespues = new Date(fechaAsignacion);
+        unAñoDespues.setFullYear(unAñoDespues.getFullYear() + 1);
+        const fechaActual = new Date();
+
+        if (fechaActual >= unAñoDespues) {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.idEmpleado}</td>
+              <td>${item.empleado}</td>
+              <td>${item.dispositivo}</td>
+              <td>${item.fechaAsignacion}</td>
+              <td class="rojo">Pendiente</td>
+            </tr>
+          `;
+        }
+      });
+    }
+
+    function cargarHistorial() {
+      const tbody = document.querySelector("#tablaHistorial tbody");
+      tbody.innerHTML = "";
+      historial.forEach(h => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${h.dispositivo}</td>
+            <td>${h.empleadoAnterior}</td>
+            <td>${h.empleadoNuevo}</td>
+            <td>${h.fechaCambio}</td>
+          </tr>
+        `;
+      });
+    }
+
+ 
+    function filtrarTabla() {
+      const texto = document.getElementById("busqueda").value.toLowerCase();
+      document.querySelectorAll("#tablaAsignados tbody tr").forEach(fila => {
+        const contenido = fila.textContent.toLowerCase();
+        fila.style.display = contenido.includes(texto) ? "" : "none";
+      });
+    }
+
+    function abrirModal(index) {
+      dispositivoReasignar = index;
+     
+      document.getElementById("nuevoEmpleado").value = "";
+      document.getElementById("nuevaFecha").value = "";
+      document.getElementById("modalReasignar").style.display = "flex";
+    }
+
+    function cerrarModal() {
+      dispositivoReasignar = null;
+      document.getElementById("modalReasignar").style.display = "none";
+    }
+
+    function confirmarReasignacion() {
+      const nuevoEmpleado = document.getElementById("nuevoEmpleado").value.trim();
+      const nuevaFecha = document.getElementById("nuevaFecha").value;
+
+      if (!nuevoEmpleado) {
+        alert("Por favor ingresa el nombre del nuevo empleado.");
+        return;
+      }
+      if (!nuevaFecha) {
+        alert("Por favor ingresa la fecha de reasignación.");
+        return;
       }
 
-      window.addEventListener("message", handler);
+     
+      const item = asignaciones[dispositivoReasignar];
 
-      window.parent.postMessage({ action, data, requestId }, "*");
-    });
-  }
+    
+      historial.push({
+        dispositivo: item.dispositivo,
+        empleadoAnterior: item.empleado,
+        empleadoNuevo: nuevoEmpleado,
+        fechaCambio: nuevaFecha
+      });
 
-  return {
-    invoke: (...args) => sendMessage("invoke-ipc", { args }),
-    getEnv: () => sendMessage("get-env"),
-  };
-})();
+     
+      item.empleado = nuevoEmpleado;
+      item.fechaAsignacion = nuevaFecha;
 
-let currentUser, HOST, PORT;
-const input = document.getElementById("busqueda");
-
-async function init() {
-  currentUser = await ElectronAPI.invoke("get-current-user");
-  env = await ElectronAPI.getEnv();
-  HOST = env.HOST;
-  PORT = env.PORT;
-}
-
-init();
-
-function filtrarTabla() {
-  const filtro = document.getElementById("busqueda").value.toLowerCase();
-  const filas = document.querySelectorAll("#tablaAsignados tbody tr");
-  filas.forEach((fila) => {
-    const textoFila = fila.innerText.toLowerCase();
-    fila.style.display = textoFila.includes(filtro) ? "" : "none";
-  });
-}
-
-input.addEventListener("input", async function () {
-  const filtro = this.value.trim();
-  try {
-    const response = await fetch(`${HOST}:${PORT}/api/employees/devices`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-ubicacion": currentUser.Ubicacion,
-      },
-      body: JSON.stringify({ employeeInfo: filtro }),
-    });
-    const data = await response.json();
-    if (!data.success) {
-      throw new Error("Consulta fallida");
+      cargarAsignaciones();
+      cargarHistorial();
+      cerrarModal();
     }
-    actualizarTablaBusqueda(data.data);
-  } catch (error) {
-    alert("Error al consultar dispositivos del empleado: "+ error.message);
-    console.log(error.message);
-  }
-});
 
-function actualizarTablaBusqueda(data) {
-  const tbody = document.querySelector("#tablaAsignados tbody");
-  tbody.innerHTML = ""; 
+   
+    function sortTable(colIndex, tablaID) {
+      const table = document.getElementById(tablaID);
+      const tbody = table.tBodies[0];
+      const filas = Array.from(tbody.rows);
 
-  data.forEach((item) => {
-    const tr = document.createElement("tr");
+    
+      if (!ordenActual[tablaID]) ordenActual[tablaID] = {};
+      const direccionActual = ordenActual[tablaID][colIndex] || "desc";
+      const nuevaDireccion = direccionActual === "asc" ? "desc" : "asc";
+      ordenActual[tablaID][colIndex] = nuevaDireccion;
 
-    tr.innerHTML = `
-      <td>${item.ID_Empleado}</td>
-      <td>${item.Nombre}</td>
-      <td>${item.TipoDispositivo}</td>
-      <td>${item.Fecha_asignacion || ""}</td>
-      <td>${item.Fecha_cambio || ""}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+     
+      table.querySelectorAll("th.sortable").forEach(th => {
+        th.classList.remove("asc", "desc");
+      });
 
-function exportarExcel() {
-  const tabla = document.getElementById("tablaAsignados");
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.table_to_sheet(tabla, {
-    raw: true,
-    cellStyles: true,
-  });
+      
+      table.querySelectorAll("th")[colIndex].classList.add(nuevaDireccion);
 
-  XLSX.utils.book_append_sheet(wb, ws, "Dispositivos Asignados");
+      filas.sort((a, b) => {
+        let aTexto = a.cells[colIndex].textContent.trim().toLowerCase();
+        let bTexto = b.cells[colIndex].textContent.trim().toLowerCase();
 
-  XLSX.writeFile(wb, "Dispositivos_Asignados.xlsx");
-}
+       
+        const aNum = Date.parse(aTexto);
+        const bNum = Date.parse(bTexto);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return nuevaDireccion === "asc" ? aNum - bNum : bNum - aNum;
+        }
 
-actualizarTablaBusqueda;
+        const aNumSimple = parseFloat(aTexto.replace(/[^0-9.-]+/g, ""));
+        const bNumSimple = parseFloat(bTexto.replace(/[^0-9.-]+/g, ""));
+        if (!isNaN(aNumSimple) && !isNaN(bNumSimple)) {
+          return nuevaDireccion === "asc" ? aNumSimple - bNumSimple : bNumSimple - aNumSimple;
+        }
 
-async function generarAcuerdo() {
-  if (!filaSeleccionada) {
-    alert("No se ha seleccionado ninguna fila.");
-    return;
-  }
+        if (aTexto < bTexto) return nuevaDireccion === "asc" ? -1 : 1;
+        if (aTexto > bTexto) return nuevaDireccion === "asc" ? 1 : -1;
+        return 0;
+      });
 
-  const fechaActual = new Date();
-  const fechaFormato = fechaActual.toLocaleDateString("es-ES");
-  const horaFormato = fechaActual.toLocaleTimeString("es-ES");
-
-  const numeroE = filaSeleccionada.cells[0].innerText;
-  const nombreEmpleado = filaSeleccionada.cells[1].innerText;
+     
+      tbody.innerHTML = "";
+      filas.forEach(fila => tbody.appendChild(fila));
+    }
 
   
-  const dispositivos = Array.from(
-    filaSeleccionada.cells[3].querySelectorAll("li")
-  ).map(li => li.textContent);
-
-  if (dispositivos.length === 0) {
-    alert("Este empleado no tiene dispositivos asignados.");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.setTextColor("#004e92");
-  doc.text("Eaton Corporation", 105, 20, null, null, "center");
-
-  doc.setFontSize(14);
-  doc.text("Carta de entrega de equipo de trabajo", 105, 30, null, null, "center");
-
-  doc.setDrawColor("#004e92");
-  doc.setLineWidth(0.8);
-  doc.line(15, 35, 195, 35);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
-  doc.setTextColor("#333");
-
-  let textoCarta = `Por medio de la presente recibo en fecha ${fechaFormato} a las ${horaFormato} de mi empleador Eaton con carácter de herramienta de trabajo, el cual debo usar para el desempeño de mis funciones.
-
-Datos generales del equipo:
-
-Fecha: ${fechaFormato}
-Hora: ${horaFormato}
-Número E.: ${numeroE}
-Nombre: ${nombreEmpleado}
-
-Dispositivos asignados:\n`;
-
-  dispositivos.forEach((item, index) => {
-    textoCarta += `- ${item}\n`;
-  });
-
-  textoCarta += `
-
-A partir de este momento me hago responsable del mismo y acepto cuidarlo siguiendo las recomendaciones de la política de uso de equipos electrónicos, me comprometo a utilizarlo para el desempeño de mis labores, a usarlo con apego a las disposiciones vigentes en esta empresa, a mantenerlo en buen estado y a no proporcionar a terceras personas ni el equipo ni las claves o contraseñas necesarias para su uso.`;
-
-  const splitTexto = doc.splitTextToSize(textoCarta, 180);
-  doc.text(splitTexto, 15, 45);
-
-  const yFirmas = 45 + splitTexto.length * 6 + 10;
-
-  doc.setDrawColor("#004e92");
-  doc.setLineWidth(0.5);
-  doc.text("Firma de quien entrega:", 30, yFirmas);
-  doc.line(30, yFirmas + 2, 80, yFirmas + 2);
-  doc.text("Firma de quien recibe:", 130, yFirmas);
-  doc.line(130, yFirmas + 2, 180, yFirmas + 2);
-
-
-  doc.setFontSize(9);
-  doc.setTextColor("#999");
-  doc.text("EATON - Confidencial", 105, 290, null, null, "center");
-
-  doc.save(`Carta_Entrega_${nombreEmpleado}_${fechaFormato.replace(/\//g, "-")}.pdf`);
-}
-
-let filaSeleccionada = null;
-document.querySelectorAll("#tablaAsignados tbody tr").forEach(row => {
-  row.addEventListener("click", () => {
-    filaSeleccionada = row;
-    row.classList.add("seleccionada");
-  });
-});
-
-function verificarDispositivosACambiar() {
-  const hoy = new Date();
-  const tabla = document.getElementById("tablaAsignados").getElementsByTagName("tbody")[0];
-  const filas = tabla.getElementsByTagName("tr");
-
-  let alertas = [];
-
-  for (let fila of filas) {
-    const empleado = fila.cells[1].textContent;
-    const dispositivo = fila.cells[3].textContent;
-    const fechaCambioTexto = fila.cells[5].textContent;
-
-
-    const fechaCambio = new Date(fechaCambioTexto);
-
-  
-    if (
-      !isNaN(fechaCambio) &&
-      fechaCambio.toDateString() === hoy.toDateString()
-    ) {
-      alertas.push(`⚠️ El dispositivo "${dispositivo}" asignado a ${empleado} debe ser cambiado hoy.`);
-    }
-  }
-
-
-  if (alertas.length > 0) {
-    const contenedor = document.createElement("div");
-    contenedor.classList.add("alerta-fecha");
-
-    contenedor.innerHTML = `
-      <div class="alerta-cambio">
-        <strong>🔔 Dispositivos que deben cambiarse hoy:</strong><br>
-        ${alertas.join("<br>")}
-      </div>
-    `;
-
-    document.querySelector(".contenedor-principal").prepend(contenedor);
-  }
-}
-
-
-window.addEventListener("DOMContentLoaded", verificarDispositivosACambiar);
+    window.onload = () => {
+      cargarAsignaciones();
+      cargarHistorial();
+    };
