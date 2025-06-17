@@ -1,60 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dispositivos Asignados</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <script
-      src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"
-      async
-    ></script>
-    <link rel="stylesheet" href="../css/buscar_it.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dispositivos Asignados</title>
 
-  <body>
-    <div class="contenedor-principal">
-      <h1>Dispositivos Asignados</h1>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
-      <div class="busqueda-exportar">
-        <div class="busqueda-container">
-          <i class="fas fa-search"></i>
-          <input
-            type="text"
-            id="busqueda"
-            placeholder="Buscar por nombre o código..."
-          />
-        </div>
+ <link rel="stylesheet" href="../css/buscar_it.css" />
+</head>
 
-        <button onclick="exportarExcel()" class="excel-btn">
-          <img src="../../assets/excel.png" style="width: 16px" alt="" />
-          <span>Exportar a Excel</span>
-          <button onclick="generarAcuerdo()" class="carta-btn">
-            <i class="fas fa-file-pdf"></i> Carta
-          </button>
-        </button>
+<body>
+  <h1>Dispositivos Asignados</h1>
+
+
+  <div class="tab-container">
+    <div class="tabs segmented">
+      <button class="tab active" onclick="showTab('empleado')">Buscar por Empleado</button>
+      <button class="tab" onclick="showTab('historial')">Historial de Asignaciones</button>
+      <button class="tab" onclick="showTab('pendientes')">Cambios Pendientes</button>
+    </div>
+  </div>
+
+ 
+  <div class="tab-content active" id="empleado">
+    <div class="busqueda-exportar">
+      <div class="busqueda-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="busqueda"
+          placeholder="Buscar por nombre, código o dispositivo..."
+          oninput="filtrarTabla()"
+        />
       </div>
-
-      <div class="scrollable">
-        <table id="tablaAsignados">
-          <thead>
-            <tr>
-              <th>ID de Empleado</th>
-              <th>Empleado</th>
-              <th>Ubicación</th>
-              <th>Dispositivo</th>
-              <th>Fecha Asignación</th>
-              <th>Fecha Cambio</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <button onclick="exportarExcel('tablaAsignados')" class="excel-btn" title="Exportar tabla a Excel">
+        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+        <span>Exportar a Excel</span>
+      </button>
     </div>
 
-    <script src="../js/buscar_it.js"></script>
-  </body>
+    <div class="scrollable">
+      <table id="tablaAsignados">
+        <thead>
+          <tr>
+            <th>ID de Empleado</th>
+            <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Ubicación</th>
+            <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha Asignación</th>
+            <th>Fecha Cambio</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="tab-content" id="historial">
+    <div class="busqueda-exportar" style="justify-content: flex-end;">
+      <button onclick="exportarExcel('tablaHistorial')" class="excel-btn" title="Exportar tabla a Excel">
+        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+        <span>Exportar a Excel</span>
+      </button>
+    </div>
+    <div class="scrollable">
+      <table id="tablaHistorial">
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortTable(0, 'tablaHistorial')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Empleado Anterior</th>
+            <th>Empleado Nuevo</th>
+            <th>Fecha Cambio</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+ 
+  <div class="tab-content" id="pendientes">
+    <div class="busqueda-exportar" style="justify-content: flex-end;">
+      <button onclick="exportarExcel('tablaPendientes')" class="excel-btn" title="Exportar tabla a Excel">
+        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+        <span>Exportar a Excel</span>
+      </button>
+    </div>
+    <div class="scrollable">
+      <table id="tablaPendientes">
+        <thead>
+          <tr>
+            <th>ID Empleado</th>
+            <th class="sortable" onclick="sortTable(1, 'tablaPendientes')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th class="sortable" onclick="sortTable(2, 'tablaPendientes')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha Asignación</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+ 
+  <div id="modalReasignar">
+    <div class="modal-content">
+      <h3>Reasignar Dispositivo</h3>
+      <label for="nuevoEmpleado">Nuevo empleado:</label>
+      <input type="text" id="nuevoEmpleado" placeholder="Nombre completo" />
+      <label for="nuevaFecha">Fecha de reasignación:</label>
+      <input type="date" id="nuevaFecha" />
+      <div style="text-align: center;">
+        <button onclick="confirmarReasignacion()">Guardar</button>
+        <button onclick="cerrarModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/buscar_it.js"></script>
+</body>
 </html>

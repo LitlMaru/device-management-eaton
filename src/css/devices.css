@@ -117,7 +117,7 @@ tr:hover {
   color: white;
 }
 #exportBtn {
-  background-color: #dc3545;
+  background-color: #cc0000;
   color: white;
   font-size: 15px;
   padding: 10px 18px;
@@ -166,7 +166,7 @@ tr:hover {
 }
 
 .controls button#exportBtn {
-  background-color: #dc3545;
+  background-color: #cc0000;
   color: white;
   position: absolute;
   top: -50px;
@@ -188,7 +188,23 @@ tr:hover {
 
 
 #exportBtn:hover {
-  background-color: #a71d2a;
+ background-color: #cc0000;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: background 0.3s ease;
+    display: flex
+;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
 }
 
 .btn-delete {
@@ -305,7 +321,7 @@ h1 {
   background-color: #218838;
 }
 
-/* Cerrar modal */
+
 .close {
   position: absolute;
   top: 12px;
@@ -323,7 +339,7 @@ h1 {
   color: #a71d2a;
 }
 
-/* Botones editar y eliminar */
+
 .btn-edit, .btn-delete {
   cursor: pointer;
   padding: 6px 14px;

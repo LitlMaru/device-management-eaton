@@ -16,9 +16,11 @@
       <input type="text" id="buscarModelo" placeholder="Buscar por modelo..." />
       <button onclick="abrirModalAgregar()">Agregar Dispositivo</button>
       <button id="exportBtn" onclick="exportarExcel()">
-        📤 Exportar a Excel
+        📤 exExportar a Excel
       </button>
     </div>
+
+    
 
     <table id="tablaDispositivos">
       <thead>
@@ -48,6 +50,10 @@
         ><br /><br />
 
         <div id="nombreSelectContainerAgregar">
+                    <div id="btnAgregarNombreContainer" class="hidden">
+            <button onclick="agregarNuevoNombre()">➕ Agregar Nombre al Select</button>
+          </div>
+
           <label for="tipoDispositivo">Nombre:</label>
           <select id="tipoDispositivo" name="tipoDispositivo" required>
             <option value="" disabled selected>Seleccione un tipo</option>
@@ -87,6 +93,10 @@
         <label>Marca:</label><input type="text" id="marcaAgregar" /><br /><br />
 
         <div id="modeloSelectContainerAgregar">
+                    <div id="btnAgregarModeloContainer" class="hidden">
+            <button onclick="agregarNuevoModelo()">➕ Agregar Modelo al Select</button>
+          </div>
+
           <label for="Modelo">Modelo:</label>
           <select id="Modelo" name="Modelo" required>
             <option value="" disabled selected>Seleccione un tipo</option>
@@ -158,17 +168,48 @@
     <script src="../js/devices.js"></script>
 
     <script>
-      function toggleNuevoAgregar() {
-        const esNuevo = document.getElementById("esNuevoAgregar").checked;
-        document.getElementById("nombreSelectContainerAgregar").style.display =
-          esNuevo ? "none" : "block";
-        document.getElementById("nombreInputContainerAgregar").style.display =
-          esNuevo ? "block" : "none";
-        document.getElementById("modeloSelectContainerAgregar").style.display =
-          esNuevo ? "none" : "block";
-        document.getElementById("modeloInputContainerAgregar").style.display =
-          esNuevo ? "block" : "none";
-      }
-    </script>
-  </body>
+  function toggleNuevoAgregar() {
+    const esNuevo = document.getElementById("esNuevoAgregar").checked;
+
+    document.getElementById("nombreSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
+    document.getElementById("nombreInputContainerAgregar").style.display = esNuevo ? "block" : "none";
+    document.getElementById("modeloSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
+    document.getElementById("modeloInputContainerAgregar").style.display = esNuevo ? "block" : "none";
+
+    // Mostrar/ocultar los botones de agregar al select
+    document.getElementById("btnAgregarNombreContainer").style.display = esNuevo ? "block" : "none";
+    document.getElementById("btnAgregarModeloContainer").style.display = esNuevo ? "block" : "none";
+  }
+
+  function agregarNuevoNombre() {
+    const nuevoNombre = document.getElementById("nombreAgregarNuevo").value.trim();
+    const select = document.getElementById("tipoDispositivo");
+
+    if (nuevoNombre !== "") {
+      const option = new Option(nuevoNombre, nuevoNombre);
+      select.add(option);
+      alert(`"${nuevoNombre}" se agregó al selector de nombres.`);
+      document.getElementById("nombreAgregarNuevo").value = "";
+    } else {
+      alert("Por favor, escribe un nombre válido.");
+    }
+  }
+
+  function agregarNuevoModelo() {
+    const nuevoModelo = document.getElementById("modeloAgregarNuevo").value.trim();
+    const select = document.getElementById("Modelo");
+
+    if (nuevoModelo !== "") {
+      const option = new Option(nuevoModelo, nuevoModelo);
+      select.add(option);
+      alert(`"${nuevoModelo}" se agregó al selector de modelos.`);
+      document.getElementById("modeloAgregarNuevo").value = "";
+    } else {
+      alert("Por favor, escribe un modelo válido.");
+    }
+  }
+</script>
+
+
+     </body>
 </html>
