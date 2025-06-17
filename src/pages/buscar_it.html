@@ -8,7 +8,279 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
- <link rel="stylesheet" href="../css/buscar_it.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #003973;
+      margin-bottom: 30px;
+    }
+
+    .tab-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+
+   
+
+    .busqueda-container input {
+      color: #666;
+      font-size: 1.2rem;
+    }
+
+
+    .tabs.segmented {
+      display: inline-flex;
+      justify-content: center;
+      border: 2px solid #003973;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .tabs.segmented .tab {
+      min-width: 200px;
+      padding: 1rem 2rem;
+      border: none;
+      background-color: white;
+      color: #003973;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .tabs.segmented .tab:not(:last-child) {
+      border-right: 1px solid #003973;
+    }
+
+    .tabs.segmented .tab.active {
+      background-color: #003973;
+      color: white;
+    }
+
+    .busqueda-exportar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .busqueda-container {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 8px 16px;
+      border-radius: 6px;
+      gap: 10px;
+      flex-grow: 1;
+      max-width: 600px;
+    }
+
+    .busqueda-container i {
+      color: #666;
+      font-size: 1.2rem;
+    }
+
+    .busqueda-container input {
+      border: none;
+      outline: none;
+      font-size: 1.1rem;
+      width: 100%;
+    }
+
+    .excel-btn {
+      background-color: #007e33;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+
+    .excel-btn:hover {
+      background-color: #005d24;
+    }
+
+    .scrollable {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      user-select: none;
+    }
+
+    thead {
+      background-color: #003973;
+      color: white;
+      cursor: default;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      position: relative;
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      padding-right: 25px;
+    }
+
+  
+    th.sortable .sort-icons {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    th.sortable .sort-icons i {
+      font-size: 10px;
+      color: #ccc;
+      line-height: 10px;
+      user-select: none;
+    }
+
+    th.sortable.asc .sort-icons i.fa-caret-up {
+      color: white;
+    }
+    th.sortable.desc .sort-icons i.fa-caret-down {
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .rojo {
+      background-color: #ffd6d6;
+      color: red;
+      font-weight: bold;
+    }
+
+    .accion-btn {
+      background-color: #003973;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+    .accion-btn:hover {
+      background-color: #002555;
+    }
+
+    /* Modal */
+    #modalReasignar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px 25px;
+      border-radius: 10px;
+      width: 350px;
+      box-sizing: border-box;
+      text-align: justify;
+      font-size: 14px;
+      color: #333;
+      user-select: none;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #003973;
+    }
+
+    .modal-content label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      padding: 8px 16px;
+      margin: 20px 10px 0 0;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+
+    .modal-content button:first-of-type {
+      background-color: #007e33;
+      color: white;
+    }
+    .modal-content button:first-of-type:hover {
+      background-color: #005d24;
+    }
+
+    .modal-content button:last-of-type {
+      background-color: #ccc;
+    }
+    .modal-content button:last-of-type:hover {
+      background-color: #aaa;
+    }
+  </style>
 </head>
 
 <body>
@@ -41,22 +313,100 @@
       </button>
     </div>
 
-      <div class="scrollable">
-        <table id="tablaAsignados">
-          <thead>
-            <tr>
-              <th>ID de Empleado</th>
-              <th>Empleado</th>
-              <th>Ubicación</th>
-              <th>Dispositivo</th>
-              <th>Fecha Asignación</th>
-              <th>Fecha Cambio</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="scrollable">
+      <table id="tablaAsignados">
+        <thead>
+          <tr>
+            <th>ID de Empleado</th>
+            <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Ubicación</th>
+            <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha Asignación</th>
+            <th>Fecha Cambio</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
+  </div>
+
+
+  <div class="tab-content" id="historial">
+    <div class="busqueda-exportar" style="justify-content: flex-end;">
+      <button onclick="exportarExcel('tablaHistorial')" class="excel-btn" title="Exportar tabla a Excel">
+        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+        <span>Exportar a Excel</span>
+      </button>
+    </div>
+    <div class="scrollable">
+      <table id="tablaHistorial">
+        <thead>
+          <tr>
+            <th class="sortable" onclick="sortTable(0, 'tablaHistorial')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Empleado Anterior</th>
+            <th>Empleado Nuevo</th>
+            <th>Fecha Cambio</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+ 
+  <div class="tab-content" id="pendientes">
+    <div class="busqueda-exportar" style="justify-content: flex-end;">
+      <button onclick="exportarExcel('tablaPendientes')" class="excel-btn" title="Exportar tabla a Excel">
+        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+        <span>Exportar a Excel</span>
+      </button>
+    </div>
+    <div class="scrollable">
+      <table id="tablaPendientes">
+        <thead>
+          <tr>
+            <th>ID Empleado</th>
+            <th class="sortable" onclick="sortTable(1, 'tablaPendientes')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th class="sortable" onclick="sortTable(2, 'tablaPendientes')">
+              Dispositivo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha Asignación</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
 
  
   <div id="modalReasignar">
@@ -73,6 +423,221 @@
     </div>
   </div>
 
-  <script src="../js/buscar_it.js"></script>
+  <script>
+   
+    const asignaciones = [
+      { idEmpleado: "001", empleado: "Ana López", ubicacion: "ICD", dispositivo: "Laptop Dell", fechaAsignacion: "2023-05-30" },
+      { idEmpleado: "002", empleado: "Carlos Ruiz", ubicacion: "MCB", dispositivo: "Tablet Samsung", fechaAsignacion: "2022-04-10" },
+      { idEmpleado: "003", empleado: "Luis Pérez", ubicacion: "MCCB", dispositivo: "Laptop HP", fechaAsignacion: "2024-06-01" },
+      { idEmpleado: "004", empleado: "Marta Gómez", ubicacion: "ICD", dispositivo: "Monitor LG", fechaAsignacion: "2023-11-15" },
+      { idEmpleado: "005", empleado: "Juan Ramírez", ubicacion: "MCB", dispositivo: "Teclado Logitech", fechaAsignacion: "2023-01-20" }
+    ];
+
+    const historial = [
+      { dispositivo: "Laptop Dell", empleadoAnterior: "Ana López", empleadoNuevo: "José Martínez", fechaCambio: "2023-12-01" },
+      { dispositivo: "Tablet Samsung", empleadoAnterior: "Carlos Ruiz", empleadoNuevo: "María Fernández", fechaCambio: "2024-01-15" }
+    ];
+
+    let dispositivoReasignar = null;
+    let ordenActual = {}; 
+
+    function showTab(tabId) {
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add("active");
+    }
+
+    function exportarExcel(tablaID) {
+      const table = document.getElementById(tablaID);
+      const wb = XLSX.utils.table_to_book(table, { sheet: "Hoja1" });
+      XLSX.writeFile(wb, tablaID + ".xlsx");
+    }
+
+    function cargarAsignaciones() {
+      const tbody = document.querySelector("#tablaAsignados tbody");
+      tbody.innerHTML = "";
+
+      asignaciones.forEach((item, index) => {
+        const tr = document.createElement("tr");
+
+        const fechaAsignacion = new Date(item.fechaAsignacion);
+        const unAñoDespues = new Date(fechaAsignacion);
+        unAñoDespues.setFullYear(unAñoDespues.getFullYear() + 1);
+        const fechaActual = new Date();
+
+        let cambioTexto = "";
+        let clase = "";
+
+        if (fechaActual >= unAñoDespues) {
+          cambioTexto = "Pendiente";
+          clase = "rojo";
+        } else {
+          cambioTexto = unAñoDespues.toISOString().split("T")[0];
+        }
+
+        tr.innerHTML = `
+          <td>${item.idEmpleado}</td>
+          <td>${item.empleado}</td>
+          <td>${item.ubicacion}</td>
+          <td>${item.dispositivo}</td>
+          <td>${item.fechaAsignacion}</td>
+          <td class="${clase}">${cambioTexto}</td>
+          <td><button class="accion-btn" onclick="abrirModal(${index})">Reasignar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      cargarPendientes();
+    }
+
+    function cargarPendientes() {
+      const tbody = document.querySelector("#tablaPendientes tbody");
+      tbody.innerHTML = "";
+
+      asignaciones.forEach(item => {
+        const fechaAsignacion = new Date(item.fechaAsignacion);
+        const unAñoDespues = new Date(fechaAsignacion);
+        unAñoDespues.setFullYear(unAñoDespues.getFullYear() + 1);
+        const fechaActual = new Date();
+
+        if (fechaActual >= unAñoDespues) {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.idEmpleado}</td>
+              <td>${item.empleado}</td>
+              <td>${item.dispositivo}</td>
+              <td>${item.fechaAsignacion}</td>
+              <td class="rojo">Pendiente</td>
+            </tr>
+          `;
+        }
+      });
+    }
+
+    function cargarHistorial() {
+      const tbody = document.querySelector("#tablaHistorial tbody");
+      tbody.innerHTML = "";
+      historial.forEach(h => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${h.dispositivo}</td>
+            <td>${h.empleadoAnterior}</td>
+            <td>${h.empleadoNuevo}</td>
+            <td>${h.fechaCambio}</td>
+          </tr>
+        `;
+      });
+    }
+
+ 
+    function filtrarTabla() {
+      const texto = document.getElementById("busqueda").value.toLowerCase();
+      document.querySelectorAll("#tablaAsignados tbody tr").forEach(fila => {
+        const contenido = fila.textContent.toLowerCase();
+        fila.style.display = contenido.includes(texto) ? "" : "none";
+      });
+    }
+
+    function abrirModal(index) {
+      dispositivoReasignar = index;
+     
+      document.getElementById("nuevoEmpleado").value = "";
+      document.getElementById("nuevaFecha").value = "";
+      document.getElementById("modalReasignar").style.display = "flex";
+    }
+
+    function cerrarModal() {
+      dispositivoReasignar = null;
+      document.getElementById("modalReasignar").style.display = "none";
+    }
+
+    function confirmarReasignacion() {
+      const nuevoEmpleado = document.getElementById("nuevoEmpleado").value.trim();
+      const nuevaFecha = document.getElementById("nuevaFecha").value;
+
+      if (!nuevoEmpleado) {
+        alert("Por favor ingresa el nombre del nuevo empleado.");
+        return;
+      }
+      if (!nuevaFecha) {
+        alert("Por favor ingresa la fecha de reasignación.");
+        return;
+      }
+
+     
+      const item = asignaciones[dispositivoReasignar];
+
+    
+      historial.push({
+        dispositivo: item.dispositivo,
+        empleadoAnterior: item.empleado,
+        empleadoNuevo: nuevoEmpleado,
+        fechaCambio: nuevaFecha
+      });
+
+     
+      item.empleado = nuevoEmpleado;
+      item.fechaAsignacion = nuevaFecha;
+
+      cargarAsignaciones();
+      cargarHistorial();
+      cerrarModal();
+    }
+
+   
+    function sortTable(colIndex, tablaID) {
+      const table = document.getElementById(tablaID);
+      const tbody = table.tBodies[0];
+      const filas = Array.from(tbody.rows);
+
+    
+      if (!ordenActual[tablaID]) ordenActual[tablaID] = {};
+      const direccionActual = ordenActual[tablaID][colIndex] || "desc";
+      const nuevaDireccion = direccionActual === "asc" ? "desc" : "asc";
+      ordenActual[tablaID][colIndex] = nuevaDireccion;
+
+     
+      table.querySelectorAll("th.sortable").forEach(th => {
+        th.classList.remove("asc", "desc");
+      });
+
+      
+      table.querySelectorAll("th")[colIndex].classList.add(nuevaDireccion);
+
+      filas.sort((a, b) => {
+        let aTexto = a.cells[colIndex].textContent.trim().toLowerCase();
+        let bTexto = b.cells[colIndex].textContent.trim().toLowerCase();
+
+       
+        const aNum = Date.parse(aTexto);
+        const bNum = Date.parse(bTexto);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          return nuevaDireccion === "asc" ? aNum - bNum : bNum - aNum;
+        }
+
+        const aNumSimple = parseFloat(aTexto.replace(/[^0-9.-]+/g, ""));
+        const bNumSimple = parseFloat(bTexto.replace(/[^0-9.-]+/g, ""));
+        if (!isNaN(aNumSimple) && !isNaN(bNumSimple)) {
+          return nuevaDireccion === "asc" ? aNumSimple - bNumSimple : bNumSimple - aNumSimple;
+        }
+
+        if (aTexto < bTexto) return nuevaDireccion === "asc" ? -1 : 1;
+        if (aTexto > bTexto) return nuevaDireccion === "asc" ? 1 : -1;
+        return 0;
+      });
+
+     
+      tbody.innerHTML = "";
+      filas.forEach(fila => tbody.appendChild(fila));
+    }
+
+  
+    window.onload = () => {
+      cargarAsignaciones();
+      cargarHistorial();
+    };
+  </script>
 </body>
 </html>
