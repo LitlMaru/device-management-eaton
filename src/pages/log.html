@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Historial de Actividades</title>
+  <link rel="stylesheet" href="../css/log.css" />
+</head>
+<body>
+
+  <h1 id="titulo">Historial de Actividades</h1>
+
+  <div id="contenido" class="oculto">
+    <div class="filtros">
+      <div>
+        <label class="filtro-titulo">Desde:</label><br>
+        <input type="date" id="desde">
+      </div>
+      <div>
+        <label class="filtro-titulo">Hasta:</label><br>
+        <input type="date" id="hasta">
+      </div>
+      <div>
+        <label class="filtro-titulo">Usuario:</label><br>
+        <select id="filtroUsuario">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div>
+        <label class="filtro-titulo">Buscar Detalles:</label><br>
+        <input type="text" id="filtroDetalles" placeholder="Escribe aquí...">
+      </div>
+    </div>
+
+    <div class="tabla-container">
+      <table id="tablaLogs">
+        <thead>
+          <tr>
+            <th>Fecha/Hora</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Detalles</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="accesoDenegado" class="oculto">
+    <h2 style="color: red; text-align: center;">Acceso denegado. Solo el rol MASTER puede ver el historial.</h2>
+  </div>
+
+ <script src="../js/log.js"></script>
+</body>
+</html>

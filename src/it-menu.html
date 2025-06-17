@@ -9,8 +9,21 @@
   <link rel="stylesheet" href="css/it.css">
 </head>
 <body>
-  <div class="header">
-    <div class="title">EATON Device Management</div>
+
+  
+ <div class="header">
+  <div class="title" style="display: flex; align-items: center; gap: 10px;">
+    EATON Device Management
+
+    <a href="instruction.html" target="_blank" title="Ver Manual de Usuario">
+      <img 
+        src="https://cdn-icons-png.flaticon.com/512/1245/1245137.png" 
+        alt="Manual de usuario" 
+        style="width: 40px; height: 40px; cursor: pointer;"
+      />
+    </a>
+  </div>
+
     <div class="window-controls">
       <img src="../assets/minimize.svg" onclick="minimizeWindow()">
       <img id="img-full-screen" src="../assets/fullscreenmode.svg" onclick="fullScreen()">
@@ -18,7 +31,7 @@
       <img src="../assets/close.svg" onclick="closeWindow()">
     </div>
   </div>
-
+      
     <div class="main">
       <div class="sidebar">
         <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
@@ -37,6 +50,11 @@
       <div class="menu-item" onclick="loadPage('devices.html')">
         Dispositivos <img src="../assets/device.svg" alt="">
       </div>
+
+              <div class="menu-item" onclick="loadPage('log.html')">
+          Historial de Actividades <img src="../assets/history.svg" alt="">
+        </div>
+
 
       <div class="menu-item" onclick="loadPage('users-settings.html')">
         Usuarios <img src="../assets/users.svg" alt="">
