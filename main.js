@@ -10,8 +10,8 @@ const { exec } = require("child_process");
 let mainWindow;
 global.currentUser = null;
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
+function createWindow(bounds = null) {
+    const windowOptions = {
     width: 900,
     height: 600,
     frame: true,
@@ -22,8 +22,13 @@ function createWindow() {
       devTools: true,
       nodeIntegration: false,
     },
-  });
+  }
 
+  if (bounds) {
+    Object.assign(windowOptions, bounds);
+  }
+
+  mainWindow = new BrowserWindow(windowOptions);
   mainWindow.webContents.session
     .clearCache()
     .then(() => console.log("Succesfully emptied cache"))
@@ -126,8 +131,9 @@ ipcMain.handle("get-current-user", () => {
 
 ipcMain.handle("logout", (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
+  const bounds = win.getBounds();
   win.close();
-  createWindow();
+  createWindow(bounds);
 });
 
 ipcMain.handle("register-employee", async (event, data) => {

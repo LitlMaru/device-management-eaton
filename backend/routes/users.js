@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
-// Get users
+// Consultar usuarios
 router.get("/", async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add a new user
+// Agregar nuevo usuario
 router.post("/", async (req, res) => {
   const { username, clave, rol, ubicacion } = req.body;
   try {
@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update user (allowed fields: password, role, location)
+// Actualizar usuario (campos permitidos: clave, rol, ubicacion)
 router.put("/", async (req, res) => {
   const { idUsuario, campo, valor } = req.body;
 
@@ -63,7 +63,7 @@ router.put("/", async (req, res) => {
   }
 });
 
-// Delete user (by username)
+// Eliminar usuario (por nombre de usuario)
 router.delete("/:username", async (req, res) => {
   const { username } = req.params;
   try {

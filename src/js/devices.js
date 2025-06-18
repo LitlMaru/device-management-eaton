@@ -258,6 +258,6 @@ function exportarExcel() {
   XLSX.writeFile(wb, "InventarioDispositivos.xlsx");
 }
 
-    document.getElementById("buscarNombre").addEventListener("input", renderTabla);
-    document.getElementById("buscarMarca").addEventListener("input", renderTabla);
-    document.getElementById("buscarModelo").addEventListener("input", renderTabla);
+document.getElementById("buscarNombre").addEventListener("input", renderTabla);
+document.getElementById("buscarMarca").addEventListener("input", renderTabla);
+document.getElementById("buscarModelo").addEventListener("input", renderTabla);

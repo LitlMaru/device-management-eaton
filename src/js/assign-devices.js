@@ -1,4 +1,3 @@
-// Get backend variables (HOST, PORT, currentUser)
 
 const ElectronAPI = (() => {
   function sendMessage(action, data) {

@@ -30,43 +30,12 @@ body {
 ::-webkit-scrollbar-button {
   display: none;
 }
-header {
-  background: linear-gradient(90deg, #004e92, #000428);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.header-left h2 {
-  margin: 0;
-  font-size: 28px;
-}
-
-.header-right button {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: white;
-  margin-left: 12px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.header-right button:hover {
-  transform: scale(1.2);
-}
-
-.contenedor-principal {
-  max-width: 1200px;
-  height: 100%;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
+ body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
 
     h1 {
       text-align: center;
@@ -208,7 +177,7 @@ header {
       padding-right: 25px;
     }
 
-   
+  
     th.sortable .sort-icons {
       position: absolute;
       right: 8px;
@@ -261,7 +230,7 @@ header {
       background-color: #002555;
     }
 
- 
+    /* Modal */
     #modalReasignar {
       display: none;
       position: fixed;

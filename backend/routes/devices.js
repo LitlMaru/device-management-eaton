@@ -3,7 +3,7 @@ const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 const { pool } = require("mssql");
 
-// Get available devices by device type
+// Obtener los dispositivos disponibles de un tipo
 router.post("/get-available-devices", async (req, res) => {
   try {
     console.log("BODY: ", req.body);
@@ -40,7 +40,7 @@ router.post("/get-available-devices", async (req, res) => {
   }
 });
 
-// Construct the query to filter devices in Device Table
+// Construccion de la consulta para filtrar dispositivos 
 async function getDevicesFiltered(filtros, ubicacion) {
   try {
     const pool = await poolPromise;
@@ -86,7 +86,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
   }
 }
 
-// Get devices
+// Consultar todos los dispositivos
 router.post("/", async (req, res) => {
    console.log("devices");
   const filtros = {
@@ -109,7 +109,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get model list of a device type
+// Obtener los modelos para un tipo de dispositivo
 router.get("/models/:tipoDispositivo", async (req, res) => {
   const tipoDispositivo = req.params["tipoDispositivo"];
   const ubicacion = req.headers["x-ubicacion"];
@@ -130,7 +130,7 @@ router.get("/models/:tipoDispositivo", async (req, res) => {
   }
 });
 
-// Add new devices
+// Agregar nuevos dispositivos
 router.post("/add-device", async (req, res) => {
   const { tipoID, marca, modeloID, cantidad, serialNumbers } = req.body;
   const ubicacion = req.headers["x-ubicacion"]; 
@@ -166,7 +166,7 @@ router.post("/add-device", async (req, res) => {
   }
 });
 
-// Update a device info
+// Actualizar informacion de un dispositivo
 router.put("/", async (req, res) => {
   const { IDDispositivo, tipoDispositivo, marca, modelo, serialNumber } = req.body;
 
@@ -221,7 +221,7 @@ router.put("/", async (req, res) => {
   }
 });
 
-//Delete device from database
+// Eliminar dispositivo de la base de datos
 router.delete("/:id", async (req, res) => {
   try {
     const ID_Dispositivo = req.params.id;
@@ -233,114 +233,3 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-/*
-router.post("/serialized", async (req, res) => {
-  try {
-    const { tipoDispositivo, modelo, marca, serial_number, ubicacion } = req.body;
-
-    await sql.connect(dbConfig);
-    const request = new sql.Request();
-
-    const tipoResult = await request
-      .input("tipo", sql.VarChar, tipoDispositivo)
-      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @tipo");
-    const ID_Tipo = tipoResult.recordset[0]?.ID_Tipo;
-
-    const modeloResult = await request
-      .input("modelo", sql.VarChar, modelo)
-      .query("SELECT ID_Modelo FROM Modelos WHERE Modelo = @modelo");
-    const ID_Modelo = modeloResult.recordset[0]?.ID_Modelo;
-
-    if (!ID_Tipo || !ID_Modelo) {
-      return res.status(400).json({ error: "Tipo o Modelo no encontrado" });
-    }
-
-    await request
-      .input("ID_Tipo", sql.Int, ID_Tipo)
-      .input("ID_Modelo", sql.Int, ID_Modelo)
-      .input("marca", sql.VarChar, marca)
-      .input("serial_number", sql.VarChar, serial_number)
-      .input("ubicacion", sql.VarChar, ubicacion)
-      .query(
-        `INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Serial_Number, Ubicacion)
-         VALUES (@ID_Tipo, @ID_Modelo, @marca, @serial_number, @ubicacion)`
-      );
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.post("/generic", async (req, res) => {
-  try {
-    const { tipoDispositivo, modelo, marca, cantidad, ubicacion } = req.body;
-
-    await sql.connect(dbConfig);
-    const request = new sql.Request();
-
-    const tipoResult = await request
-      .input("tipo", sql.VarChar, tipoDispositivo)
-      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @tipo");
-    const ID_Tipo = tipoResult.recordset[0]?.ID_Tipo;
-
-    const modeloResult = await request
-      .input("modelo", sql.VarChar, modelo)
-      .query("SELECT ID_Modelo FROM Modelos WHERE Modelo = @modelo");
-    const ID_Modelo = modeloResult.recordset[0]?.ID_Modelo;
-
-    if (!ID_Tipo || !ID_Modelo) {
-      return res.status(400).json({ error: "Tipo o Modelo no encontrado" });
-    }
-
-    for (let i = 0; i < cantidad; i++) {
-      await request
-        .input("ID_Tipo", sql.Int, ID_Tipo)
-        .input("ID_Modelo", sql.Int, ID_Modelo)
-        .input("marca", sql.VarChar, marca)
-        .input("ubicacion", sql.VarChar, ubicacion)
-        .query(
-          `INSERT INTO Dispositivos (ID_Tipo, ID_Modelo, Marca, Ubicacion)
-           VALUES (@ID_Tipo, @ID_Modelo, @marca, @ubicacion)`
-        );
-    }
-
-    res.json({ success: true, cantidad });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-*/
-
-/*
-router.put("/serial-number", async (req, res) => {
-  try {
-    const { id, newSerialNumber } = req.body;
-    await sql.connect(dbConfig);
-    await sql.query`UPDATE Dispositivos SET Serial_Number = ${newSerialNumber} WHERE ID_Dispositivo = ${id}`;
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-router.get("/type-id", async (req, res) => {
-  try {
-    const type = req.query.type;
-    await sql.connect(dbConfig);
-    const result = await sql
-      .request()
-      .input("type", sql.VarChar, type)
-      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @type");
-    res.json(result.recordset[0] || {});
-  } catch (err) {
-    console.error(err);
-    res.status(500).json([]);
-  }
-});
-*/
-module.exports = router;
-

@@ -1,4 +1,4 @@
- const asignaciones = [
+   const asignaciones = [
       { idEmpleado: "001", empleado: "Ana López", ubicacion: "ICD", dispositivo: "Laptop Dell", fechaAsignacion: "2023-05-30" },
       { idEmpleado: "002", empleado: "Carlos Ruiz", ubicacion: "MCB", dispositivo: "Tablet Samsung", fechaAsignacion: "2022-04-10" },
       { idEmpleado: "003", empleado: "Luis Pérez", ubicacion: "MCCB", dispositivo: "Laptop HP", fechaAsignacion: "2024-06-01" },

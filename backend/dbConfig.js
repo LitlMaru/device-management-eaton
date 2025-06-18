@@ -3,6 +3,7 @@ console.log("DB_SERVER:", process.env.DB_SERVER);
 
 const sql = require("mssql");
 
+// Configuracion de la conexion a la base de datos
 const dbConfig = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
