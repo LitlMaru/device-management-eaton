@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Manual del Sistema - EATON Device Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f4faff;
+    }
+    .header {
+      background-color: #003973;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    h2 {
+      color: #003973;
+      margin-top: 1.5rem;
+    }
+    .section {
+      padding: 1rem;
+      background: white;
+      margin: 1rem auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .img-fluid {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Guía del Sistema de Gestión EATON</h1>
+  <p>Manual de uso para el sistema EATON Device Management y Recursos Humanos</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <h2>🔐 Inicio de Sesión</h2>
+    <p>Al iniciar sesión, debes ingresar tu <strong>usuario y contraseña</strong>. Según tu rol asignado, serás redirigido a uno de los siguientes menús:</p>
+    <ul>
+      <li><strong>Usuario IT:</strong> Acceso a búsqueda y consulta.</li>
+      <li><strong>Editor IT:</strong> Puede asignar dispositivos y editar información.</li>
+      <li><strong>Master IT:</strong> Acceso completo, incluyendo configuración de usuarios e historial de actividades.</li>
+      <li><strong>Usuario HR:</strong> Solo consulta de empleados registrados.</li>
+      <li><strong>Editor HR:</strong> Puede registrar y editar datos de empleados.</li>
+      <li><strong>Administrador HR:</strong> Acceso a reportes, historial laboral y usuarios.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🖥️ Menú IT - Gestión de Dispositivos</h2>
+    <img src="IT.png" alt="Menú IT" class="img-fluid mb-3" width="100%">
+    <ul>
+      <li><strong>Asignar dispositivo:</strong> Asocia un dispositivo a un empleado.</li>
+      <li><strong>Buscar asignados:</strong> Consulta rápida de qué dispositivo tiene cada empleado.</li>
+      <li><strong>Inventario:</strong> Muestra todos los dispositivos agrupados por tipo, con alertas de stock mínimo.</li>
+      <li><strong>Dispositivos:</strong> Configura nuevos modelos, tipos o unidades disponibles.</li>
+      <li><strong>Historial de Actividades:</strong> Muestra quién hizo qué y cuándo en el sistema. Solo el rol Master puede acceder y filtrar por fecha, usuario o acción.</li>
+      <li><strong>Usuarios:</strong> (Solo Master) Gestiona los roles de acceso al sistema.</li>
+      <li><strong>Cerrar sesión:</strong> Sale del sistema.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📋 Menú HR - Gestión de Recursos Humanos</h2>
+    <img src="menu2.png" alt="Menú HR" class="img-fluid mb-3" width="100%">
+    <ul>
+      <li><strong>Registrar:</strong> Agrega un nuevo empleado con sus datos personales.</li>
+      <li><strong>Buscador:</strong> Encuentra información de empleados por nombre o ID.</li>
+      <li><strong>Configuración de usuarios:</strong> Administra accesos del personal HR (si tiene permisos).</li>
+      <li><strong>Cerrar sesión:</strong> Sale del sistema.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🧾 Historial de Actividades (Solo Master)</h2>
+    <p>Accesible solo para usuarios con rol <strong>Master IT</strong>. Aquí podrás:</p>
+    <ul>
+      <li>Ver las acciones realizadas por los usuarios.</li>
+      <li>Filtrar por rango de fechas.</li>
+      <li>Filtrar por usuario.</li>
+      <li>Buscar por detalles de la acción (ej: "Asignó", "Eliminó").</li>
+    </ul>
+    <p>La tabla muestra: <strong>Fecha/Hora, Usuario, Acción (Agregar, Eliminar, Asignar, Editar), Detalles.</strong></p>
+  </div>
+
+  <div class="section">
+    <h2>📘 Notas Finales</h2>
+    <ul>
+      <li>Los botones del sistema cambian según el rol del usuario que inicia sesión.</li>
+      <li>Los datos se conectan a una base SQL Server, y las acciones importantes se registran en una tabla de historial.</li>
+      <li>Se recomienda que cada usuario cierre sesión correctamente para evitar conflictos de permisos.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>
