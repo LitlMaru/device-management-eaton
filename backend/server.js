@@ -14,15 +14,14 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/employees", employeeRoutes);
-app.use("api/asisgnations", assignationRoutes)
+app.use("/api/assignations", assignationRoutes)
 app.use("/api/users", usersRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/devices", devicesRoutes)
-
 app.use("/api/auth", auth);
 app.use("/api/logs", log)
 
-const HOST = process.env.HOST || "http//localhost"
+const HOST = process.env.HOST || "http://localhost"
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor backend corriendo en puerto en ${HOST}:${PORT}`);

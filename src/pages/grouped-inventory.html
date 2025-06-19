@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario de Dispositivos Agrupados</title>
     <link rel="stylesheet" href="../css/grouped-inventory.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
       async
     ></script>
   </head>
   <body>
-    <div id="modalOverlay" onclick="closePanel()"></div>
+    <div class="main-content">
+ <div id="modalOverlay" onclick="closePanel()"></div>
 
     <div id="editPanel">
       <button class="close-btn" onclick="closePanel()">✖</button>
@@ -20,7 +22,6 @@
       <button id="saveLimit" class="save-btn">Guardar</button>
     </div>
 
-    <div class="container">
       <h1>Inventario de Dispositivos Agrupados</h1>
 
       <div class="search-filter">
@@ -37,7 +38,7 @@
         >
           ⚠ <strong>Alerta de Límite:</strong> Las siguientes categorías están
           por debajo de la cantidad mínima:
-          <span id="arrow-icon" style="transition: transform 0.3s">▼</span>
+           <i id="arrow-icon"  class="fas fa-caret-up"></i>
         </div>
         <ul id="alert-list"></ul>
       </div>
@@ -51,8 +52,20 @@
         <table id="inventoryTable">
           <thead>
             <tr>
-              <th>Tipo de Dispositivo</th>
-              <th>Modelo</th>
+              <th class="sortable" onclick="sortTable(1, 'inventoryTable')">
+              Tipo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+              <th class="sortable" onclick="sortTable(1, 'inventoryTable')">
+              Modelo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
               <th>Cantidad</th>
               <th>Límite</th>
               <th>Acciones</th>
@@ -103,8 +116,9 @@
             </tr>
           </tbody>
         </table>
-      </div>
     </div>
+    </div>
+   
     <script src="../js/grouped-inventory.js"></script>
   </body>
 </html>

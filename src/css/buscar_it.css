@@ -30,17 +30,22 @@ body {
 ::-webkit-scrollbar-button {
   display: none;
 }
- body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+    
+.main-content {
+  flex: 1;
+  height: 100%;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  /*border: 2px solid #003973;*/
+}
 
     h1 {
       text-align: center;
       color: #003973;
       margin-bottom: 30px;
+      font-weight: bold;
     }
 
     .tab-container {

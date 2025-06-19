@@ -1,11 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
-const { pool } = require("mssql");
 
-
-
-//Reassign devices from an old employee to a new one (in case of a replacement from the Register view)
 //Reasignar todos los dispositivos de un empleado a otro
 router.post("/reassign-devices", async (req, res) => {
   const { empleadoOrigen, empleadoDestino } = req.body;
@@ -19,12 +15,13 @@ router.post("/reassign-devices", async (req, res) => {
 
     // Chequear si el ID del empleado destino existe
     const employeeExists = await pool.request()
-  .input("empleadoDestino", sql.Int, empleadoDestino)
-  .query(`SELECT 1 FROM Empleados WHERE ID_Empleado = @empleadoDestino`);
+      .input("empleadoDestino", sql.Int, empleadoDestino)
+      .query(`SELECT 1 FROM Empleados WHERE ID_Empleado = @empleadoDestino`);
 
-if (employeeExists.recordset.length === 0) {
-  return res.status(404).json({ success: false, message: "El empleado destino no existe." });
-}
+    if (employeeExists.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: "El empleado destino no existe." });
+    }
+
     // Consultar todos los dispositivos asignados al empleado origen
     const assignedDevices = await pool.request()
       .input("empleadoOrigen", sql.Int, empleadoOrigen)
@@ -38,7 +35,7 @@ if (employeeExists.recordset.length === 0) {
       return res.json({ success: false, message: "Este empleado no tiene dispositivos asignados." });
     }
 
-    // Iniciar una transaccion
+    // Iniciar una transacción
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
     const request = transaction.request();
@@ -46,7 +43,7 @@ if (employeeExists.recordset.length === 0) {
     for (const device of assignedDevices.recordset) {
       const idDispositivo = device.ID_Dispositivo;
 
-      // Cerrar asignacion actual del empleado origen
+      // Cerrar asignación actual
       await request
         .input("idDispositivo", sql.Int, idDispositivo)
         .input("empleadoOrigen", sql.Int, empleadoOrigen)
@@ -56,9 +53,10 @@ if (employeeExists.recordset.length === 0) {
           WHERE ID_Empleado = @empleadoOrigen AND ID_Dispositivo = @idDispositivo AND Fecha_Fin IS NULL
         `);
 
-      // Crear nueva asignacion al empleado destino
+      // Nueva asignación
       await request
         .input("empleadoDestino", sql.Int, empleadoDestino)
+        .input("idDispositivo", sql.Int, idDispositivo) // <-- esto también faltaba
         .query(`
           INSERT INTO DispositivosAsignados (ID_Empleado, ID_Dispositivo, Fecha_Inicio)
           VALUES (@empleadoDestino, @idDispositivo, GETDATE())
@@ -77,79 +75,67 @@ if (employeeExists.recordset.length === 0) {
 
 // Reasignar unico dispositivo de un empleado a otro
 router.post("/reassign", async (req, res) => {
-  const {empleadoOrigen, empleadoDestino, ID_Dispositivo, Fecha_Asignacion} = req.body;
-  const ubicacion = req.headers["x-ubicacion"] ;
-  
+  const { empleadoOrigen, empleadoDestino, ID_Dispositivo } = req.body;
+  const ubicacion = req.headers["x-ubicacion"];
+
   try {
-    let ID_Empleado;
+    const pool = await poolPromise;
 
-    // Validar si es ID numérico o nombre
-    if (Number.isInteger(Number(Info_empleado))) {
-      ID_Empleado = Info_empleado;
-    } else {
-      const result = await pool
-        .request()
-        .input("Nombre", sql.VarChar, Info_empleado)
-        .query("SELECT ID_Empleado FROM Empleados WHERE Nombre = @Nombre");
+    // 1. Cerrar asignación anterior
+    await pool.request()
+      .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
+      .input("empleadoOrigen", sql.Int, empleadoOrigen)
+      .query(`
+        UPDATE DispositivosAsignados
+        SET Fecha_Fin = GETDATE()
+        WHERE ID_Empleado = @empleadoOrigen 
+          AND ID_Dispositivo = @ID_Dispositivo 
+          AND Fecha_Fin IS NULL
+      `);
 
-      ID_Empleado = result.recordset[0]?.ID_Empleado;
-      if (!ID_Empleado) {
-        return res.status(404).json({ error: "Empleado no encontrado" });
-      }
-    }
+    // 2. Insertar nueva asignación
+    await pool.request()
+      .input("ID_Empleado", sql.Int, empleadoDestino)
+      .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
+      .input("Ubicacion", sql.VarChar, ubicacion)
+      .query(`
+        INSERT INTO DispositivosAsignados 
+        (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Fin, Ubicacion)
+        VALUES (@ID_Empleado, @ID_Dispositivo, GETDATE(), NULL, @Ubicacion)
+      `);
 
-    // Por cada dispositivo, insertar asignación y cambiar estado
-      await pool.request()
-        .input("ID_Empleado", sql.Int, empleadoDestino)
-        .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
-        .input("Fecha_Asignacion", sql.Date, Fecha_Asignacion)
-        .input("Fecha_Cambio", sql.Date, Fecha_Cambio)
-        .input("Ubicacion", sql.VarChar, ubicacion)
-        .query(`
-          INSERT INTO DispositivosAsignados 
-          (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Fin, Ubicacion)
-          VALUES (@ID_Empleado, @ID_Dispositivo, @Fecha_Asignacion, null, @Ubicacion)
-        `);
+    // 3. Cambiar estado del dispositivo
+    await pool.request()
+      .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
+      .query(`
+        UPDATE Dispositivos
+        SET Estado = 'Asignado'
+        WHERE ID_Dispositivo = @ID_Dispositivo
+      `);
 
-    // Cambiar el estado del dispositivo a Asignado
-      await pool.request()
-        .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
-        .query(`
-          UPDATE Dispositivos
-          SET Estado = 'Asignado'
-          WHERE ID_Dispositivo = @ID_Dispositivo
-        `);
-
-    // Establecer la fecha de fin para el empleado anterior
-      await pool.request()
-        .input("idDispositivo", sql.Int, idDispositivo)
-        .input("empleadoOrigen", sql.Int, empleadoOrigen)
-        .query(`
-          UPDATE DispositivosAsignados
-          SET Fecha_Fin = GETDATE()
-          WHERE ID_Empleado = @empleadoOrigen AND ID_Dispositivo = @idDispositivo AND Fecha_Fin IS NULL
-        `);
+    res.json({ success: true, message: "Dispositivo reasignado con éxito." });
 
   } catch (error) {
-    console.error("Error al asignar dispositivos:", error.message);
-    res.status(500).json({ error: error.message });
+    console.error("Error al asignar dispositivo:", error.message);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
 
+
 //Consultar los empleados a los cuales un dispositivo ha sido asignado ahora o antes
 router.get("/employees-assigned", async (req, res) => {
-  const ID_DIspositivo = req.query.ID_Dispositivo;
+  const ID_Dispositivo = req.query.ID_Dispositivo;
   try{
     const pool = await poolPromise;
-    const result = pool.request()
-      .input("ID_Dispositivo", sql.Int, ID_DIspositivo)
+    const result = await pool.request()
+      .input("ID_Dispositivo", sql.Int, ID_Dispositivo)
       .query(`
         SELECT 
     e.ID_Empleado, 
     e.Nombre as Empleado, 
     t.Tipo AS TipoDispositivo,    
-    i.Marca
+    i.Marca,
     i.Serial_Number, 
     d.Fecha_asignacion, 
     d.Fecha_Fin
@@ -172,33 +158,38 @@ res.json(result.recordset);
 router.post("/devices", async (req, res) => {
   const { employeeInfo } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
+
+  if (!employeeInfo) {
+    return res.status(400).json({ success: false, message: "Falta información del empleado" });
+  }
+
   try {
     const pool = await poolPromise;
-    const request = pool
-      .request()
+    const request = pool.request()
       .input("employeeInfoID", sql.VarChar, `${employeeInfo}%`)
       .input("employeeInfoName", sql.VarChar, `%${employeeInfo}%`)
       .input("ubicacion", sql.VarChar, ubicacion);
 
     const result = await request.query(`
-       SELECT 
-    e.ID_Empleado, 
-    e.Nombre, 
-    t.Tipo AS TipoDispositivo,    
-    i.Marca
-    i.Serial_Number, 
-    d.Fecha_asignacion, 
-    d.Fecha_Fin
-  FROM Dispositivos i
-  INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo
-  INNER JOIN Empleados e ON e.ID_Empleado = d.ID_Empleado
-  INNER JOIN TiposDispositivos t ON i.ID_Tipo = t.ID_Tipo  
-  WHERE (e.ID_Empleado LIKE @employeeInfoID OR e.Nombre LIKE @employeeInfoName)
-    AND i.Ubicacion = @ubicacion AND d.Fecha_Fin IS NULL
+      SELECT 
+        e.ID_Empleado, 
+        e.Nombre, 
+        t.Tipo AS TipoDispositivo,    
+        i.Marca,
+        i.Serial_Number, 
+        d.Fecha_Asignacion, 
+        d.Fecha_Fin
+      FROM Dispositivos i
+      INNER JOIN DispositivosAsignados d ON i.ID_Dispositivo = d.ID_Dispositivo
+      INNER JOIN Empleados e ON e.ID_Empleado = d.ID_Empleado
+      INNER JOIN TiposDispositivos t ON i.ID_Tipo = t.ID_Tipo  
+      WHERE (e.ID_Empleado LIKE @employeeInfoID OR e.Nombre LIKE @employeeInfoName)
+        AND i.Ubicacion = @ubicacion 
+        AND d.Fecha_Fin IS NULL
     `);
 
-    console.log(result.recordset);
     const formatDate = (date) => {
+      if (!date) return null;
       const d = new Date(date);
       const yyyy = d.getFullYear();
       const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -208,8 +199,8 @@ router.post("/devices", async (req, res) => {
 
     const formattedData = result.recordset.map((row) => ({
       ...row,
-      Fecha_asignacion: formatDate(row.Fecha_asignacion),
-      Fecha_cambio: formatDate(row.Fecha_cambio),
+      Fecha_Asignacion: formatDate(row.Fecha_Asignacion),
+      Fecha_Fin: formatDate(row.Fecha_Fin),
     }));
 
     res.json({ success: true, data: formattedData });
@@ -220,18 +211,23 @@ router.post("/devices", async (req, res) => {
 });
 
 
+
 // Asignar dispositivos a un empleado
 router.post("/assign-devices", async (req, res) => {
-  const pool = await poolPromise;
-  const { Info_empleado, dispositivos, Fecha_Asignacion, Fecha_Cambio } = req.body;
+  const { Info_empleado, dispositivos, Fecha_Asignacion } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
 
+  if (!Info_empleado || !Array.isArray(dispositivos) || dispositivos.length === 0 || !Fecha_Asignacion) {
+    return res.status(400).json({ success: false, message: "Faltan datos requeridos." });
+  }
+
   try {
+    const pool = await poolPromise;
     let ID_Empleado;
 
-    // Validar si es ID numérico o nombre
+    // Validar si es ID o nombre
     if (Number.isInteger(Number(Info_empleado))) {
-      ID_Empleado = Info_empleado;
+      ID_Empleado = Number(Info_empleado);
     } else {
       const result = await pool
         .request()
@@ -244,21 +240,24 @@ router.post("/assign-devices", async (req, res) => {
       }
     }
 
-    // Por cada dispositivo, insertar asignación y cambiar estado
+    // Iniciar transacción
+    const transaction = new sql.Transaction(pool);
+    await transaction.begin();
+    const request = transaction.request();
+
     for (const id of dispositivos) {
-      await pool.request()
+      await request
         .input("ID_Empleado", sql.Int, ID_Empleado)
         .input("ID_Dispositivo", sql.Int, id)
         .input("Fecha_Asignacion", sql.Date, Fecha_Asignacion)
-        .input("Fecha_Cambio", sql.Date, Fecha_Cambio)
         .input("Ubicacion", sql.VarChar, ubicacion)
         .query(`
           INSERT INTO DispositivosAsignados 
           (ID_Empleado, ID_Dispositivo, Fecha_Asignacion, Fecha_Fin, Ubicacion)
-          VALUES (@ID_Empleado, @ID_Dispositivo, @Fecha_Asignacion, null, @Ubicacion)
+          VALUES (@ID_Empleado, @ID_Dispositivo, @Fecha_Asignacion, NULL, @Ubicacion)
         `);
 
-      await pool.request()
+      await request
         .input("ID_Dispositivo", sql.Int, id)
         .query(`
           UPDATE Dispositivos
@@ -267,7 +266,9 @@ router.post("/assign-devices", async (req, res) => {
         `);
     }
 
+    await transaction.commit();
     res.json({ success: true, cantidad: dispositivos.length });
+
   } catch (error) {
     console.error("Error al asignar dispositivos:", error.message);
     res.status(500).json({ error: error.message });
