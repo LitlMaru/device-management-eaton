@@ -15,6 +15,7 @@ body {
   min-height: 100vh;
   background: linear-gradient(to right, #e9f0f7, #f7fbff);
 }
+
 .header {
   background-color: #003973;
   color: white;
@@ -28,16 +29,30 @@ body {
   width: 100%;
   -webkit-app-region: drag;
 }
+
 .title {
   font-size: 20px;
   font-weight: bold;
 }
+
+.guide-icon{
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.guide-icon:hover{
+  transform: scale(1.1);
+  filter: brightness(0.8);
+}
+
 .window-controls i {
   cursor: pointer;
   font-size: 18px;
   margin-left: 15px;
   transition: transform 0.3s ease, color 0.3s;
 }
+
 .window-controls i:hover {
   color: #ccc;
   transform: scale(1.1);

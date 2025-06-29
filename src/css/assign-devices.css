@@ -189,10 +189,17 @@ select:focus {
   color: #003973;
 }
 
-.scrollable {
-  overflow-x: scroll;
-  min-width: 400px;
-}
+  .scrollable {
+      position: relative;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 10px;
+        scrollbar-gutter: stable both-edges;
+      padding-right: 10px;
+      margin-bottom: 2rem;
+    }
 
 table {
   width: 100%;

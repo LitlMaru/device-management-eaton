@@ -17,6 +17,7 @@
     delete entregas[empleadoId]; 
     alert("Empleado eliminado correctamente.");
   }
+    window.focus();
 }
 
     let currentEmpleadoId = null;

@@ -1,19 +1,27 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
     }
 
+    .main-content {
+      padding: 2rem;
+    }
     h1 {
       text-align: center;
       color: #003973;
+      margin-bottom: 2rem;
     }
 
     .filtros {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 2rem;
       justify-content: center;
     }
 

@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario de Dispositivos</title>
     <link rel="stylesheet" href="../css/devices.css" />
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   </head>
   <body>
-    <h1>Inventario de Dispositivos</h1>
-
+    <div class="main-content">
+ <h1>Inventario de Dispositivos</h1>
     <div class="controls">
-      <input type="text" id="buscarNombre" placeholder="Buscar por nombre..." />
+      <input type="text" id="buscarNombre" placeholder="Buscar por tipo..." />
       <input type="text" id="buscarMarca" placeholder="Buscar por marca..." />
       <input type="text" id="buscarModelo" placeholder="Buscar por modelo..." />
       <input
@@ -21,32 +22,57 @@
       />
       <button onclick="abrirModalAgregar()">Agregar Dispositivo</button>
       <button onclick="openDeleteModal()">Eliminar Dispositivos</button>
-      <button id="exportBtn" onclick="exportarExcel()">
-        📤 exExportar a Excel
-      </button>
     </div>
-
-    
+     <button id="exportBtn" onclick="exportarExcel()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="white"  viewBox="0 0 50 50" width="24" height="24"><path d="M 28.8125 0.03125 L 0.8125 5.34375 C 0.339844 5.433594 0 5.863281 0 6.34375 L 0 43.65625 C 0 44.136719 0.339844 44.566406 0.8125 44.65625 L 28.8125 49.96875 C 28.875 49.980469 28.9375 50 29 50 C 29.230469 50 29.445313 49.929688 29.625 49.78125 C 29.855469 49.589844 30 49.296875 30 49 L 30 1 C 30 0.703125 29.855469 0.410156 29.625 0.21875 C 29.394531 0.0273438 29.105469 -0.0234375 28.8125 0.03125 Z M 32 6 L 32 13 L 34 13 L 34 15 L 32 15 L 32 20 L 34 20 L 34 22 L 32 22 L 32 27 L 34 27 L 34 29 L 32 29 L 32 35 L 34 35 L 34 37 L 32 37 L 32 44 L 47 44 C 48.101563 44 49 43.101563 49 42 L 49 8 C 49 6.898438 48.101563 6 47 6 Z M 36 13 L 44 13 L 44 15 L 36 15 Z M 6.6875 15.6875 L 11.8125 15.6875 L 14.5 21.28125 C 14.710938 21.722656 14.898438 22.265625 15.0625 22.875 L 15.09375 22.875 C 15.199219 22.511719 15.402344 21.941406 15.6875 21.21875 L 18.65625 15.6875 L 23.34375 15.6875 L 17.75 24.9375 L 23.5 34.375 L 18.53125 34.375 L 15.28125 28.28125 C 15.160156 28.054688 15.035156 27.636719 14.90625 27.03125 L 14.875 27.03125 C 14.8125 27.316406 14.664063 27.761719 14.4375 28.34375 L 11.1875 34.375 L 6.1875 34.375 L 12.15625 25.03125 Z M 36 20 L 44 20 L 44 22 L 36 22 Z M 36 27 L 44 27 L 44 29 L 36 29 Z M 36 35 L 44 35 L 44 37 L 36 37 Z"/></svg>     
+     Exportar a Excel
+      </button>
 
     <div class="scrollable">
       <table id="tablaDispositivos">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Tipo</th>
+            <th class="sortable" onclick="sortTable(0, 'tablaDispositivos')">
+              ID
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th class="sortable" onclick="sortTable(1, 'tablaDispositivos')">
+              Tipo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
             <th>Marca</th>
-            <th>Modelo</th>
-            <th>Serial</th>
+            <th class="sortable" onclick="sortTable(3, 'tablaDispositivos')">
+              Modelo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th class="sortable" onclick="sortTable(4, 'tablaDispositivos')">
+              Serie
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+    </div>
+   
 
     <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()">
       <div class="modal-content" id="modal-content" onclick="event.stopPropagation()">
-        <!-- Modal content here -->
+        <!-- Contenido del modal -->
       </div>
     </div>
 
@@ -54,45 +80,16 @@
       <span class="close" onclick="cerrarModal()">×</span>
       <h3>Agregar Dispositivos</h3>
 
-        <label
-          ><input
-            type="checkbox"
-            id="esNuevoAgregar"
-            onchange="toggleNuevoAgregar()"
-          />
-          ¿Es un dispositivo nuevo?</label
-        ><br /><br />
-
-        <div id="nombreSelectContainerAgregar">
-          <label for="tipoDispositivo">Nombre:</label>
-          <select id="tipoDispositivo" name="tipoDispositivo" required>
-            <option value="" disabled selected>Seleccione un tipo</option>
-            <option value="Monitor">Monitor</option>
-            <option value="Mouse">Mouse</option>
-            <option value="Teclado">Teclado</option>
-            <option value="Headset">Headset</option>
-            <option value="Cargador">Cargador</option>
-            <option value="Desktop">Desktop</option>
-            <option value="Mini Desktop">Mini Desktop</option>
-            <option value="Cable">Cable</option>
-            <option value="Dokin">Dokin</option>
-            <option value="Bateria de Laptop">Bateria de Laptop</option>
-            <option value="Bateria de UPS">Bateria de UPS</option>
-            <option value="Memoria Incrustada">Memoria Incrustada</option>
-            <option value="UPS">UPS</option>
-            <option value="Cable DVI">Cable DVI</option>
-            <option value="Tablet">Tablet</option>
-            <option value="Adaptador">Adaptador</option>
-            <option value="PowerCord">PowerCord</option>
-            <option value="FacePlate">FacePlate</option>
-            <option value="Jack Rj45">Jack Rj45</option>
-            <option value="Scanner">Scanner</option>
-            <option value="Charger">Charger</option>
-            <option value="Tóner">Tóner</option>
-            <option value="Display Port">Display Port</option>
-            <option value="Serial">Serial</option>
-            <option value="USB">USB</option>
-          </select>
+      <!-- Tipo de dispositivo -->
+      <div id="nombreSelectContainerAgregar">
+        <label for="tipoDispositivo">Tipo:</label>
+        <select id="tipoDispositivo" name="tipoDispositivo" required>
+          <option value="" disabled selected>Seleccione un tipo</option>
+        </select>
+        <div class="button-wrap">
+          <button type="button" onclick="mostrarInputNuevoTipo()">
+            Agregar tipo
+          </button>
         </div>
       </div>
       <br />
@@ -108,30 +105,16 @@
 
       <label>Marca:</label><input type="text" id="marcaAgregar" /><br />
 
-        <div id="modeloSelectContainerAgregar">
-          <label for="Modelo">Modelo:</label>
-          <select id="Modelo" name="Modelo" required>
-            <option value="" disabled selected>Seleccione un tipo</option>
-            <option value="XPS 13">XPS 13</option>
-            <option value="MacBook Pro">MacBook Pro</option>
-            <option value="Pavilion 15">Pavilion 15</option>
-            <option value="Ergonómico">Ergonómico</option>
-            <option value="Estándar">Estándar</option>
-            <option value="Inalámbrico">Inalámbrico</option>
-            <option value='17in"'>17in"</option>
-            <option value='22in"'>22in"</option>
-            <option value='24in"'>24in"</option>
-            <option value='5in"'>5in"</option>
-            <option value="Punta Fina">Punta Fina</option>
-            <option value="Punta Ancha">Punta Ancha</option>
-            <option value="Tipo C">Tipo C</option>
-            <option value="A - B">A - B</option>
-            <option value="Broad Tip">Broad Tip</option>
-            <option value="MP C6003">MP C6003</option>
-            <option value="SP8400A">SP8400A</option>
-            <option value="MP6054">MP6054</option>
-            <option value="M. C6000">M. C6000</option>
-          </select>
+      <!-- Modelo -->
+      <div id="modeloSelectContainerAgregar">
+        <label for="Modelo">Modelo:</label>
+        <select id="Modelo" name="Modelo" required>
+          <option value="" disabled selected>Seleccione un modelo</option>
+        </select>
+        <div class="button-wrap">
+          <button type="button" onclick="mostrarInputNuevoModelo()">
+            Agregar modelo
+          </button>
         </div>
       </div>
       <br />
@@ -194,7 +177,7 @@
         <label>Serial:</label
         ><input type="text" id="editarSerial" /><br /><br />
 
-        <label>Nombre:</label>
+        <label>Tipo:</label>
         <select
           id="editarTipoDispositivo"
           name="editarTipoDispositivo"
@@ -215,48 +198,17 @@
     <script src="../js/devices.js"></script>
 
     <script>
-  function toggleNuevoAgregar() {
-    const esNuevo = document.getElementById("esNuevoAgregar").checked;
-
-    document.getElementById("nombreSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
-    document.getElementById("nombreInputContainerAgregar").style.display = esNuevo ? "block" : "none";
-    document.getElementById("modeloSelectContainerAgregar").style.display = esNuevo ? "none" : "block";
-    document.getElementById("modeloInputContainerAgregar").style.display = esNuevo ? "block" : "none";
-
-    // Mostrar/ocultar los botones de agregar al select
-    document.getElementById("btnAgregarNombreContainer").style.display = esNuevo ? "block" : "none";
-    document.getElementById("btnAgregarModeloContainer").style.display = esNuevo ? "block" : "none";
-  }
-
-  function agregarNuevoNombre() {
-    const nuevoNombre = document.getElementById("nombreAgregarNuevo").value.trim();
-    const select = document.getElementById("tipoDispositivo");
-
-    if (nuevoNombre !== "") {
-      const option = new Option(nuevoNombre, nuevoNombre);
-      select.add(option);
-      alert(`"${nuevoNombre}" se agregó al selector de nombres.`);
-      document.getElementById("nombreAgregarNuevo").value = "";
-    } else {
-      alert("Por favor, escribe un nombre válido.");
-    }
-  }
-
-  function agregarNuevoModelo() {
-    const nuevoModelo = document.getElementById("modeloAgregarNuevo").value.trim();
-    const select = document.getElementById("Modelo");
-
-    if (nuevoModelo !== "") {
-      const option = new Option(nuevoModelo, nuevoModelo);
-      select.add(option);
-      alert(`"${nuevoModelo}" se agregó al selector de modelos.`);
-      document.getElementById("modeloAgregarNuevo").value = "";
-    } else {
-      alert("Por favor, escribe un modelo válido.");
-    }
-  }
-</script>
-
-
-     </body>
+      function toggleNuevoAgregar() {
+        const esNuevo = document.getElementById("esNuevoAgregar").checked;
+        document.getElementById("nombreSelectContainerAgregar").style.display =
+          esNuevo ? "none" : "block";
+        document.getElementById("nombreInputContainerAgregar").style.display =
+          esNuevo ? "block" : "none";
+        document.getElementById("modeloSelectContainerAgregar").style.display =
+          esNuevo ? "none" : "block";
+        document.getElementById("modeloInputContainerAgregar").style.display =
+          esNuevo ? "block" : "none";
+      }
+    </script>
+  </body>
 </html>

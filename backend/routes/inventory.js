@@ -19,6 +19,26 @@ router.get("/device-types", async (req, res) => {
   }
 });
 
+// Obtener los modelos para un tipo de dispositivo
+router.get("/models", async (req, res) => {
+  const tipoDispositivo = req.query.IDTipo;
+  const ubicacion = req.headers["x-ubicacion"];
+  try {
+    const pool = await poolPromise;
+    const result = await pool
+      .request()
+      .input("Ubicacion", sql.VarChar, ubicacion)
+      .input("TipoDispositivo", sql.Int, tipoDispositivo)
+      .query(
+        `SELECT m.ID_Modelo, m.Modelo from Modelos m inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.ID_Tipo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
+      );
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Agregar nuevo tipo de dispositivo
 router.post("/add-type", async (req, res) => {
   const {tipoDispositivo} = req.body;
@@ -100,9 +120,6 @@ router.get("/grouped-inventory", async (req, res) => {
       GROUP BY td.Tipo, m.Modelo, m.ID_Modelo, d.Marca, m.Limite
       ORDER BY td.Tipo, m.Modelo, d.Marca
     `;
-
-
-    console.log(query)
 
     const result = await request.query(query);
     res.json(result.recordset);

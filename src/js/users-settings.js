@@ -148,8 +148,11 @@ async function agregarUsuario() {
 
 async function eliminarUsuario(username) {
   if (!confirm(`¿Estás seguro de que deseas eliminar al usuario "${username}"?`)) {
+    window.focus();
     return;
   }
+   window.focus();
+ 
 
   try {
     const response = await fetch(`${HOST}:${PORT}/api/users/${encodeURIComponent(username)}`, {

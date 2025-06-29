@@ -593,7 +593,17 @@ window.addEventListener('focus', () => {
   console.log('Window focused');
 });
 
-/*
-setInterval(() => {
-  iframe.contentWindow.focus();
-}, 1000);*/
+document.addEventListener("keydown", function(event) {
+  if (event.ctrlKey && event.key === "s") {
+    event.preventDefault();
+    const ifr = document.querySelector(".content");
+    ifr.contentWindow.focus();
+    ifr.contentDocument.querySelector("#idNuevoEmpleado").focus()
+
+// Then focus the input inside
+const input = iframe.contentDocument.querySelector("input");
+if (input) {
+  input.focus();
+  }
+}
+});

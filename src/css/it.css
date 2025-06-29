@@ -4,6 +4,17 @@
   padding: 0;
 }
 
+.guide-icon{
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.guide-icon:hover{
+  transform: scale(1.1);
+  filter: brightness(0.8);
+}
+
 :root {
   --header-height: 50px;
   --sidebar-width: 270px;

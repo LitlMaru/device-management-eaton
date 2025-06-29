@@ -44,6 +44,7 @@ let ascending = true;
         employees.splice(index, 1);
         renderTable(employees);
       }
+      window.focus();
     }
   }
 

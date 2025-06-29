@@ -1,11 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
+  
   font-family: "Segoe UI", sans-serif;
   margin: 0;
-  background: #f4f7fc;
+  background: #fff;
   overflow-x: hidden;
 }
-html, body{
-    height: auto;
+html,
+body {
+  height: auto;
 }
 
 ::-webkit-scrollbar {
@@ -34,6 +42,7 @@ html, body{
 h1 {
   text-align: center;
   color: #003973;
+  margin-bottom: 2rem;
 }
 
 .top-bar {
@@ -41,7 +50,7 @@ h1 {
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 input[type="text"],
@@ -50,44 +59,89 @@ input[type="date"],
 select {
   padding: 0.5rem;
   width: 100%;
-  max-width: 300px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
 .agregar-btn {
-  width: 50%;
-  height: 40px;
-  background-color: #004e92;
-  padding: 0.5rem 2rem;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
   border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #004183;
   color: white;
-  font-weight: bold;
+  height: 100%;
 }
 
 .agregar-btn:hover {
-  background-color: #0264ba;
-  cursor: pointer;
+  background-color: #0058b1;
 }
 .scrollable {
-  overflow-x: scroll;
-  min-width: 400px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 10px;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
+  user-select: none;
+}
+
+thead {
+  background-color: #003973;
+  color: white;
+  cursor: default;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #003973;
+  z-index: 1;
 }
 
 th,
 td {
-  padding: 14px;
-  text-align: center;
+  padding: 10px;
+  text-align: left;
   border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 25px;
+}
+
+th.sortable .sort-icons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+th.sortable .sort-icons i {
+  font-size: 10px;
+  color: #ccc;
+  line-height: 10px;
+  user-select: none;
+}
+
+th.sortable.asc .sort-icons i.fa-caret-up {
+  color: white;
+}
+th.sortable.desc .sort-icons i.fa-caret-down {
+  color: white;
 }
 
 td[contenteditable="true"] {
@@ -101,11 +155,12 @@ td[contenteditable="true"]:hover {
   background: rgb(218, 224, 244);
 }
 
-td[contenteditable="true"]:focus{
+td[contenteditable="true"]:focus {
   background: rgb(202, 208, 229);
-  outline:none
+  outline: none;
 }
 
+/*
 th {
   background-color: #004e92;
   color: white;
@@ -113,7 +168,7 @@ th {
 
 tr:hover {
   background-color: #f0f8ff;
-}
+}*/
 
 .actions-container {
   display: flex;
@@ -122,26 +177,20 @@ tr:hover {
 }
 
 .actions-container button {
-  width: 100%;
+  width: 70%;
+  min-width: 140px;
   height: 100%;
   background-color: #004e92;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   color: white;
+  cursor: pointer;
   font-weight: bold;
 }
 
 .actions-container button:hover {
-  width: 100%;
-  height: 100%;
   background-color: #0264ba;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
 }
 .modal {
   display: none;
@@ -153,24 +202,72 @@ tr:hover {
   background-color: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
+  z-index: 2;
 }
 
 .modal-content {
-  background-color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   padding: 2rem;
-  border-radius: 10px;
-  width: 400px;
+  width: 300px;
+  z-index: 1001;
   max-height: 80%;
-  overflow-y: scroll;
-  position: relative;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  align-items: center;
+  justify-content: center;
 }
 
 .modal-content h2 {
   margin-bottom: 16px;
+}
+
+.modal-content h2 {
+  margin: 0 0 16px;
+  font-weight: bold;
+  color: #004e92;
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  transition: border 0.3s ease;
+}
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #004e92;
+  outline: none;
+}
+
+.modal-content button {
+  width: 48%;
+  height: 40px;
+  background-color: #004e92;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .form-content {

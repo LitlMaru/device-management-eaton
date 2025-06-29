@@ -22,7 +22,7 @@
 
       <!--ASIGNAR NUEVO DISPOSITIVO-->
       <div class="tab-content" id="asignar" style="display: block">
-        <form id="assign-form">
+        <div id="assign-form">
           <div class="form-group">
             <label for="employee-id">ID o Nombre del Empleado:</label>
             <input
@@ -86,7 +86,7 @@
             id="assignDevicesContainer"
             style="display: none; overflow-y: auto; overflow-x: scroll"
           >
-            <table id="assignDevicesTable">
+            <table class="assign-devices-table">
               <thead>
                 <tr>
                   <th>Marca</th>
@@ -100,13 +100,12 @@
           </div>
 
           <div class="assign-buttons-container">
- <button type="submit">Asignar</button>
-          <button onclick="generateLetter()">
-            Generar carta de compromiso
-          </button>
+            <button onclick="assignDevices()">Asignar</button>
+            <button onclick="generateLetter()">
+              Generar carta de compromiso
+            </button>
           </div>
-         
-        </form>
+        </div>
 
         <div id="result-message"></div>
       </div>
@@ -119,7 +118,17 @@
         </div>
 
         <h4>Dispositivos Asignados</h4>
-        <table id="reassignTablePreview"></table>
+        <div class="scrollable" style="display: none;">
+<table class="reassign-table-preview">
+          <thead>
+            <th>Tipo</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Serie</th>
+          </thead>
+          <tbody></tbody>
+        </table>
+        </div>
 
         <div class="form-group">
           <label>ID del Empleado a Reasignar: </label>

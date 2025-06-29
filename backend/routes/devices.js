@@ -5,7 +5,6 @@ const { sql, poolPromise } = require("../dbConfig");
 // Obtener los dispositivos disponibles de un tipo
 router.post("/get-available-devices", async (req, res) => {
   try {
-    console.log("BODY: ", req.body);
     const { deviceType } = req.body;
     const ubicacion = req.headers["x-ubicacion"];
     const pool = await poolPromise;
@@ -87,7 +86,6 @@ async function getDevicesFiltered(filtros, ubicacion) {
 
 // Consultar todos los dispositivos
 router.post("/", async (req, res) => {
-  console.log("devices");
   const filtros = {
     tipoDispositivo: req.body.tipoDispositivo || "",
     marca: req.body.marca || "",
@@ -104,27 +102,6 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
-  }
-});
-
-// Obtener los modelos para un tipo de dispositivo
-router.get("/models/:IDTipo", async (req, res) => {
-  const tipoDispositivo = req.params["IDTipo"];
-  const ubicacion = req.headers["x-ubicacion"];
-  try {
-    const pool = await poolPromise;
-    const result = await pool
-      .request()
-      .input("Ubicacion", sql.VarChar, ubicacion)
-      .input("TipoDispositivo", sql.Int, tipoDispositivo)
-      .query(
-        `SELECT m.ID_Modelo, m.Modelo from Modelos m inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.ID_Tipo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
-      );
-    console.log(result.recordset);
-    res.json(result.recordset);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
   }
 });
 
