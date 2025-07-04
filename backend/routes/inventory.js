@@ -3,38 +3,8 @@ const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 const { pool } = require("mssql");
 
-// Get available devices of a device type
-router.get("/available/:deviceType", async (req, res) => {
-  try {
-    const pool = await poolPromise;
-    const { deviceType } = req.params;
-    const ubicacion = req.headers["x-ubicacion"];
 
-    const tipo = await pool
-      .request()
-      .input("deviceType", sql.VarChar, deviceType)
-      .query("SELECT ID_Tipo FROM TiposDispositivos WHERE Tipo = @deviceType");
-
-    const ID_Tipo = tipo.recordset[0]?.ID_Tipo;
-    if (!ID_Tipo) return res.status(404).json({ error: "Tipo no encontrado" });
-
-    const result = await pool
-      .request()
-      .input("ID_Tipo", sql.Int, ID_Tipo)
-      .input("Ubicacion", sql.VarChar, ubicacion).query(`
-        SELECT ID_Dispositivo, Marca, Modelo, Serial_Number
-        FROM Dispositivos
-        WHERE ID_Tipo = @ID_Tipo AND Estado = 'Disponible' AND Ubicacion = @Ubicacion
-      `);
-
-    res.json(result.recordset);
-  } catch (error) {
-    console.error("Error al obtener dispositivos disponibles:", error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get all device types 
+// Obtener tipos de dispositivo
 router.get("/device-types", async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -49,7 +19,27 @@ router.get("/device-types", async (req, res) => {
   }
 });
 
-// Add a new device type
+// Obtener los modelos para un tipo de dispositivo
+router.get("/models", async (req, res) => {
+  const tipoDispositivo = req.query.IDTipo;
+  const ubicacion = req.headers["x-ubicacion"];
+  try {
+    const pool = await poolPromise;
+    const result = await pool
+      .request()
+      .input("Ubicacion", sql.VarChar, ubicacion)
+      .input("TipoDispositivo", sql.Int, tipoDispositivo)
+      .query(
+        `SELECT m.ID_Modelo, m.Modelo from Modelos m inner join TiposDispositivos t ON m.ID_Tipo = t.ID_Tipo WHERE m.ID_Tipo = @TipoDispositivo AND m.Ubicacion = @Ubicacion`
+      );
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Agregar nuevo tipo de dispositivo
 router.post("/add-type", async (req, res) => {
   const {tipoDispositivo} = req.body;
   
@@ -72,7 +62,7 @@ router.post("/add-type", async (req, res) => {
   }
 })
 
-//Add a new model
+// Agregar nuevo modelo
 router.post("/add-model", async (req, res) => {
  const {modelo, ID_Tipo} = req.body;
   const ubicacion = req.headers["x-ubicacion"];
@@ -99,7 +89,7 @@ router.post("/add-model", async (req, res) => {
   }
 })
 
-// Get the grouped inventory (quantities, limits of each model)
+// Consultar el inventario agrupado por modelos
 router.get("/grouped-inventory", async (req, res) => {
   const deviceType = req.query.tipoDispositivo;
   const ubicacion = req.headers["x-ubicacion"];
@@ -131,9 +121,6 @@ router.get("/grouped-inventory", async (req, res) => {
       ORDER BY td.Tipo, m.Modelo, d.Marca
     `;
 
-
-    console.log(query)
-
     const result = await request.query(query);
     res.json(result.recordset);
   } catch (error) {
@@ -143,7 +130,7 @@ router.get("/grouped-inventory", async (req, res) => {
 });
 
 
-// Update the limit of a model 
+// Actualizar la cantidad minima necesaria de un modelo
 router.put("/limit", async (req, res) => {
   const { modelo, nuevoLimite } = req.body;
 

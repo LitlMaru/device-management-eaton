@@ -32,7 +32,7 @@ const typeSelect = document.getElementById("deviceType");
 
 async function init() {
   currentUser = await ElectronAPI.invoke("get-current-user");
-  env = await ElectronAPI.getEnv();
+  const env = await ElectronAPI.getEnv();
   HOST = env.HOST;
   PORT = env.PORT;
   fillTypeSelect(typeSelect);
@@ -64,19 +64,19 @@ function toggleAlert() {
 
   if (list.style.display === "none") {
     list.style.display = "block";
-    arrow.style.transform = "rotate(180deg)";
+    arrow.style.transform = "rotate(0deg)";
   } else {
     list.style.display = "none";
-    arrow.style.transform = "rotate(0deg)";
+    arrow.style.transform = "rotate(180deg)";
   }
 }
 
-async function saveLimitHandler(){
+async function saveLimitHandler() {
   const newLimit = parseInt(document.getElementById("newLimit").value);
   if (!isNaN(newLimit) && currentRow) {
     try {
       const model = currentRow.dataset.ID_Modelo;
-      console.log(currentRow)
+      console.log(currentRow);
       await fetch(`${HOST}:${PORT}/api/inventory/limit`, {
         method: "PUT",
         headers: {
@@ -95,6 +95,49 @@ async function saveLimitHandler(){
   }
 }
 
+let ordenActual = {};
+function sortTable(colIndex, tablaID) {
+  const table = document.getElementById(tablaID);
+  const tbody = table.querySelector("tbody");
+  const filas = Array.from(tbody.rows);
+
+  if (!ordenActual[tablaID]) ordenActual[tablaID] = {};
+  const direccionActual = ordenActual[tablaID][colIndex] || "desc";
+  const nuevaDireccion = direccionActual === "asc" ? "desc" : "asc";
+  ordenActual[tablaID][colIndex] = nuevaDireccion;
+
+  table.querySelectorAll("th.sortable").forEach((th) => {
+    th.classList.remove("asc", "desc");
+  });
+
+  table.querySelectorAll("th")[colIndex].classList.add(nuevaDireccion);
+
+  filas.sort((a, b) => {
+    let aTexto = a.cells[colIndex].textContent.trim().toLowerCase();
+    let bTexto = b.cells[colIndex].textContent.trim().toLowerCase();
+
+    const aNum = Date.parse(aTexto);
+    const bNum = Date.parse(bTexto);
+    if (!isNaN(aNum) && !isNaN(bNum)) {
+      return nuevaDireccion === "asc" ? aNum - bNum : bNum - aNum;
+    }
+
+    const aNumSimple = parseFloat(aTexto.replace(/[^0-9.-]+/g, ""));
+    const bNumSimple = parseFloat(bTexto.replace(/[^0-9.-]+/g, ""));
+    if (!isNaN(aNumSimple) && !isNaN(bNumSimple)) {
+      return nuevaDireccion === "asc"
+        ? aNumSimple - bNumSimple
+        : bNumSimple - aNumSimple;
+    }
+
+    if (aTexto < bTexto) return nuevaDireccion === "asc" ? -1 : 1;
+    if (aTexto > bTexto) return nuevaDireccion === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  tbody.innerHTML = "";
+  filas.forEach((fila) => tbody.appendChild(fila));
+}
 
 async function fillTypeSelect(selectElement) {
   const types = await getDeviceTypes();
@@ -150,7 +193,7 @@ async function getGroupedInventory() {
 }
 
 async function updateInventory() {
-  data = await getGroupedInventory();
+  const data = await getGroupedInventory();
   const tbody = document.querySelector("#inventoryTable tbody");
   tbody.innerHTML = "";
   data.forEach((model) => {
@@ -168,7 +211,9 @@ async function updateInventory() {
     tbody.appendChild(tr);
   });
   checkAlerts();
-  document.querySelector("#saveLimit").addEventListener("click", saveLimitHandler);
+  document
+    .querySelector("#saveLimit")
+    .addEventListener("click", saveLimitHandler);
 }
 
 function checkAlerts() {

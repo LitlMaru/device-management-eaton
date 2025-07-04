@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An application for Eaton Haina's IT and HR departments for device management",
   "main": "main.js",
+  "credits": "Iconos Uicons proporcionados por Flaticon (https://www.flaticon.com/uicons)",
   "scripts": {
     "start": "electron ."
   },

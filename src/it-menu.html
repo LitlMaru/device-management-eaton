@@ -12,14 +12,14 @@
 
   
  <div class="header">
-  <div class="title" style="display: flex; align-items: center; gap: 10px;">
+  <div class="title" style="display: flex; align-items: center; gap: 16px;">
     EATON Device Management
 
-    <a href="instruction.html" target="_blank" title="Ver Manual de Usuario">
-      <img 
-        src="https://cdn-icons-png.flaticon.com/512/1245/1245137.png" 
+    <a onclick="loadPage('instruction.html')" title="Ver Manual de Usuario">
+      <img class="guide-icon"
+        src="../assets/guide.svg" 
         alt="Manual de usuario" 
-        style="width: 40px; height: 40px; cursor: pointer;"
+     
       />
     </a>
   </div>
@@ -38,7 +38,7 @@
         <img src="../assets/eaton_logo_white.svg" alt="Eaton Logo" />
         
         <div class="menu-item" onclick="loadPage('assign-devices.html')">
-          Asignar dispositivo <img src="../assets/add-user.svg" alt="">
+          Asignar dispositivo <img src="../assets/add.svg" style="filter:" alt="">
         </div>
 
         <div class="menu-item" onclick="loadPage('buscar_it.html')">
@@ -46,14 +46,14 @@
         </div>
 
       <div class="menu-item" onclick="loadPage('grouped-inventory.html')">
-        Inventario <img src="../assets/threshold.svg" alt="">
+        Inventario <img src="../assets/inventory.svg" alt="">
       </div>
       <div class="menu-item" onclick="loadPage('devices.html')">
-        Dispositivos <img src="../assets/device.svg" alt="">
+        Dispositivos <img src="../assets/devices.svg" alt="">
       </div>
 
               <div class="menu-item" onclick="loadPage('log.html')">
-          Historial de Actividades <img src="../assets/history.svg" alt="">
+          Historial de Actividades <img src="../assets/audit.svg" alt="">
         </div>
 
 
@@ -68,7 +68,7 @@
     </div>
 
     <div class="content-frame">
-        <iframe src="pages/it-dashboard.html" class="content" id="content"></iframe>
+        <iframe src="pages/it-dashboard.html" class="content" id="content" tabindex="0"></iframe>
     </div>
 
     <script src="js/it.js"></script>  

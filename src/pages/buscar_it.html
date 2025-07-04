@@ -6,287 +6,16 @@
   <title>Dispositivos Asignados</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-
+  <script async src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="../css/buscar_it.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #003973;
-      margin-bottom: 30px;
-    }
-
-    .tab-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-
    
-
-    .busqueda-container input {
-      color: #666;
-      font-size: 1.2rem;
-    }
-
-
-    .tabs.segmented {
-      display: inline-flex;
-      justify-content: center;
-      border: 2px solid #003973;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .tabs.segmented .tab {
-      min-width: 200px;
-      padding: 1rem 2rem;
-      border: none;
-      background-color: white;
-      color: #003973;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-
-    .tabs.segmented .tab:not(:last-child) {
-      border-right: 1px solid #003973;
-    }
-
-    .tabs.segmented .tab.active {
-      background-color: #003973;
-      color: white;
-    }
-
-    .busqueda-exportar {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .busqueda-container {
-      display: flex;
-      align-items: center;
-      background: white;
-      border: 1px solid #ccc;
-      padding: 8px 16px;
-      border-radius: 6px;
-      gap: 10px;
-      flex-grow: 1;
-      max-width: 600px;
-    }
-
-    .busqueda-container i {
-      color: #666;
-      font-size: 1.2rem;
-    }
-
-    .busqueda-container input {
-      border: none;
-      outline: none;
-      font-size: 1.1rem;
-      width: 100%;
-    }
-
-    .excel-btn {
-      background-color: #007e33;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      user-select: none;
-      transition: background-color 0.3s;
-    }
-
-    .excel-btn:hover {
-      background-color: #005d24;
-    }
-
-    .scrollable {
-      max-height: 400px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      background: white;
-      border-radius: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      user-select: none;
-    }
-
-    thead {
-      background-color: #003973;
-      color: white;
-      cursor: default;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ccc;
-      position: relative;
-    }
-
-    th.sortable {
-      cursor: pointer;
-      user-select: none;
-      padding-right: 25px;
-    }
-
-  
-    th.sortable .sort-icons {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    th.sortable .sort-icons i {
-      font-size: 10px;
-      color: #ccc;
-      line-height: 10px;
-      user-select: none;
-    }
-
-    th.sortable.asc .sort-icons i.fa-caret-up {
-      color: white;
-    }
-    th.sortable.desc .sort-icons i.fa-caret-down {
-      color: white;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .rojo {
-      background-color: #ffd6d6;
-      color: red;
-      font-weight: bold;
-    }
-
-    .accion-btn {
-      background-color: #003973;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s;
-    }
-    .accion-btn:hover {
-      background-color: #002555;
-    }
-
-    /* Modal */
-    #modalReasignar {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.6);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 20px 25px;
-      border-radius: 10px;
-      width: 350px;
-      box-sizing: border-box;
-      text-align: justify;
-      font-size: 14px;
-      color: #333;
-      user-select: none;
-    }
-
-    .modal-content h3 {
-      margin-top: 0;
-      text-align: center;
-      color: #003973;
-    }
-
-    .modal-content label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .modal-content input {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    .modal-content button {
-      padding: 8px 16px;
-      margin: 20px 10px 0 0;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      user-select: none;
-      transition: background-color 0.3s;
-    }
-
-    .modal-content button:first-of-type {
-      background-color: #007e33;
-      color: white;
-    }
-    .modal-content button:first-of-type:hover {
-      background-color: #005d24;
-    }
-
-    .modal-content button:last-of-type {
-      background-color: #ccc;
-    }
-    .modal-content button:last-of-type:hover {
-      background-color: #aaa;
-    }
   </style>
 </head>
 
 <body>
-  <h1>Dispositivos Asignados</h1>
-
-
+  <div class="main-content">
+<h1>Dispositivos Asignados</h1>
   <div class="tab-container">
     <div class="tabs segmented">
       <button class="tab active" onclick="showTab('empleado')">Buscar por Empleado</button>
@@ -302,13 +31,13 @@
         <i class="fas fa-search"></i>
         <input
           type="text"
-          id="busqueda"
-          placeholder="Buscar por nombre, código o dispositivo..."
-          oninput="filtrarTabla()"
+          id="buscarEmpleado"
+          placeholder="Buscar por nombre o código..."
+          oninput="fetchAssignedDevices()"
         />
       </div>
       <button onclick="exportarExcel('tablaAsignados')" class="excel-btn" title="Exportar tabla a Excel">
-        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+       <svg xmlns="http://www.w3.org/2000/svg" fill="white"  viewBox="0 0 50 50" width="24" height="24"><path d="M 28.8125 0.03125 L 0.8125 5.34375 C 0.339844 5.433594 0 5.863281 0 6.34375 L 0 43.65625 C 0 44.136719 0.339844 44.566406 0.8125 44.65625 L 28.8125 49.96875 C 28.875 49.980469 28.9375 50 29 50 C 29.230469 50 29.445313 49.929688 29.625 49.78125 C 29.855469 49.589844 30 49.296875 30 49 L 30 1 C 30 0.703125 29.855469 0.410156 29.625 0.21875 C 29.394531 0.0273438 29.105469 -0.0234375 28.8125 0.03125 Z M 32 6 L 32 13 L 34 13 L 34 15 L 32 15 L 32 20 L 34 20 L 34 22 L 32 22 L 32 27 L 34 27 L 34 29 L 32 29 L 32 35 L 34 35 L 34 37 L 32 37 L 32 44 L 47 44 C 48.101563 44 49 43.101563 49 42 L 49 8 C 49 6.898438 48.101563 6 47 6 Z M 36 13 L 44 13 L 44 15 L 36 15 Z M 6.6875 15.6875 L 11.8125 15.6875 L 14.5 21.28125 C 14.710938 21.722656 14.898438 22.265625 15.0625 22.875 L 15.09375 22.875 C 15.199219 22.511719 15.402344 21.941406 15.6875 21.21875 L 18.65625 15.6875 L 23.34375 15.6875 L 17.75 24.9375 L 23.5 34.375 L 18.53125 34.375 L 15.28125 28.28125 C 15.160156 28.054688 15.035156 27.636719 14.90625 27.03125 L 14.875 27.03125 C 14.8125 27.316406 14.664063 27.761719 14.4375 28.34375 L 11.1875 34.375 L 6.1875 34.375 L 12.15625 25.03125 Z M 36 20 L 44 20 L 44 22 L 36 22 Z M 36 27 L 44 27 L 44 29 L 36 29 Z M 36 35 L 44 35 L 44 37 L 36 37 Z"/></svg>
         <span>Exportar a Excel</span>
       </button>
     </div>
@@ -325,16 +54,29 @@
                 <i class="fas fa-caret-down"></i>
               </span>
             </th>
-            <th>Ubicación</th>
-            <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
-              Dispositivo
+            <th class="sortable" onclick="sortTable(2, 'tablaAsignados')">
+              Tipo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+              <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
+              Modelo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            </th>
+              <th class="sortable" onclick="sortTable(3, 'tablaAsignados')">
+              Serie
               <span class="sort-icons">
                 <i class="fas fa-caret-up"></i>
                 <i class="fas fa-caret-down"></i>
               </span>
             </th>
             <th>Fecha Asignación</th>
-            <th>Fecha Cambio</th>
             <th>Acción</th>
           </tr>
         </thead>
@@ -345,9 +87,18 @@
 
 
   <div class="tab-content" id="historial">
-    <div class="busqueda-exportar" style="justify-content: flex-end;">
+    <div class="busqueda-exportar">
+      <div class="busqueda-container">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="buscarDispositivo"
+          placeholder="Buscar por ID o número de serie..."
+          oninput="fetchAssignmentHistory(document.getElementById('buscarDispositivo').value)"
+        />
+      </div>
       <button onclick="exportarExcel('tablaHistorial')" class="excel-btn" title="Exportar tabla a Excel">
-        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+<svg xmlns="http://www.w3.org/2000/svg" fill="white"  viewBox="0 0 50 50" width="24" height="24"><path d="M 28.8125 0.03125 L 0.8125 5.34375 C 0.339844 5.433594 0 5.863281 0 6.34375 L 0 43.65625 C 0 44.136719 0.339844 44.566406 0.8125 44.65625 L 28.8125 49.96875 C 28.875 49.980469 28.9375 50 29 50 C 29.230469 50 29.445313 49.929688 29.625 49.78125 C 29.855469 49.589844 30 49.296875 30 49 L 30 1 C 30 0.703125 29.855469 0.410156 29.625 0.21875 C 29.394531 0.0273438 29.105469 -0.0234375 28.8125 0.03125 Z M 32 6 L 32 13 L 34 13 L 34 15 L 32 15 L 32 20 L 34 20 L 34 22 L 32 22 L 32 27 L 34 27 L 34 29 L 32 29 L 32 35 L 34 35 L 34 37 L 32 37 L 32 44 L 47 44 C 48.101563 44 49 43.101563 49 42 L 49 8 C 49 6.898438 48.101563 6 47 6 Z M 36 13 L 44 13 L 44 15 L 36 15 Z M 6.6875 15.6875 L 11.8125 15.6875 L 14.5 21.28125 C 14.710938 21.722656 14.898438 22.265625 15.0625 22.875 L 15.09375 22.875 C 15.199219 22.511719 15.402344 21.941406 15.6875 21.21875 L 18.65625 15.6875 L 23.34375 15.6875 L 17.75 24.9375 L 23.5 34.375 L 18.53125 34.375 L 15.28125 28.28125 C 15.160156 28.054688 15.035156 27.636719 14.90625 27.03125 L 14.875 27.03125 C 14.8125 27.316406 14.664063 27.761719 14.4375 28.34375 L 11.1875 34.375 L 6.1875 34.375 L 12.15625 25.03125 Z M 36 20 L 44 20 L 44 22 L 36 22 Z M 36 27 L 44 27 L 44 29 L 36 29 Z M 36 35 L 44 35 L 44 37 L 36 37 Z"/></svg>
         <span>Exportar a Excel</span>
       </button>
     </div>
@@ -355,16 +106,31 @@
       <table id="tablaHistorial">
         <thead>
           <tr>
-            <th class="sortable" onclick="sortTable(0, 'tablaHistorial')">
-              Dispositivo
+            </th>
+             <th class="sortable" onclick="sortTable(1, 'tablaHistorial')">
+              Serie
               <span class="sort-icons">
                 <i class="fas fa-caret-up"></i>
                 <i class="fas fa-caret-down"></i>
               </span>
             </th>
-            <th>Empleado Anterior</th>
-            <th>Empleado Nuevo</th>
-            <th>Fecha Cambio</th>
+            <th>ID Empleado</th>
+             <th class="sortable" onclick="sortTable(4, 'tablaHistorial')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Departamento</th>
+            <th class="sortable" onclick="sortTable(4, 'tablaHistorial')">
+              Fecha de Asignacion
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha de Fin</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -374,9 +140,13 @@
 
  
   <div class="tab-content" id="pendientes">
-    <div class="busqueda-exportar" style="justify-content: flex-end;">
+    <div class="alert-export-container" style="justify-content: flex-end;">
+      <div class="alert-box" >
+        ⚠  Los siguientes dispositivos necesitan ser cambiados:
+      </div>
+
       <button onclick="exportarExcel('tablaPendientes')" class="excel-btn" title="Exportar tabla a Excel">
-        <img src="https://img.icons8.com/ios-filled/24/ffffff/ms-excel.png" alt="Excel" />
+       <svg xmlns="http://www.w3.org/2000/svg" fill="white"  viewBox="0 0 50 50" width="24" height="24"><path d="M 28.8125 0.03125 L 0.8125 5.34375 C 0.339844 5.433594 0 5.863281 0 6.34375 L 0 43.65625 C 0 44.136719 0.339844 44.566406 0.8125 44.65625 L 28.8125 49.96875 C 28.875 49.980469 28.9375 50 29 50 C 29.230469 50 29.445313 49.929688 29.625 49.78125 C 29.855469 49.589844 30 49.296875 30 49 L 30 1 C 30 0.703125 29.855469 0.410156 29.625 0.21875 C 29.394531 0.0273438 29.105469 -0.0234375 28.8125 0.03125 Z M 32 6 L 32 13 L 34 13 L 34 15 L 32 15 L 32 20 L 34 20 L 34 22 L 32 22 L 32 27 L 34 27 L 34 29 L 32 29 L 32 35 L 34 35 L 34 37 L 32 37 L 32 44 L 47 44 C 48.101563 44 49 43.101563 49 42 L 49 8 C 49 6.898438 48.101563 6 47 6 Z M 36 13 L 44 13 L 44 15 L 36 15 Z M 6.6875 15.6875 L 11.8125 15.6875 L 14.5 21.28125 C 14.710938 21.722656 14.898438 22.265625 15.0625 22.875 L 15.09375 22.875 C 15.199219 22.511719 15.402344 21.941406 15.6875 21.21875 L 18.65625 15.6875 L 23.34375 15.6875 L 17.75 24.9375 L 23.5 34.375 L 18.53125 34.375 L 15.28125 28.28125 C 15.160156 28.054688 15.035156 27.636719 14.90625 27.03125 L 14.875 27.03125 C 14.8125 27.316406 14.664063 27.761719 14.4375 28.34375 L 11.1875 34.375 L 6.1875 34.375 L 12.15625 25.03125 Z M 36 20 L 44 20 L 44 22 L 36 22 Z M 36 27 L 44 27 L 44 29 L 36 29 Z M 36 35 L 44 35 L 44 37 L 36 37 Z"/></svg>
         <span>Exportar a Excel</span>
       </button>
     </div>
@@ -393,14 +163,20 @@
               </span>
             </th>
             <th class="sortable" onclick="sortTable(2, 'tablaPendientes')">
-              Dispositivo
+              Tipo
               <span class="sort-icons">
                 <i class="fas fa-caret-up"></i>
                 <i class="fas fa-caret-down"></i>
               </span>
             </th>
-            <th>Fecha Asignación</th>
-            <th>Estado</th>
+            <th class="sortable" onclick="sortTable(2, 'tablaPendientes')">
+              Modelo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th>Fecha de cambio</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -412,25 +188,25 @@
   <div id="modalReasignar">
     <div class="modal-content">
       <h3>Reasignar Dispositivo</h3>
-      <label for="nuevoEmpleado">Nuevo empleado:</label>
-      <input type="text" id="nuevoEmpleado" placeholder="Nombre completo" />
-      <label for="nuevaFecha">Fecha de reasignación:</label>
-      <input type="date" id="nuevaFecha" />
+      <label for="nuevoEmpleado">ID del empleado:</label>
+      <input type="text" id="idNuevoEmpleado" placeholder="ID: E00001" />
       <div style="text-align: center;">
-        <button onclick="confirmarReasignacion()">Guardar</button>
+        <button id="confirmReasignBtn">Guardar</button>
         <button onclick="cerrarModal()">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <script>
-   
+  </div>
+  
+  <script src="../js/buscar_it.js">
+   /*
     const asignaciones = [
-      { idEmpleado: "001", empleado: "Ana López", ubicacion: "ICD", dispositivo: "Laptop Dell", fechaAsignacion: "2023-05-30" },
-      { idEmpleado: "002", empleado: "Carlos Ruiz", ubicacion: "MCB", dispositivo: "Tablet Samsung", fechaAsignacion: "2022-04-10" },
-      { idEmpleado: "003", empleado: "Luis Pérez", ubicacion: "MCCB", dispositivo: "Laptop HP", fechaAsignacion: "2024-06-01" },
-      { idEmpleado: "004", empleado: "Marta Gómez", ubicacion: "ICD", dispositivo: "Monitor LG", fechaAsignacion: "2023-11-15" },
-      { idEmpleado: "005", empleado: "Juan Ramírez", ubicacion: "MCB", dispositivo: "Teclado Logitech", fechaAsignacion: "2023-01-20" }
+      { idEmpleado: "001", empleado: "Ana López", ubicacion: "ICD", tipo: "Laptop", modelo: "Laptop Dell", fechaAsignacion: "2023-05-30", fechaCambio: "2024-05-30" },
+      { idEmpleado: "002", empleado: "Carlos Ruiz", ubicacion: "MCB",tipo: "Tablet", modelo: "Tablet Samsung", fechaAsignacion: "2022-04-10", fechaCambio: "2023-04-10" },
+      { idEmpleado: "003", empleado: "Luis Pérez", ubicacion: "MCCB",tipo: "Laptop", modelo: "Laptop HP", fechaAsignacion: "2024-06-01", fechaCambio: "2025-06-01" },
+      { idEmpleado: "004", empleado: "Marta Gómez", ubicacion: "ICD", tipo: "Monitor", modelo: "Monitor LG", fechaAsignacion: "2023-11-15", fechaCambio: "2024-11-15"  },
+      { idEmpleado: "005", empleado: "Juan Ramírez", ubicacion: "MCB", tipo: "Teclado", modelo: "Teclado Logitech", fechaAsignacion: "2023-01-20", fechaCambio: "2024-01-20" }
     ];
 
     const historial = [
@@ -480,11 +256,10 @@
         tr.innerHTML = `
           <td>${item.idEmpleado}</td>
           <td>${item.empleado}</td>
-          <td>${item.ubicacion}</td>
-          <td>${item.dispositivo}</td>
+          <td>${item.tipo}</td>
+            <td>${item.modelo}</td>
           <td>${item.fechaAsignacion}</td>
-          <td class="${clase}">${cambioTexto}</td>
-          <td><button class="accion-btn" onclick="abrirModal(${index})">Reasignar</button></td>
+          <td style="display:flex;justify-content:center;"><button class="accion-btn" onclick="abrirModal(${index})">Reasignar</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -507,9 +282,9 @@
             <tr>
               <td>${item.idEmpleado}</td>
               <td>${item.empleado}</td>
+              <td>${item.tipo}</td>
               <td>${item.dispositivo}</td>
-              <td>${item.fechaAsignacion}</td>
-              <td class="rojo">Pendiente</td>
+              <td class="rojo">${item.fechaCambio}</td>
             </tr>
           `;
         }
@@ -637,7 +412,7 @@
     window.onload = () => {
       cargarAsignaciones();
       cargarHistorial();
-    };
+    };*/
   </script>
 </body>
 </html>

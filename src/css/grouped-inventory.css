@@ -10,10 +10,19 @@ body {
   font-family: "Segoe UI", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f7fc;
+  background-color: #fff;
   overflow-x: hidden;
 }
 
+.main-content {
+  flex: 1;
+  height: 100%;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  /*border: 2px solid #003973;*/
+}
 ::-webkit-scrollbar {
   width: 14px;
 }
@@ -133,54 +142,97 @@ input[type="text"]::placeholder {
   margin-left: 8px;
 }
 
-button.excel-btn {
-  background-color: #cc0000;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-bottom: 15px;
-  transition: background 0.3s ease;
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  align-items: center;
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content;
+
+#exportBtn {
+ background-color: #007e33;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    margin: 16px auto;
 }
 
-button.excel-btn:hover {
-  background-color: #990000;
+#exportBtn:hover {
+  background-color: #005d24;
 }
+
+
 
 .scrollable {
-  overflow-x: auto;
-  min-width: 400px;
-}
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 10px;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      user-select: none;
+    }
 
-th,
-td {
-  padding: 14px;
-  text-align: center;
-  border-bottom: 1px solid #ccc;
-}
+    thead {
+      background-color: #003973;
+      color: white;
+      cursor: default;
+    }
 
-th {
-  background-color: #004e92;
-  color: white;
-}
+    thead th{
+      position: sticky;
+      top: 0;
+      background-color: #003973;
+      z-index: 1;
+    }
 
-tr:hover {
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      position: relative;
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      padding-right: 25px;
+    }
+
+  
+    th.sortable .sort-icons {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    th.sortable .sort-icons i {
+      font-size: 10px;
+      color: #ccc;
+      line-height: 10px;
+      user-select: none;
+    }
+
+    th.sortable.asc .sort-icons i.fa-caret-up {
+      color: white;
+    }
+    th.sortable.desc .sort-icons i.fa-caret-down {
+      color: white;
+    }
+
+    
+table tr:not(thead tr):hover {
   background-color: #f0f8ff;
 }
 
@@ -206,6 +258,8 @@ td .action-buttons {
 .edit-btn:hover {
   background-color: #0264ba;
 }
+
+
 
 
 #editPanel {

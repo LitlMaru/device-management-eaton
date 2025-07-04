@@ -20,7 +20,7 @@ body {
   width: 14px;
 }
 ::-webkit-scrollbar-track {
-  background: #ffffff;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #003973;
@@ -30,63 +30,28 @@ body {
 ::-webkit-scrollbar-button {
   display: none;
 }
-header {
-  background: linear-gradient(90deg, #004e92, #000428);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.header-left h2 {
-  margin: 0;
-  font-size: 28px;
-}
-
-.header-right button {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: white;
-  margin-left: 12px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.header-right button:hover {
-  transform: scale(1.2);
-}
-
-.contenedor-principal {
-  max-width: 1200px;
+    
+.main-content {
+  flex: 1;
   height: 100%;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  /*border: 2px solid #003973;*/
 }
 
     h1 {
       text-align: center;
       color: #003973;
       margin-bottom: 30px;
+      font-weight: bold;
     }
 
     .tab-container {
       text-align: center;
       margin-bottom: 20px;
     }
-
-
-   
-
-    .busqueda-container input {
-      color: #666;
-      font-size: 1.2rem;
-    }
-
 
     .tabs.segmented {
       display: inline-flex;
@@ -135,31 +100,44 @@ header {
       display: flex;
       align-items: center;
       background: white;
-      border: 1px solid #ccc;
-      padding: 8px 16px;
       border-radius: 6px;
-      gap: 10px;
       flex-grow: 1;
-      max-width: 600px;
     }
 
     .busqueda-container i {
-      color: #666;
+      color: #555;
       font-size: 1.2rem;
+      position: fixed;
+      left: 48px;
     }
 
     .busqueda-container input {
-      border: none;
-      outline: none;
-      font-size: 1.1rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid #003973;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Segoe UI', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      height: 100%;
       width: 100%;
+      padding-left: 48px;
+    }
+
+    .busqueda-container input:focus {
+      border-color: #0058b1;
+      box-shadow: 0 0 0 2px rgba(0, 89, 177, 0.2);
+      outline: none;
+    }
+
+    .busqueda-container input::placeholder {
+      color: #777;
     }
 
     .excel-btn {
       background-color: #007e33;
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 8px 16px;
       border-radius: 5px;
       cursor: pointer;
       font-size: 1rem;
@@ -168,6 +146,7 @@ header {
       gap: 8px;
       white-space: nowrap;
       user-select: none;
+      height: 48px;
       transition: background-color 0.3s;
     }
 
@@ -176,23 +155,36 @@ header {
     }
 
     .scrollable {
+      position: relative;
       max-height: 400px;
       overflow-y: auto;
       border: 1px solid #ccc;
       background: white;
       border-radius: 10px;
+        scrollbar-gutter: stable both-edges;
+      padding-right: 10px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       user-select: none;
+         border-radius: 10px;
     }
 
     thead {
       background-color: #003973;
       color: white;
       cursor: default;
+      
+    }
+
+    thead th{
+      position: sticky;
+      top: 0;
+      background-color: #003973;
+      z-index: 1;
+   
     }
 
     th, td {
@@ -208,7 +200,7 @@ header {
       padding-right: 25px;
     }
 
-   
+  
     th.sortable .sort-icons {
       position: absolute;
       right: 8px;
@@ -243,11 +235,11 @@ header {
 
     .rojo {
       background-color: #ffd6d6;
-      color: red;
+      color: rgb(244, 84, 84);
       font-weight: bold;
     }
 
-    .accion-btn {
+    .unassign-btn, .reassign-btn {
       background-color: #003973;
       color: white;
       border: none;
@@ -257,11 +249,11 @@ header {
       user-select: none;
       transition: background-color 0.3s;
     }
-    .accion-btn:hover {
+    .unassign-btn:hover, .reassign-btn:hover {
       background-color: #002555;
     }
 
- 
+    /* Modal */
     #modalReasignar {
       display: none;
       position: fixed;
@@ -272,6 +264,7 @@ header {
       align-items: center;
       z-index: 999;
     }
+
 
     .modal-content {
       background: white;
@@ -289,6 +282,7 @@ header {
       margin-top: 0;
       text-align: center;
       color: #003973;
+      font-weight: bold;
     }
 
     .modal-content label {
@@ -299,12 +293,18 @@ header {
     }
 
     .modal-content input {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
+       padding: 0.6rem 0.75rem;
+    border: 1px solid #003973;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', sans-serif;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 100%;
+    width: 100%;
+    }
+
+    .modal-content input:focus{
+
     }
 
     .modal-content button {
@@ -332,3 +332,20 @@ header {
     .modal-content button:last-of-type:hover {
       background-color: #aaa;
     }
+
+    .alert-export-container{
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 16px;
+      height: 48px;
+    }
+    .alert-box {
+  background-color: #ffcf68;
+  border: 2px solid #ec9a2d;
+  color: #2a1604;
+  padding: 15px;
+  border-radius: 8px;
+  flex-grow: 1;
+  line-height: 12px;
+}

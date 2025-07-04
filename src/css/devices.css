@@ -2,22 +2,23 @@
 
 * {
  box-sizing: border-box;
+ margin: 0;
+ padding: 0;
 }
 
 .hidden { display: none; }
 
 body {
   font-family: "Segoe UI", sans-serif;
-  margin: 20px;
-  background: #f8f9fa;
+  background: #fff;
   color: #212529;
 }
 
-main {
-  padding: 25px;
+.main-content {
+  padding: 2rem;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  height: 100%;
 }
 
 
@@ -83,33 +84,77 @@ button#btnAddDevice:hover {
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
 
+
 .scrollable {
-  overflow-x: scroll;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 10px;
+    }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      user-select: none;
+    }
+
+    thead {
+      background-color: #003973;
+      color: white;
+      cursor: default;
+    }
+    
+    thead th{
+      position: sticky;
+      top: 0;
+      background-color: #003973;
+      z-index: 1;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+      position: relative;
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      padding-right: 25px;
+    }
+
+  
+    th.sortable .sort-icons {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    th.sortable .sort-icons i {
+      font-size: 10px;
+      color: #ccc;
+      line-height: 10px;
+      user-select: none;
+    }
+
+    th.sortable.asc .sort-icons i.fa-caret-up {
+      color: white;
+    }
+    th.sortable.desc .sort-icons i.fa-caret-down {
+      color: white;
+    }
+
+    
+table tr:not(thead tr):hover {
+  background-color: #f0f8ff;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-th, td {
-  padding: 14px 16px;
-  text-align: center;
-  border-bottom: 1px solid #e0e0e0;
-}
-th {
-
-  background-color: #004e92;
-  color: white;
-  font-weight: 600;
-}
-tr:hover {
-  background-color: #f5f5f5;
-}
 
 .action-buttons{
   display: flex;
@@ -143,20 +188,6 @@ tr:hover {
   color: white;
 }
 
-#exportBtn {
-  background-color: #cc0000;
-  color: white;
-  font-size: 15px;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  position: absolute;
-  right: 0;
-  top: -50px;
-  transition: background-color 0.3s ease;
-}
 
 .controls {
   display: flex;
@@ -191,19 +222,6 @@ tr:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
-.controls button#exportBtn {
-  background-color: #cc0000;
-  color: white;
-  position: absolute;
-  top: -50px;
-  right: 0;
-}
-
-.controls button#exportBtn:hover {
-  background-color: #a71d2a;
-}
-
 .controls button:not(#exportBtn) {
   background-color: #004183;
   color: white;
@@ -213,26 +231,6 @@ tr:hover {
   background-color: #0058b1;
 }
 
-
-#exportBtn:hover {
- background-color: #cc0000;
-    color: #fff;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-bottom: 15px;
-    transition: background 0.3s ease;
-    display: flex
-;
-    gap: 4px;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    width: fit-content;
-}
 
 .btn-delete {
   background-color: #dc3545;
@@ -363,17 +361,23 @@ h1 {
 
 
 #exportBtn {
-  background-color: #28a745;
-  color: white;
-  font-weight: bold;
-  border-radius: 6px;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+ background-color: #007e33;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    margin: 16px auto;
 }
 #exportBtn:hover {
-  background-color: #218838;
+  background-color: #005d24;
 }
 
 
