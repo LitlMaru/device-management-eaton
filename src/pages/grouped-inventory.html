@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inventario de Dispositivos Agrupados</title>
     <link rel="stylesheet" href="../css/grouped-inventory.css" />
+        <link rel="stylesheet" href="../css/global.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script
       src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
@@ -12,7 +13,7 @@
     ></script>
   </head>
   <body>
-    <div class="main-content">
+    <main>
  <div id="modalOverlay" onclick="closePanel()"></div>
 
     <div id="editPanel">
@@ -117,8 +118,9 @@
           </tbody>
         </table>
     </div>
-    </div>
+    </main>
    
     <script src="../js/grouped-inventory.js"></script>
+    <script src="../js/utils.js"></script>
   </body>
 </html>

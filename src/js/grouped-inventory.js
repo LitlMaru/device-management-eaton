@@ -164,7 +164,7 @@ async function getDeviceTypes() {
     return data;
   } catch (err) {
     console.log(err);
-    alert("Error al obtener tipos de dispositivo: " + err.message);
+    await customAlert("Error al obtener tipos de dispositivo: " + err.message);
   }
 }
 
@@ -188,7 +188,7 @@ async function getGroupedInventory() {
     return data;
   } catch (err) {
     console.log(err);
-    alert("Error al obtener inventario: " + err.message);
+    await customAlert("Error al obtener inventario: " + err.message);
   }
 }
 

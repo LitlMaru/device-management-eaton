@@ -1,90 +1,271 @@
- body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+}
 
-    h1 {
-      text-align: center;
-      color: #003973;
-    }
+main {
+  padding: 2rem;
+}
+h1 {
+  text-align: center;
+  color: #003973;
+  margin-bottom: 2rem;
+}
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+.busqueda-exportar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
-    .top-bar input[type="text"] {
-      padding: 8px;
-      flex: 1;
-      min-width: 250px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+.busqueda-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 6px;
+  flex-grow: 1;
+}
 
-    .top-bar .buttons {
-      display: flex;
-      gap: 10px;
-    }
+.busqueda-container i {
+  color: #555;
+  font-size: 1.2rem;
+  position: fixed;
+  left: 48px;
+}
 
-    button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s ease;
-    }
+.busqueda-container input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #003973;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  height: 100%;
+  width: 100%;
+  padding-left: 48px;
+}
 
-    button.export {
-      background-color:#003973;
-      color: white;
-    }
+.busqueda-container input:focus {
+  border-color: #0058b1;
+  box-shadow: 0 0 0 2px rgba(0, 89, 177, 0.2);
+  outline: none;
+}
 
-    button.sort {
-      background-color: #2196f3;
-      color: white;
-    }
+.busqueda-container input::placeholder {
+  color: #777;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+.excel-btn {
+  background-color: #007e33;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  user-select: none;
+  height: 48px;
+  transition: background-color 0.3s;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
+.excel-btn:hover {
+  background-color: #005d24;
+}
 
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border-bottom: 1px solid #e0e0e0;
-    }
+.scrollable {
+  position: relative;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 10px;
+  scrollbar-gutter: stable;
+}
 
-    th {
-      background-color: #004e92;
-      color: white;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  user-select: none;
+  border-radius: 10px;
+}
 
-    td button {
-      padding: 5px 10px;
-      margin: 0 3px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
+thead {
+  background-color: #003973;
+  color: white;
+  cursor: default;
+}
 
-    .edit-btn {
-      background-color: #004e92;
-      color: white;
-    }
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #003973;
+  z-index: 1;
+}
 
-    .delete-btn {
-      background-color: #f44336;
-      color: white;
-    }
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 25px;
+}
+
+th.sortable .sort-icons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+th.sortable .sort-icons i {
+  font-size: 10px;
+  color: #ccc;
+  line-height: 10px;
+  user-select: none;
+}
+
+th.sortable.asc .sort-icons i.fa-caret-up {
+  color: white;
+}
+th.sortable.desc .sort-icons i.fa-caret-down {
+  color: white;
+}
+
+td button {
+  padding: 5px 10px;
+  margin: 0 3px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 2px solid darkblue;
+  min-width: 5rem;
+}
+
+td button:hover {
+  filter: brightness(1.2);
+  border-color: white;
+}
+
+.edit-btn {
+  background-color: #005da4;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #db3125;
+  color: white;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  width: 400px;
+  z-index: 1001;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.modal-content ::-webkit-scrollbar-track {
+  border-radius: 100px;
+}
+.modal-content h3 {
+  margin: 16px;
+  font-weight: bold;
+  color: #004e92;
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  transition: border 0.3s ease;
+}
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #004e92;
+  outline: none;
+}
+
+.modal-content .button-wrap {
+  display: flex;
+  justify-content: center;
+}
+.modal-content button {
+  flex: 1;
+  height: 40px;
+  background-color: #0078d4;
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #dc3545;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #a71d2a;
+}

@@ -110,7 +110,7 @@ async function agregarUsuario() {
   const ubicacion = document.getElementById("ubicacion").value;
 
   if (!username || !clave) {
-    alert("Por favor completa todos los campos obligatorios.");
+    await customAlert("Por favor completa todos los campos obligatorios.");
     return;
   }
 
@@ -121,7 +121,7 @@ async function agregarUsuario() {
     const existeUsuario = usuarios.some(u => u.Username.toLowerCase() === username.toLowerCase());
 
     if (existeUsuario) {
-      alert("Este nombre de usuario ya existe. Por favor elige otro.");
+      await customAlert("Este nombre de usuario ya existe. Por favor elige otro.");
       return;
     }
 
@@ -140,19 +140,17 @@ async function agregarUsuario() {
     cerrarModal();
     await cargarUsuarios();
   } catch (err) {
-    alert("Error al agregar usuario: " + err.message);
+    await customAlert("Error al agregar usuario: " + err.message);
     console.error(err);
   }
 }
 
 
 async function eliminarUsuario(username) {
-  if (!confirm(`¿Estás seguro de que deseas eliminar al usuario "${username}"?`)) {
-    window.focus();
+  confirmation = await customConfirm(`¿Estás seguro de que deseas eliminar al usuario "${username}"?`);
+  if (!confirmation) {
     return;
   }
-   window.focus();
- 
 
   try {
     const response = await fetch(`${HOST}:${PORT}/api/users/${encodeURIComponent(username)}`, {
@@ -169,7 +167,7 @@ async function eliminarUsuario(username) {
 
     document.querySelector("td[contenteditable='true']")[0].focus()
   } catch (err) {
-    alert("Error al eliminar usuario: " + err.message);
+    await customAlert("Error al eliminar usuario: " + err.message);
     console.error(err);
   }
 }
@@ -205,7 +203,7 @@ function agregarListenersEdicion() {
 
         console.log(`✅ ${campo} actualizado correctamente`);
       } catch (err) {
-        alert("Error actualizando campo: " + err.message);
+        await customAlert("Error actualizando campo: " + err.message);
         console.error(err);
       }
     });

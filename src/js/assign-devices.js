@@ -95,7 +95,7 @@ async function getAvailableDevices(type) {
     const data = await response.json();
     return data;
   } catch (err) {
-    alert("Error al obtener los dispositivos disponibles: ", err.message);
+    await customAlert("Error al obtener los dispositivos disponibles: ", err.message);
   }
 }
 
@@ -178,7 +178,6 @@ function resetSelection() {
 }
 
 async function assignDevices(){
-    alert("Klk milocos")
     const Info_empleado = document.getElementById("Info_empleado").value.trim();
     const today = new Date();
     const Fecha_Asignacion = today.toISOString().split("T")[0];
@@ -190,7 +189,7 @@ async function assignDevices(){
     .filter(id => id); // Filtra IDs vacios
 
   if (!Info_empleado || dispositivos.length === 0) {
-    alert("Por favor, completa todos los campos y selecciona al menos un dispositivo.");
+    await customAlert("Por favor, completa todos los campos y selecciona al menos un dispositivo.");
     return;
   }
 
@@ -207,14 +206,13 @@ async function assignDevices(){
     const result = await response.json();
 
     if (response.ok && result.success) {
-      alert(`Dispositivos asignados exitosamente (${result.cantidad}).`);
-      // Puedes limpiar el formulario o actualizar la UI aquí
+      await customAlert(`Dispositivos asignados exitosamente (${result.cantidad}).`);
     } else {
-      alert("Error: " + (result.message || result.error));
+      await customAlert("Error: " + (result.message || result.error));
     }
   } catch (err) {
     console.error("Error al enviar:", err);
-    alert("Error inesperado al asignar dispositivos.");
+    await customAlert("Error inesperado al asignar dispositivos.");
   }
 }
 
@@ -223,31 +221,6 @@ document
   .addEventListener("submit", async function (e) {
     e.preventDefault();
 
-/*
-    const Info_empleado = document.getElementById("employee-id").value.trim();
-    const tipoDispositivo = document.getElementById("device-type").value;
-
-    if (!selectedDeviceID) {
-      alert("Selecciona un dispositivo de la tabla.");
-      return;
-    }
-
-    const today = new Date();
-    const nextYear = new Date(today);
-    nextYear.setFullYear(today.getFullYear() + 1);
-
-    const formatDate = (date) => date.toISOString().split("T")[0];
-
-    const Fecha_Asignacion = formatDate(today);
-    const Fecha_Cambio = formatDate(nextYear);
-
-    await assignDevice({
-      Info_empleado,
-      tipoDispositivo, 
-      ID_Dispositivo: selectedDeviceID,
-      Fecha_Asignacion,
-      Fecha_Cambio,
-    }, e.target);*/
   });
   const tbody = document.querySelector(".reassign-table-preview tbody");
   console.log(tbody)    
@@ -294,7 +267,7 @@ document
     }
   } catch (err) {
     console.error("Error al obtener dispositivos asignados:", err);
-    alert("Hubo un error al obtener los dispositivos asignados: " + err.message);
+    await customAlert("Hubo un error al obtener los dispositivos asignados: " + err.message);
   }
 }
 

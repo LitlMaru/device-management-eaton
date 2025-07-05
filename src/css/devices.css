@@ -1,12 +1,12 @@
-
-
 * {
- box-sizing: border-box;
- margin: 0;
- padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 body {
   font-family: "Segoe UI", sans-serif;
@@ -20,7 +20,6 @@ body {
   width: 100%;
   height: 100%;
 }
-
 
 ::-webkit-scrollbar {
   width: 12px;
@@ -38,14 +37,12 @@ body {
   display: none;
 }
 
-
 .row-alert {
   background-color: #fdecea !important;
-  }
+}
 .row-asignado {
   background-color: #fff8e1 !important;
 }
-
 
 .centered-button {
   display: flex;
@@ -74,7 +71,7 @@ button#btnAddDevice:hover {
   border-radius: 10px;
   min-width: 240px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .filters input:focus,
@@ -84,111 +81,103 @@ button#btnAddDevice:hover {
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
 
-
 .scrollable {
-      max-height: 400px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      background: white;
-      border-radius: 10px;
-    }
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 10px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      user-select: none;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  user-select: none;
+}
 
-    thead {
-      background-color: #003973;
-      color: white;
-      cursor: default;
-    }
-    
-    thead th{
-      position: sticky;
-      top: 0;
-      background-color: #003973;
-      z-index: 1;
-    }
+thead {
+  background-color: #003973;
+  color: white;
+  cursor: default;
+}
 
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ccc;
-      position: relative;
-    }
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #003973;
+  z-index: 1;
+}
 
-    th.sortable {
-      cursor: pointer;
-      user-select: none;
-      padding-right: 25px;
-    }
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
 
-  
-    th.sortable .sort-icons {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 25px;
+}
 
-    th.sortable .sort-icons i {
-      font-size: 10px;
-      color: #ccc;
-      line-height: 10px;
-      user-select: none;
-    }
+th.sortable .sort-icons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-    th.sortable.asc .sort-icons i.fa-caret-up {
-      color: white;
-    }
-    th.sortable.desc .sort-icons i.fa-caret-down {
-      color: white;
-    }
+th.sortable .sort-icons i {
+  font-size: 10px;
+  color: #ccc;
+  line-height: 10px;
+  user-select: none;
+}
 
-    
+th.sortable.asc .sort-icons i.fa-caret-up {
+  color: white;
+}
+th.sortable.desc .sort-icons i.fa-caret-down {
+  color: white;
+}
+
 table tr:not(thead tr):hover {
   background-color: #f0f8ff;
 }
 
-
-.action-buttons{
+.action-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
+  gap: 8px;
 }
 
-.action-buttons button{
-  width: 100px;
-  height: 100%;
-  background-color: #004e92;
-  padding: 0.5rem 1rem;
-  border: none;
+.action-buttons button {
+  padding: 5px 10px;
+  margin: 0 3px;
   border-radius: 4px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 0.9em;
+  border: 2px solid darkblue;
+  min-width: 5rem;
 }
-.btn-edit, .btn-delete {
-  cursor: pointer;
-  padding: 6px 14px;
-  border: none;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 14px;
-  margin-right: 6px;
-  transition: background-color 0.3s ease;
+
+.action-buttons button:hover {
+  filter: brightness(1.2);
+  border-color: white;
+}
+
+.edit-btn {
+  background-color: #005da4;
   color: white;
 }
 
-
+.delete-btn {
+  background-color: #db3125;
+  color: white;
+}
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -231,7 +220,6 @@ table tr:not(thead tr):hover {
   background-color: #0058b1;
 }
 
-
 .btn-delete {
   background-color: #dc3545;
 }
@@ -239,15 +227,14 @@ table tr:not(thead tr):hover {
   background-color: #bd2130;
 }
 
-
 .modal-overlay {
-  display: none; 
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   justify-content: center;
   align-items: center;
@@ -256,7 +243,6 @@ table tr:not(thead tr):hover {
 .modal-overlay.active {
   display: flex;
 }
-
 
 .modal-content {
   position: fixed;
@@ -276,8 +262,8 @@ table tr:not(thead tr):hover {
 .modal-content ::-webkit-scrollbar-track {
   border-radius: 100px;
 }
-.modal-content h2 {
-  margin: 0 0 16px;
+.modal-content h3 {
+  margin: 16px;
   font-weight: bold;
   color: #004e92;
   text-align: center;
@@ -306,80 +292,21 @@ table tr:not(thead tr):hover {
   outline: none;
 }
 
-.modal-content .button-wrap{
+.modal-content .button-wrap {
   display: flex;
   justify-content: center;
 }
-  .modal-content button {
-  width: 48%;
+.modal-content button {
+  flex: 1;
   height: 40px;
-    background-color: #004e92;
+  background-color: #0078d4;
   border: none;
-  border-radius: 8px;
+  border-radius: 16px;
   color: white;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
-  }
-
-  .modal-content-content{
-    width: 100%;
-  }
-#btnSave {
-  background-color: #007bff;
-  margin-right: 4%;
 }
-#btnSave:hover {
-  background-color: #0056b3;
-}
-#btnCancel {
-  background-color: #6c757d;
-}
-#btnCancel:hover {
-  background-color: #565e64;
-}
-
-
-#overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  }
-
-
-h1 {
-  text-align: center;
-  color: #003973;
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-
-#exportBtn {
- background-color: #007e33;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    transition: background-color 0.3s;
-    font-weight: bold;
-    margin: 16px auto;
-}
-#exportBtn:hover {
-  background-color: #005d24;
-}
-
 
 .close {
   position: absolute;
@@ -398,8 +325,60 @@ h1 {
   color: #a71d2a;
 }
 
+#btnSave {
+  background-color: #007bff;
+  margin-right: 4%;
+}
+#btnSave:hover {
+  background-color: #0056b3;
+}
+#btnCancel {
+  background-color: #6c757d;
+}
+#btnCancel:hover {
+  background-color: #565e64;
+}
 
-.btn-edit, .btn-delete {
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+h1 {
+  text-align: center;
+  color: #003973;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+#exportBtn {
+  background-color: #007e33;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+  font-weight: bold;
+  margin: 16px auto;
+}
+#exportBtn:hover {
+  background-color: #005d24;
+}
+
+.btn-edit,
+.btn-delete {
   cursor: pointer;
   padding: 6px 14px;
   border: none;
@@ -427,4 +406,3 @@ h1 {
 .btn-delete:hover {
   background-color: #a71d2a;
 }
-

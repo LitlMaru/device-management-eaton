@@ -288,8 +288,8 @@ function renderTabla() {
             <td>${d.marca}</td>
             <td>${d.modelo}</td>
             <td>
-              <button onclick="openEditModal(${i})">Editar</button>
-              <button onclick="eliminarDispositivo(${i})">Eliminar</button>
+              <button class="edit-btn" onclick="openEditModal(${i})">Editar</button>
+              <button class="delete-btn" onclick="eliminarDispositivo(${i})">Eliminar</button>
             </td>`;
       tbody.appendChild(fila);
     }
@@ -316,12 +316,12 @@ function guardarEdicion() {
   renderTabla();
 }
 
-function eliminarDispositivo(index) {
-  if (confirm("¿Estás seguro de eliminar este dispositivo?")) {
+async function eliminarDispositivo(index) {
+  const confirmation = await customConfirm("¿Estás seguro de eliminar este dispositivo?")
+  if (confirmation) {
     dispositivos.splice(index, 1);
     renderTabla();
   }
-  window.focus();
 }
 
 function exportarExcel() {
@@ -354,7 +354,7 @@ async function getDevices() {
     return data;
   } catch (error) {
     console.log(error);
-    alert("Error al cargar dispositivos: " + error.message);
+    await customAlert("Error al cargar dispositivos: " + error.message);
   }
 }
 
@@ -367,7 +367,7 @@ async function deleteDevice(id) {
     });
   } catch (err) {
     console.log(err);
-    alert("Error al eliminar dispositivos: ", err.messge);
+    await customAlert("Error al eliminar dispositivos: ", err.messge);
   }
 }
 
@@ -395,7 +395,7 @@ async function updateDevice() {
     showDevices();
   } catch (err) {
     console.log(err);
-    alert("Error al actualizar dispositivo: " + err.message);
+    await customAlert("Error al actualizar dispositivo: " + err.message);
   }
 
   cerrarModal();
@@ -437,7 +437,7 @@ async function getDeviceTypes() {
     return data;
   } catch (err) {
     console.log(err);
-    alert("Error al obtener tipos de dispositivo: " + err.message);
+    await customAlert("Error al obtener tipos de dispositivo: " + err.message);
   }
 }
 
@@ -462,7 +462,7 @@ async function getModels(deviceTypeID) {
     return data;
   } catch (err) {
     console.log(err);
-    alert(
+    await customAlert(
       "Error al obtener modelos para el tipo de dispositivo seleccionado: " +
         err.message
     );
@@ -483,7 +483,7 @@ async function addType(newType) {
     return typeID;
   } catch (err) {
     console.log(err);
-    alert("Error al agregar nuevo tipo: " + err.message);
+    await customAlert("Error al agregar nuevo tipo: " + err.message);
     return;
   }
 }
@@ -503,7 +503,7 @@ async function addModel(newModel, typeID) {
     return typeID;
   } catch (err) {
     console.log(err);
-    alert("Error al agregar nuevo modelo: " + err.message);
+    await customAlert("Error al agregar nuevo modelo: " + err.message);
     return;
   }
 }
@@ -557,7 +557,7 @@ async function addDevice() {
     });
   } catch (err) {
     console.log(err);
-    alert("Error al agregar dispositivo: " + err.message);
+    await customAlert("Error al agregar dispositivo: " + err.message);
   }
 }
 
@@ -571,6 +571,6 @@ async function deleteDevice(deviceID) {
     });
   } catch (err) {
     console.log(err);
-    alert("Error al eliminar dispositivos: ");
+    await customAlert("Error al eliminar dispositivos: ");
   }
 }

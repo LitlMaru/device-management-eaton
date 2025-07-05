@@ -7,27 +7,40 @@ const { pool } = require("mssql");
 // Consultar empleados
 router.get("/", async (req, res) => {
   const filter = req.query.filter;
-  try{
+  const Ubicacion = req.headers["x-ubicacion"];
 
-  const pool = await poolPromise;
-  const query = `SELECT ID_Empleado, Nombre as Empleado, Departamento, Posicion, Fecha_entrada from Empleados`
-  // Si el input de busqueda no esta vacio, buscar nombres que contengan su valor
-  if(filter){
-    query += ` WHERE Nombre LIKE %${filter}%`
+  try {
+    const pool = await poolPromise;
+    const request = pool.request();
+    request.input("Ubicacion", sql.VarChar, Ubicacion);
+
+    let query = `
+      SELECT ID_Empleado, Nombre as Empleado, Departamento, Posicion, Fecha_entrada
+      FROM Empleados
+      WHERE Ubicacion = @Ubicacion
+    `;
+
+    if (filter) {
+      request.input("Filter", sql.VarChar, `%${filter}%`);
+      query += `
+        AND (
+          Nombre LIKE @Filter OR
+          Departamento LIKE @Filter OR
+          Posicion LIKE @Filter
+        )
+      `;
+    }
+
+    const result = await request.query(query);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
-
-  const result = pool.request().query(query);
-
-  res.json(result.recordset)
-}
-catch(err){
-  console.error(err);
-  res.json({status: 500, error: err.message})
-}
-})
+});
 
 // Agregar un empleado nuevo a la base de datos
-router.post("/add-employee", async (req, res) => {
+router.post("/register", async (req, res) => {
   const data = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -89,7 +102,7 @@ router.put("/", async (req, res) => {
     inputs.forEach(({ name, type, value }) => {
       request.input(name, type, value);
     });
-    request.input("ID_Empleado", sql.Int, ID_Empleado);
+    request.input("ID_Empleado", sql.VarChar, ID_Empleado);
 
     await request.query(query);
 

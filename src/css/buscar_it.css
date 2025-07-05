@@ -240,17 +240,27 @@ body {
     }
 
     .unassign-btn, .reassign-btn {
-      background-color: #003973;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s;
+     padding: 5px 10px;
+    margin: 0 3px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 2px solid darkblue;
+    min-width: 5rem;
     }
+
     .unassign-btn:hover, .reassign-btn:hover {
-      background-color: #002555;
+         filter:brightness(1.2);
+      border-color: white;
+    }
+
+    .reassign-btn {
+  background-color: #005da4;
+      color: white;
+    }
+
+    .unassign-btn {
+ background-color: #db3125;
+      color: white;
     }
 
     /* Modal */
@@ -301,10 +311,6 @@ body {
     transition: border-color 0.3s, box-shadow 0.3s;
     height: 100%;
     width: 100%;
-    }
-
-    .modal-content input:focus{
-
     }
 
     .modal-content button {
