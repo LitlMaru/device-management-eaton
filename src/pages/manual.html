@@ -29,11 +29,57 @@
     .img-fluid {
       border-radius: 10px;
     }
+
+     #btnSubir {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #003973;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+    #btnSubir:hover {
+      background-color: #0057b8;
+    }
+
+
+    .header a.back-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: white;
+  color: #003973;
+  border: 2px solid #003973;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+.header a.back-btn:hover {
+  background-color: #003973;
+  color: white;
+}
+
   </style>
 </head>
 <body>
 
-<div class="header">
+
+<div class="header" id="inicio">
+  <a id="backBtn" class="back-btn" title="Volver al menú">⮌</a>
   <h1>Guía del Sistema de Gestión EATON</h1>
   <p>Manual de uso para el sistema EATON Device Management y Recursos Humanos</p>
 </div>
@@ -100,6 +146,49 @@
   </div>
 
 </div>
+
+<button id="btnSubir" onclick="subirInicio()" title="Ir arriba">↑</button>
+
+<script>
+
+
+
+  // Función para leer parámetros de la URL
+  function getParam(key) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(key);
+  }
+
+  // Detectar de dónde viene
+  const menu = getParam("menu");
+  const backBtn = document.getElementById("backBtn");
+
+  backBtn.addEventListener("click", () => {
+    if (menu === "it") {
+      window.location.href = "admin.html"; // cambia si tu menú IT tiene otro nombre
+    } else if (menu === "hr") {
+      window.location.href = "rrhh.html"; // cambia si tu menú HR tiene otro nombre
+    } else {
+      history.back(); // fallback si no se especificó menú
+    }
+  });
+
+
+  // Mostrar botón "subir" si se ha hecho scroll
+  window.onscroll = function () {
+    const btn = document.getElementById("btnSubir");
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  };
+
+  // Función para volver al inicio
+  function subirInicio() {
+    document.getElementById("inicio").scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
 
 </body>
 </html>
