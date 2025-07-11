@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
+const { authenticateToken, authorize } = require('../middleware/auth');
+router.use(authenticateToken)
 //Reasignar todos los dispositivos de un empleado a otro
-router.post("/reassign-devices", async (req, res) => {
+router.post("/reassign-devices", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { empleadoOrigen, empleadoDestino } = req.body;
 
   if (!empleadoOrigen || !empleadoDestino) {
@@ -81,7 +83,7 @@ router.post("/reassign-devices", async (req, res) => {
 });
 
 // Reasignar unico dispositivo de un empleado a otro
-router.post("/reassign", async (req, res) => {
+router.post("/reassign", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { empleadoOrigen, empleadoDestino, ID_Dispositivo } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
 
@@ -127,7 +129,7 @@ router.post("/reassign", async (req, res) => {
 });
 
 //Consultar los empleados a los cuales un dispositivo ha sido asignado ahora o antes
-router.get("/employees-assigned", async (req, res) => {
+router.get("/employees-assigned", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const ID_Dispositivo = req.query.ID_Dispositivo;
   try {
     const pool = await poolPromise;
@@ -158,7 +160,7 @@ router.get("/employees-assigned", async (req, res) => {
 });
 
 //Filtrar dispositivos por informacion del empleado
-router.post("/filter-devices", async (req, res) => {
+router.post("/filter-devices", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { employeeInfo } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
 
@@ -215,7 +217,7 @@ router.post("/filter-devices", async (req, res) => {
 });
 
 //Consultar los dispositivos de un empleado
-router.post("/devices", async (req, res) => {
+router.post("/devices", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { IDEmpleado } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -266,7 +268,7 @@ router.post("/devices", async (req, res) => {
 
 
 // Asignar dispositivos a un empleado
-router.post("/assign-devices", async (req, res) => {
+router.post("/assign-devices", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { Info_empleado, dispositivos, Fecha_Asignacion } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
 
@@ -332,7 +334,7 @@ router.post("/assign-devices", async (req, res) => {
 });
 
 // Obtener dispositivos pendientes (fecha de cambio pasada)
-router.get("/pending-devices", async (req, res) => {
+router.get("/pending-devices", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   try {
     const pool = await poolPromise;
     const ubicacion = req.headers["x-ubicacion"];

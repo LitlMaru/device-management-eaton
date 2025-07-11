@@ -47,12 +47,13 @@ html, body{
   padding: 2.5rem 3rem;
   border-radius: 20px;
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-  max-width: 450px;
-  flex-grow: 1;
+  width: 450px;
   min-width: 320px;
+  flex-grow: 1;
   color: white;
   text-align: left;
   box-sizing: content-box;
+  margin-bottom: 2rem;
 }
 
 .form-group {

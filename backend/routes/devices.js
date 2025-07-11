@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 
+const { authenticateToken, authorize } = require('../middleware/auth');
+router.use(authenticateToken);
+
 // Obtener los dispositivos disponibles de un tipo
-router.post("/get-available-devices", async (req, res) => {
+router.post("/get-available-devices", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   try {
     const { deviceType } = req.body;
     const ubicacion = req.headers["x-ubicacion"];
@@ -85,7 +88,7 @@ async function getDevicesFiltered(filtros, ubicacion) {
 }
 
 // Consultar todos los dispositivos
-router.post("/", async (req, res) => {
+router.post("/", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const filtros = {
     tipoDispositivo: req.body.tipoDispositivo || "",
     marca: req.body.marca || "",
@@ -106,7 +109,7 @@ router.post("/", async (req, res) => {
 });
 
 // Agregar nuevos dispositivos
-router.post("/add-device", async (req, res) => {
+router.post("/add-device", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { tipoID, marca, modeloID, cantidad, serialNumbers } = req.body;
   const ubicacion = req.headers["x-ubicacion"];
 
@@ -145,7 +148,7 @@ router.post("/add-device", async (req, res) => {
 });
 
 // Actualizar informacion de un dispositivo
-router.put("/", async (req, res) => {
+router.put("/", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { IDDispositivo, tipoDispositivo, marca, modelo, serialNumber } =
     req.body;
 
@@ -215,7 +218,7 @@ router.put("/", async (req, res) => {
 });
 
 // Eliminar dispositivo de la base de datos
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   try {
     const pool = await poolPromise;
     await pool

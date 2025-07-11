@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
-const { pool } = require("mssql");
 
+const { authenticateToken, authorize } = require('../middleware/auth');
+router.use(authenticateToken);
 
 // Consultar empleados
-router.get("/", async (req, res) => {
+router.get("/", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const filter = req.query.filter;
   const Ubicacion = req.headers["x-ubicacion"];
 
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
 });
 
 // Agregar un empleado nuevo a la base de datos
-router.post("/register", async (req, res) => {
+router.post("/register", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const data = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -63,9 +64,8 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 // Actualizar informacion de un empleado
-router.put("/", async (req, res) => {
+router.put("/", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { ID_Empleado, Nombre, Departamento, Posicion } = req.body;
 
   if (!ID_Empleado) {
@@ -114,22 +114,21 @@ router.put("/", async (req, res) => {
   }
 });
 
-
 // Eliminar empleado de la base de datos
-router.delete("/:IDEmpleado", async (req, res) => {
+router.delete("/:IDEmpleado", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const IDEmpleado = req.params["IDEmpleado"];
-  try{
-    const pool = await poolPromise();
+  try {
+    const pool = await poolPromise;
     await pool.request()
-      .input("ID_Empleado", sql.Int, IDEmpleado)
+      .input("ID_Empleado", sql.VarChar, IDEmpleado)
       .query(`DELETE FROM Empleados WHERE ID_Empleado = @ID_Empleado`);
-    res.status(100);
-  }
-  catch(err){
+
+    res.status(200).json({ success: true, message: "Empleado eliminado" });
+  } catch (err) {
     console.error(err);
-    res.status(500).json({error: err.message});
+    res.status(500).json({ success: false, error: err.message });
   }
-})
+});
 
 
 module.exports = router;

@@ -412,13 +412,13 @@ async function showDevices() {
     tr.innerHTML = `
       <td>${device.ID_Dispositivo}</td>
       <td>${device.TipoDispositivo}</td>
-      <td>${device.Marca}</td>
+      <td>${device.Marca || "—"}</td>
       <td>${device.Modelo}</td>
-      <td>${device.Serial_Number}</td>
+      <td>${device.Serial_Number || "—"}</td>
       <td>
         <div class="action-buttons">
-        <button onclick="openEditModal(${device.ID_Dispositivo}, ${device.ID_Tipo}, ${device.ID_Modelo})">Editar</button>
-        <button onclick="deleteDevice(${device.ID_Dispositivo})">Eliminar</button>
+        <button class="edit-btn" onclick="openEditModal(${device.ID_Dispositivo}, ${device.ID_Tipo}, ${device.ID_Modelo})">Editar</button>
+        <button class="delete-btn"onclick="deleteDevice(${device.ID_Dispositivo})">Eliminar</button>
         </div>
       </td>`;
 

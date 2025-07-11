@@ -184,7 +184,8 @@ tr:hover {
   font-size: 0.9em;
   border: 2px solid darkblue;
   min-width: 5rem;
- background-color: #ddd;
+  background-color: #db3125;
+  color: white;
 }
 
 .actions-container button:hover {

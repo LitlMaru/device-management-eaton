@@ -6,6 +6,7 @@ const { app, BrowserWindow, ipcMain, session } = require("electron");
 const path = require("path");
 const { electron } = require("process");
 const { exec } = require("child_process");
+const jwt = require('jsonwebtoken');
 
 let mainWindow;
 global.currentUser = null;
@@ -102,7 +103,6 @@ const PORT = process.env.PORT || 3000;
 
 ipcMain.handle("login-user", async (event, credentials) => {
   try {
-    console.log(`${HOST}:${PORT}/api/auth/login`);
     const response = await fetch(`${HOST}:${PORT}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -112,10 +112,7 @@ ipcMain.handle("login-user", async (event, credentials) => {
     const result = await response.json();
     if (result.success) {
       global.currentUser = result.user;
-      /* global.sharedObject = {
-        userLocation: result.user.Ubicacion,
-      };*/
-      return { success: true, user: result.user };
+      return { success: true, user: result.user, token: result.token };
     } else {
       return { success: false, message: result.message };
     }

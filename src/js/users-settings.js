@@ -88,8 +88,8 @@ async function cargarUsuarios(){
     tr.innerHTML = `
       <td>${usuario.Username}</td>
       <td contenteditable="true" data-id="${usuario.ID_Usuario}" data-campo="Clave">${usuario.Clave}</td>
-      <td contenteditable="true" data-id="${usuario.ID_Usuario}" data-campo="Rol">${usuario.Rol}</td>
-      <td contenteditable="true" data-id="${usuario.ID_Usuario}" data-campo="Ubicacion">${usuario.Ubicacion}</td>
+      <td contenteditable="true" data-id="${usuario.Rol}" data-campo="Rol">${usuario.Rol}</td>
+      <td contenteditable="true" data-id="${usuario.Ubicacion}" data-campo="Ubicacion">${usuario.Ubicacion}</td>
       <td>
         <div class="actions-container">
           <button onclick="eliminarUsuario('${usuario.Username}')">Eliminar usuario</button>

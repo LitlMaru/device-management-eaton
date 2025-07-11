@@ -249,21 +249,29 @@ async function getEmployees() {
     await customAlert(err.message);
   }
 }
-
 async function deleteEmployee(id) {
   const confirmation = await customConfirm(
     `¿Desea eliminar al empleado ${id} de la base de datos?`
   );
-  if (confirmation) {
-    try {
-      await fetch(`${HOST}:${PORT}/api/employees/`, {
-        method: "DELETE",
-      });
-      await customAlert("Empleado eliminado correctamente.");
-    } catch (err) {
-      console.error(err);
-      await customAlert(err.message);
+  if (!confirmation) return;
+
+  const url = `${HOST}:${PORT}/api/employees/${encodeURIComponent(id)}`;
+  console.log(`Deleting employee at: ${url}`);
+
+  try {
+    const res = await fetch(url, { method: "DELETE" });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server error ${res.status}: ${errorText}`);
     }
+
+    const data = await getEmployees();
+    renderTable(data);
+    await customAlert("Empleado eliminado correctamente.");
+  } catch (err) {
+    console.error(err);
+    await customAlert(`Error eliminando empleado: ${err.message}`);
   }
 }
 

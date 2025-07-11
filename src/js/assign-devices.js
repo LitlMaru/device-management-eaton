@@ -157,9 +157,9 @@ function addToDestiny(device){
   if(!repeated){
  const tr = document.createElement('tr');
   tr.innerHTML = `
-   <td>${device.Marca}</td>
+   <td>${device.Marca || "—"}</td>
    <td>${device.Modelo}</td>
-   <td>${device.Serial_Number}</td>
+   <td>${device.Serial_Number || "—"}</td>
    <td class="td-button"><button class='remove-device-btn'>-</button></td>
   `
   tr.querySelector(".remove-device-btn").addEventListener('click', () => {
@@ -252,9 +252,9 @@ document
 
         tr.innerHTML = `
           <td>${row.TipoDispositivo}</td>
-          <td>${row.Marca}</td>
+          <td>${row.Marca || "—"}</td>
           <td>${row.Modelo}</td>
-          <td>${row.Serial_Number}</td>
+          <td>${row.Serial_Number || "—"}</td>
         `;
 
         tbody.appendChild(tr);
