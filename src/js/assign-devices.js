@@ -184,10 +184,10 @@ async function assignDevices(){
     const Fecha_Asignacion = today.toISOString().split("T")[0];
   const ubicacion = currentUser.Ubicacion; 
 
-  // Obtener todos los IDs de la tabla
+
   const dispositivos = Array.from(document.querySelectorAll(".assign-devices-table tbody tr"))
     .map(row => row.dataset.ID_Dispositivo)
-    .filter(id => id); // Filtra IDs vacios
+    .filter(id => id); 
 
   if (!Info_empleado || dispositivos.length === 0) {
     alert("Por favor, completa todos los campos y selecciona al menos un dispositivo.");

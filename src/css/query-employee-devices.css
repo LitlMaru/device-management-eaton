@@ -27,6 +27,23 @@ h1 {
   align-items: center;
 }
 
+.excel-btn {
+    background-color: #007e33;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    user-select: none;
+    height: 48px;
+    transition: background-color 0.3s;
+}
+
 #busqueda {
   flex: 1;
   min-width: 250px;
@@ -54,13 +71,13 @@ button:hover {
 
 
 .boton-verificar {
-  background-color: #007bff;
+  background-color:#004e92;;
   color: white;
   margin-right: 5px;
 }
 
 .boton-verificar:hover {
-  background-color: #0056b3;
+  background-color:#004e92;;
 }
 
 .boton-eliminar {
@@ -79,18 +96,9 @@ button:hover {
 
 #btnOrdenarNombre:hover {
   background-color: #495057;
-}
+  }
 
-button[onclick*="exportarExcel"] {
-  background-color: #28a745;
-  color: white;
-}
-
-button[onclick*="exportarExcel"]:hover {
-  background-color: #1e7e34;
-}
-
-/* Tabla */
+  /* Tabla */
 .scrollable {
   overflow-x: auto;
 }
