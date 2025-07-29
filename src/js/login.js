@@ -6,17 +6,20 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
 
-  const response = await ipcRenderer.invoke('login-user', { username, password });
+  const result = await ipcRenderer.invoke("login-user", { username, password });
 
-  const errorMessage = document.getElementById('error-message');
-  if (response.success) {
-    if (response.user.Rol === 'HR') {
+  if (result.success) {
+    sessionStorage.setItem("jwt", result.token);
+    sessionStorage.setItem("user", JSON.stringify(result.user));
+
+    if (result.user.Rol === 'HR') {
       window.location.href = '../src/hr-menu.html';
     } else {
       window.location.href = '../src/it-menu.html';
     }
   } else {
-    errorMessage.textContent = response.message;
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = result.message;
   }
 });
 

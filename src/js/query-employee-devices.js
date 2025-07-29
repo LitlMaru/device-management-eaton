@@ -8,16 +8,16 @@
         fila.style.display = textoFila.includes(filtro) ? "" : "none";
       });
     }
-      function eliminarFila(boton) {
+      async function eliminarFila(boton) {
   const fila = boton.closest("tr");
   const empleadoId = fila.cells[0].innerText;
 
-  if (confirm(`¿Seguro que deseas eliminar al empleado con ID ${empleadoId}?`)) {
+  confirmation = await customConfirmation(`¿Seguro que deseas eliminar al empleado con ID ${empleadoId}?`)
+  if (confirmation) {
     fila.remove();
     delete entregas[empleadoId]; 
-    alert("Empleado eliminado correctamente.");
+    await customAlert("Empleado eliminado correctamente.");
   }
-    window.focus();
 }
 
     let currentEmpleadoId = null;
@@ -53,7 +53,7 @@
       document.getElementById("modalAsignacion").style.display = "flex";
     }
 
-    function guardarEntrega() {
+    async function guardarEntrega() {
       const checkboxes = document.querySelectorAll('#formDispositivos input[name="dispositivo"]');
       const entregados = [];
 
@@ -65,7 +65,7 @@
 
       entregas[currentEmpleadoId] = entregados;
 
-      alert("Dispositivos marcados como entregados.");
+      await customAlert("Dispositivos marcados como entregados.");
       cerrarModal();
     }
 

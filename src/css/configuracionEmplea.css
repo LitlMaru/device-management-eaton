@@ -1,14 +1,17 @@
- body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-      padding: 20px;
-    }
+body {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+}
 
-    h1 {
-      text-align: center;
-      color: #003973;
-    }
+main {
+  padding: 2rem;
+}
+h1 {
+  text-align: center;
+  color: #003973;
+  margin-bottom: 2rem;
+}
 
     .top-bar {
       display: flex;
@@ -32,16 +35,12 @@
     }
 
     button {
-     padding: 8px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
     }
 
     button.export {
@@ -50,7 +49,7 @@
     }
 
     button.sort {
-      background-color:#6c757d;
+      background-color: #2196f3;
       color: white;
     }
 
@@ -58,55 +57,84 @@
       opacity: 0.9;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  user-select: none;
+  border-radius: 10px;
+}
 
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border-bottom: 1px solid #e0e0e0;
-    }
+thead {
+  background-color: #003973;
+  color: white;
+  cursor: default;
+}
 
-    th {
-      background-color: #004e92;
-      color: white;
-    }
+thead th {
+  position: sticky;
+  top: 0;
+  background-color: #003973;
+  z-index: 1;
+}
 
-    td button {
-      padding: 5px 10px;
-      margin: 0 3px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
 
-    .edit-btn {
-      background-color: #004e92;
-      color: white;
-    }
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  padding-right: 25px;
+}
+
+th.sortable .sort-icons {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+th.sortable .sort-icons i {
+  font-size: 10px;
+  color: #ccc;
+  line-height: 10px;
+  user-select: none;
+}
+
+th.sortable.asc .sort-icons i.fa-caret-up {
+  color: white;
+}
+th.sortable.desc .sort-icons i.fa-caret-down {
+  color: white;
+}
+
+td button {
+  padding: 5px 10px;
+  margin: 0 3px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 2px solid darkblue;
+  min-width: 5rem;
+}
+
+td button:hover {
+  filter: brightness(1.2);
+  border-color: white;
+}
+
+.edit-btn {
+  background-color: #005da4;
+  color: white;
+}
 
     .delete-btn {
       background-color: #f44336;
       color: white;
     }
-
-    .excel-btn {
-    background-color: #007e33;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    user-select: none;
-    height: 48px;
-    transition: background-color 0.3s;
-}
-

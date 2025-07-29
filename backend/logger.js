@@ -1,5 +1,8 @@
 const { sql, poolPromise } = require("../dbConfig");
 
+const { authenticateToken} = require('../middleware/auth');
+router.use(authenticateToken);
+
 // Guardar accion en el Historial de Acciones 
 async function logAction({ IDUsuario, Username, Ubicacion, Accion, Detalles }) {
   try {

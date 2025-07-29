@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dispositivos Asignados</title>
     <link rel="stylesheet" href="../css/query-employee-devices.css" />
+    <link rel="stylesheet" href="../css/global.css">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
 
     <!-- Íconos opcionales (Font Awesome) -->
     <link
@@ -16,23 +19,24 @@
     />
   </head>
   <body>
-    <div class="contenedor-principal">
+    <main>
       <h1>Dispositivos Asignados</h1>
 
       <div class="busqueda-exportar">
+       <div class="busqueda-container">
+        <i class="fas fa-search"></i>
         <input
           type="text"
-          id="busqueda"
+          id="buscarEmpleado"
           placeholder="Buscar por nombre o código..."
           oninput="filtrarTabla()"
         />
         <button type="button" id="btnOrdenarNombre" onclick="ordenarPorNombre()">
           <i class="fa fa-sort-alpha-down"></i> Ordenar A-Z
         </button>
-       <button onclick="exportarExcel('tablaAsignados')" class="excel-btn" title="Exportar tabla a Excel">
-       <svg xmlns="http://www.w3.org/2000/svg" fill="white"  viewBox="0 0 50 50" width="24" height="24"><path d="M 28.8125 0.03125 L 0.8125 5.34375 C 0.339844 5.433594 0 5.863281 0 6.34375 L 0 43.65625 C 0 44.136719 0.339844 44.566406 0.8125 44.65625 L 28.8125 49.96875 C 28.875 49.980469 28.9375 50 29 50 C 29.230469 50 29.445313 49.929688 29.625 49.78125 C 29.855469 49.589844 30 49.296875 30 49 L 30 1 C 30 0.703125 29.855469 0.410156 29.625 0.21875 C 29.394531 0.0273438 29.105469 -0.0234375 28.8125 0.03125 Z M 32 6 L 32 13 L 34 13 L 34 15 L 32 15 L 32 20 L 34 20 L 34 22 L 32 22 L 32 27 L 34 27 L 34 29 L 32 29 L 32 35 L 34 35 L 34 37 L 32 37 L 32 44 L 47 44 C 48.101563 44 49 43.101563 49 42 L 49 8 C 49 6.898438 48.101563 6 47 6 Z M 36 13 L 44 13 L 44 15 L 36 15 Z M 6.6875 15.6875 L 11.8125 15.6875 L 14.5 21.28125 C 14.710938 21.722656 14.898438 22.265625 15.0625 22.875 L 15.09375 22.875 C 15.199219 22.511719 15.402344 21.941406 15.6875 21.21875 L 18.65625 15.6875 L 23.34375 15.6875 L 17.75 24.9375 L 23.5 34.375 L 18.53125 34.375 L 15.28125 28.28125 C 15.160156 28.054688 15.035156 27.636719 14.90625 27.03125 L 14.875 27.03125 C 14.8125 27.316406 14.664063 27.761719 14.4375 28.34375 L 11.1875 34.375 L 6.1875 34.375 L 12.15625 25.03125 Z M 36 20 L 44 20 L 44 22 L 36 22 Z M 36 27 L 44 27 L 44 29 L 36 29 Z M 36 35 L 44 35 L 44 37 L 36 37 Z"/></svg>
-        <span>Exportar a Excel</span>
-      </button>
+        <button type="button" onclick="exportarExcel()">
+          <i class="fa fa-file-excel"></i> Exportar a Excel
+        </button>
       </div>
 
       <div class="scrollable">
@@ -40,10 +44,35 @@
           <thead>
             <tr>
               <th>ID Empleado</th>
-              <th>Empleado</th>
-              <th>Dispositivo</th>
-              <th>Modelo</th>
-              <th>Fecha Asignación</th>
+              <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Empleado
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+              <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Tipo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+              <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Modelo
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+            <th class="sortable" onclick="sortTable(1, 'tablaAsignados')">
+              Serie
+              <span class="sort-icons">
+                <i class="fas fa-caret-up"></i>
+                <i class="fas fa-caret-down"></i>
+              </span>
+            </th>
+              <th>Fecha de Asignación</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -51,57 +80,55 @@
             <tr>
               <td>123</td>
               <td>Romulo Betances</td>
-              <td>Laptop-XYZ, Mouse, Teclado</td>
-              <td>HP ProBook, Logitech M280, Logitech K120</td>
+              <td>Laptop-XYZ</td>
+              <td>HP ProBook</td>
+              <td>02901930</td>
               <td>2024-10-01</td>
-              <td>
+              <td style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.2rem;">
                 <button
                   type="button"
-                  class="boton-accion boton-verificar"
+                  class="boton-accion verify-btn"
                   onclick="verificarDispositivos(this)"
                   title="Verificar dispositivos asignados"
-                >
-                  <i class="fa fa-check-circle"></i> Verificar
+                >Verificar
                 </button>
                 <button
                   type="button"
-                  class="boton-accion boton-eliminar"
+                  class="boton-accion delete-btn"
                   onclick="eliminarFila(this)"
                   title="Eliminar asignación"
-                >
-                  <i class="fa fa-trash-alt"></i> Eliminar
+                > Eliminar
                 </button>
               </td>
             </tr>
             <tr>
               <td>456</td>
               <td>Anyeny Mejía</td>
-              <td>Headset, Cargador Laptop</td>
-              <td>Logitech H390, Lenovo USB-C</td>
+              <td>Headset</td>
+              <td>Logitech H390</td>
+              <td>02901930</td>
               <td>2024-10-01</td>
-              <td>
+              <td style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.2rem;">
                 <button
                   type="button"
-                  class="boton-accion boton-verificar"
+                  class="boton-accion verify-btn"
                   onclick="verificarDispositivos(this)"
                   title="Verificar dispositivos asignados"
-                >
-                  <i class="fa fa-check-circle"></i> Verificar
+                >Verificar
                 </button>
                 <button
                   type="button"
-                  class="boton-accion boton-eliminar"
+                  class="boton-accion delete-btn"
                   onclick="eliminarFila(this)"
                   title="Eliminar asignación"
-                >
-                  <i class="fa fa-trash-alt"></i> Eliminar
+                > Eliminar
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
+    </main>
 
     <div id="modalAsignacion" class="modal oculto">
       <div class="modal-content">
@@ -121,6 +148,7 @@
     </div>
 
     <script src="../js/query-employee-devices.js"></script>
+    <script src="../js/utils.js"></script>
   </body>
 </html>
 

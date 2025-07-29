@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Registrar empleados</title>
     <link rel="stylesheet" href="../css/register-employees.css" />
+    <link rel="stylesheet" href="../css/global.css">
   </head>
   <body>
-    <div class="page-wrapper">
+    <main>
       <h1 class="page-title">Registrar nuevo empleado</h1>
       <div class="form-container">
         <div class="form-wrapper">
@@ -104,12 +105,13 @@
               </select>
             </div>
             <button type="submit" onclick="registrar(event)">Agregar</button>
-            <div id="formMessage" style="display: none"></div>
+            <div id="formMessage" style="display: none; margin-top: .5rem; text-align: center;"></div>
           </form>
         </div>
       </div>
-    </div>
+    </main>
 
     <script src="../js/register.js"></script>
+    <script src="../js/utils.js"></script>
   </body>
 </html>

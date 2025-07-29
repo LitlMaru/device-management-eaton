@@ -188,7 +188,7 @@ document.getElementById("confirmReasignBtn").addEventListener("click", async () 
     alert("Por favor ingresa el ID del empleado.");
     return;
   }
-  confirmReassign = confirm(`¿Reasignar el dispositivo a ${idNuevoEmpleado}?`);
+  confirmReassign = await customConfirm(`¿Reasignar el dispositivo a ${idNuevoEmpleado}?`);
   if (confirmReassign) {
     try {
       await fetch(`${HOST}:${PORT}/api/assignations/reassign`, {
@@ -209,7 +209,6 @@ document.getElementById("confirmReasignBtn").addEventListener("click", async () 
       alert(err.message);
     }
   }
-  parent.document.getElementById("content").focus();
 });
 
 function sortTable(colIndex, tablaID) {
@@ -312,7 +311,7 @@ async function fetchAssignedDevices() {
     }
   } catch (err) {
     console.error("Error al obtener dispositivos asignados:", err);
-    alert("Hubo un error al consultar los dispositivos asignados.");
+    await customAlert("Hubo un error al consultar los dispositivos asignados.");
   }
 }
 
@@ -356,7 +355,7 @@ async function fetchAssignmentHistory(ID_Dispositivo) {
     });
   } catch (err) {
     console.error("Error al cargar historial de asignaciones:", err);
-    alert("Error al obtener historial.");
+    await customAlert("Error al obtener historial.");
   }
 }
 
@@ -396,7 +395,7 @@ async function fetchPendingDevices() {
     }
   } catch (err) {
     console.error("Error al obtener dispositivos pendientes:", err);
-    alert("Ocurrió un error al cargar los dispositivos por cambiar.");
+    await customAlert("Ocurrió un error al cargar los dispositivos por cambiar.");
   }
 }
 /*

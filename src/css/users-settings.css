@@ -177,20 +177,19 @@ tr:hover {
 }
 
 .actions-container button {
-  width: 70%;
-  min-width: 140px;
-  height: 100%;
-  background-color: #004e92;
-  padding: 0.5rem 1rem;
-  border: none;
+ width: 100%;
+  padding: 5px 10px;
+  margin: 0 3px;
   border-radius: 4px;
+  font-size: 0.9em;
+  border: 2px solid darkblue;
+  min-width: 5rem;
+  background-color: #db3125;
   color: white;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 .actions-container button:hover {
-  background-color: #0264ba;
+      filter:brightness(0.85);
 }
 .modal {
   display: none;

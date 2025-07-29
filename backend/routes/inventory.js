@@ -3,9 +3,11 @@ const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
 const { pool } = require("mssql");
 
+const { authenticateToken, authorize } = require('../middleware/auth');
+router.use(authenticateToken);
 
 // Obtener tipos de dispositivo
-router.get("/device-types", async (req, res) => {
+router.get("/device-types", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   try {
     const pool = await poolPromise;
     const result = await pool.request()
@@ -20,7 +22,7 @@ router.get("/device-types", async (req, res) => {
 });
 
 // Obtener los modelos para un tipo de dispositivo
-router.get("/models", async (req, res) => {
+router.get("/models", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const tipoDispositivo = req.query.IDTipo;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -40,7 +42,7 @@ router.get("/models", async (req, res) => {
 });
 
 // Agregar nuevo tipo de dispositivo
-router.post("/add-type", async (req, res) => {
+router.post("/add-type", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const {tipoDispositivo} = req.body;
   
   try{

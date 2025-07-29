@@ -1,33 +1,47 @@
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../dbConfig");
-const { pool } = require("mssql");
 
+const { authenticateToken, authorize } = require('../middleware/auth');
+router.use(authenticateToken);
 
 // Consultar empleados
-router.get("/", async (req, res) => {
+router.get("/", authorize('IT_QUERY', 'IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const filter = req.query.filter;
-  try{
+  const Ubicacion = req.headers["x-ubicacion"];
 
-  const pool = await poolPromise;
-  const query = `SELECT ID_Empleado, Nombre as Empleado, Departamento, Posicion, Fecha_entrada from Empleados`
-  // Si el input de busqueda no esta vacio, buscar nombres que contengan su valor
-  if(filter){
-    query += ` WHERE Nombre LIKE %${filter}%`
+  try {
+    const pool = await poolPromise;
+    const request = pool.request();
+    request.input("Ubicacion", sql.VarChar, Ubicacion);
+
+    let query = `
+      SELECT ID_Empleado, Nombre as Empleado, Departamento, Posicion, Fecha_entrada
+      FROM Empleados
+      WHERE Ubicacion = @Ubicacion
+    `;
+
+    if (filter) {
+      request.input("Filter", sql.VarChar, `%${filter}%`);
+      query += `
+        AND (
+          Nombre LIKE @Filter OR
+          Departamento LIKE @Filter OR
+          Posicion LIKE @Filter
+        )
+      `;
+    }
+
+    const result = await request.query(query);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
-
-  const result = pool.request().query(query);
-
-  res.json(result.recordset)
-}
-catch(err){
-  console.error(err);
-  res.json({status: 500, error: err.message})
-}
-})
+});
 
 // Agregar un empleado nuevo a la base de datos
-router.post("/add-employee", async (req, res) => {
+router.post("/register", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const data = req.body;
   const ubicacion = req.headers["x-ubicacion"];
   try {
@@ -50,9 +64,8 @@ router.post("/add-employee", async (req, res) => {
   }
 });
 
-
 // Actualizar informacion de un empleado
-router.put("/", async (req, res) => {
+router.put("/", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const { ID_Empleado, Nombre, Departamento, Posicion } = req.body;
 
   if (!ID_Empleado) {
@@ -89,7 +102,7 @@ router.put("/", async (req, res) => {
     inputs.forEach(({ name, type, value }) => {
       request.input(name, type, value);
     });
-    request.input("ID_Empleado", sql.Int, ID_Empleado);
+    request.input("ID_Empleado", sql.VarChar, ID_Empleado);
 
     await request.query(query);
 
@@ -101,22 +114,21 @@ router.put("/", async (req, res) => {
   }
 });
 
-
 // Eliminar empleado de la base de datos
-router.delete("/:IDEmpleado", async (req, res) => {
+router.delete("/:IDEmpleado", authorize('IT_EDITOR', 'IT_MASTER'), async (req, res) => {
   const IDEmpleado = req.params["IDEmpleado"];
-  try{
-    const pool = await poolPromise();
+  try {
+    const pool = await poolPromise;
     await pool.request()
-      .input("ID_Empleado", sql.Int, IDEmpleado)
+      .input("ID_Empleado", sql.VarChar, IDEmpleado)
       .query(`DELETE FROM Empleados WHERE ID_Empleado = @ID_Empleado`);
-    res.status(100);
-  }
-  catch(err){
+
+    res.status(200).json({ success: true, message: "Empleado eliminado" });
+  } catch (err) {
     console.error(err);
-    res.status(500).json({error: err.message});
+    res.status(500).json({ success: false, error: err.message });
   }
-})
+});
 
 
 module.exports = router;

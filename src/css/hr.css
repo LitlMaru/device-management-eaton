@@ -113,11 +113,11 @@ body {
   transform: translateX(5px);
 }
 .close-session {
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: #C00;
 }
 
 .close-session:hover {
-  background-color: rgba(204, 5, 5, 0.8);
+  background-color: #B00;
   transform: translateX(5px);
 }
 .menu-item img {

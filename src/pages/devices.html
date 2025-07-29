@@ -7,9 +7,10 @@
     <title>Inventario de Dispositivos</title>
     <link rel="stylesheet" href="../css/devices.css" />
        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+           <link rel="stylesheet" href="../css/global.css">
   </head>
   <body>
-    <div class="main-content">
+    <main>
  <h1>Inventario de Dispositivos</h1>
     <div class="controls">
       <input type="text" id="buscarNombre" placeholder="Buscar por tipo..." />
@@ -67,7 +68,7 @@
         <tbody></tbody>
       </table>
     </div>
-    </div>
+    </main>
    
 
     <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal()">
@@ -76,77 +77,77 @@
       </div>
     </div>
 
-    <template id="modalAgregar">
-      <span class="close" onclick="cerrarModal()">×</span>
-      <h3>Agregar Dispositivos</h3>
+      <template id="modalAgregar">
+        <span class="close" onclick="cerrarModal()">×</span>
+        <h3>Agregar Dispositivos</h3>
 
-      <!-- Tipo de dispositivo -->
-      <div id="nombreSelectContainerAgregar">
-        <label for="tipoDispositivo">Tipo:</label>
-        <select id="tipoDispositivo" name="tipoDispositivo" required>
-          <option value="" disabled selected>Seleccione un tipo</option>
-        </select>
-        <div class="button-wrap">
-          <button type="button" onclick="mostrarInputNuevoTipo()">
-            Agregar tipo
-          </button>
+        <!-- Tipo de dispositivo -->
+        <div id="nombreSelectContainerAgregar">
+          <label for="tipoDispositivo">Tipo:</label>
+          <select id="tipoDispositivo" name="tipoDispositivo" required>
+            <option value="" disabled selected>Seleccione un tipo</option>
+          </select>
+          <div class="button-wrap">
+            <button type="button" onclick="mostrarInputNuevoTipo()">
+              Agregar tipo
+            </button>
+          </div>
         </div>
-      </div>
-      <br />
+        <br />
 
-      <div id="nombreInputContainerAgregar" class="hidden">
-        <label for="nombreAgregarNuevo">Nuevo tipo:</label>
-        <input type="text" id="nombreAgregarNuevo" />
+        <div id="nombreInputContainerAgregar" class="hidden">
+          <label for="nombreAgregarNuevo">Nuevo tipo:</label>
+          <input type="text" id="nombreAgregarNuevo" />
 
-        <div class="button-wrap">
-          <button type="button" onclick="cancelarNuevoTipo()">Cancelar</button>
+          <div class="button-wrap">
+            <button type="button" onclick="cancelarNuevoTipo()">Cancelar</button>
+          </div>
         </div>
-      </div>
 
-      <label>Marca:</label><input type="text" id="marcaAgregar" /><br />
+        <label>Marca:</label><input type="text" id="marcaAgregar" /><br />
 
-      <!-- Modelo -->
-      <div id="modeloSelectContainerAgregar">
-        <label for="Modelo">Modelo:</label>
-        <select id="Modelo" name="Modelo" required>
-          <option value="" disabled selected>Seleccione un modelo</option>
-        </select>
-        <div class="button-wrap">
-          <button type="button" onclick="mostrarInputNuevoModelo()">
-            Agregar modelo
-          </button>
+        <!-- Modelo -->
+        <div id="modeloSelectContainerAgregar">
+          <label for="Modelo">Modelo:</label>
+          <select id="Modelo" name="Modelo" required>
+            <option value="" disabled selected>Seleccione un modelo</option>
+          </select>
+          <div class="button-wrap">
+            <button type="button" onclick="mostrarInputNuevoModelo()">
+              Agregar modelo
+            </button>
+          </div>
         </div>
-      </div>
-      <br />
+        <br />
 
-      <div id="modeloInputContainerAgregar" class="hidden">
-        <label for="modeloAgregarNuevo">Nuevo modelo:</label>
-        <input type="text" id="modeloAgregarNuevo" />
-        <div class="button-wrap">
-          <button type="button" onclick="cancelarNuevoModelo()">
-            Cancelar
-          </button>
+        <div id="modeloInputContainerAgregar" class="hidden">
+          <label for="modeloAgregarNuevo">Nuevo modelo:</label>
+          <input type="text" id="modeloAgregarNuevo" />
+          <div class="button-wrap">
+            <button type="button" onclick="cancelarNuevoModelo()">
+              Cancelar
+            </button>
+          </div>
         </div>
-      </div>
 
-      <label>Cantidad:</label
-      ><input
-        type="number"
-        id="cantidadAgregar"
-        value="1"
-        min="1"
-      /><br /><br />
-      <label>Seriales (separados por coma si hay varios):</label>
-      <textarea
-        id="serialesAgregar"
-        rows="3"
-        placeholder="Ej: S001, S002, S003"
-      ></textarea
-      ><br /><br />
-      <div class="button-wrap">
-        <button onclick="agregarDispositivo()">Guardar</button>
-      </div>
-    </template>
+        <label>Cantidad:</label
+        ><input
+          type="number"
+          id="cantidadAgregar"
+          value="1"
+          min="1"
+        /><br /><br />
+        <label>Seriales (separados por coma si hay varios):</label>
+        <textarea
+          id="serialesAgregar"
+          rows="3"
+          placeholder="Ej: S001, S002, S003"
+        ></textarea
+        ><br /><br />
+        <div class="button-wrap">
+          <button onclick="agregarDispositivo()">Guardar</button>
+        </div>
+      </template>
 
     <template id="modalEliminar">
         <span class="close" onclick="cerrarModal()">×</span>
@@ -210,5 +211,6 @@
           esNuevo ? "block" : "none";
       }
     </script>
+    <script src="../js/utils.js"></script>
   </body>
 </html>
