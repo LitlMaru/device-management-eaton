@@ -1,0 +1,147 @@
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <title>Manual del Sistema - EATON Device Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <style>
+      body {
+        background-color: #f4faff;
+      }
+      .header {
+        background-color: #003973;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        position: relative;
+      }
+      h2 {
+        color: #003973;
+        margin-top: 1.5rem;
+      }
+      .section {
+        padding: 1rem;
+        background: white;
+        margin: 1rem auto;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      }
+      .img-fluid {
+        border-radius: 10px;
+      }
+      #btnSubir {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #003973;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+      }
+      #btnSubir:hover {
+        background-color: #0057b8;
+      }
+      .header a.back-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: white;
+        color: #003973;
+        border: 2px solid #003973;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .header a.back-btn:hover {
+        background-color: #003973;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="header" id="inicio">
+    <a id="backBtn" class="back-btn" title="Volver al menú">⮌</a>
+    <h1>Manual del Sistema EATON</h1>
+    <p>Guía detallada del sistema EATON Device Management para IT y Recursos Humanos</p>
+  </div>
+  <div class="container">
+    <div class="section">
+      <h2>🔐 Inicio de Sesión</h2>
+      <p>El sistema cuenta con login por <strong>usuario y contraseña</strong>. Según tu rol verás funciones diferentes:</p>
+      <ul>
+        <li><strong>IT:</strong> Accesos según rol: desde asignaciones hasta configuración completa.</li>
+        <li><strong>Recursos Humanos:</strong> Gestión de empleados.</li>
+        <li><strong>Visitante:</strong> Solo vista, sin capacidad de modificar.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h2>🛠️ Menú IT - Funcionalidades</h2>
+      <ul>
+        <li><strong>Asignar dispositivo:</strong> Asignación directa o reemplazo ingresando el ID del anterior. Genera carta de compromiso automáticamente.</li>
+        <li><strong>Buscar asignado:</strong> Consulta por ID o nombre. Incluye historial, pendientes y exportación a Excel.</li>
+        <li><strong>Inventario:</strong> Control por tipo, stock mínimo y alertas. Exportación disponible.</li>
+        <li><strong>Dispositivos:</strong> Agrega o elimina dispositivos según estado. Reporte disponible.</li>
+        <li><strong>Historial de Actividades:</strong> Solo para rol Master. Muestra todas las acciones por usuario.</li>
+        <li><strong>Usuarios:</strong> Gestión de accesos IT y HR.</li>
+        <li style="color: red;"><strong>❌ Cerrar Sesión:</strong> Finaliza la sesión y vuelve al login.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h2>👥 Menú Recursos Humanos</h2>
+      <ul>
+        <li><strong>Registrar:</strong> Ingreso completo de nuevos empleados.</li>
+        <li><strong>Buscador:</strong> Revisión, eliminación y exportación de datos por ID o nombre.</li>
+        <li><strong>Gestionar Empleado:</strong> Configuración de personal por área (MCB, MCCN, ICD).</li>
+        <li style="color: red;"><strong>❌ Cerrar Sesión:</strong> Finaliza la sesión y vuelve al login.</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h2>📘 Detalles Técnicos</h2>
+      <ul>
+        <li>Funciona con base de datos SQL Server.</li>
+        <li>Las acciones importantes se registran en un historial.</li>
+        <li>Se recomienda cerrar sesión correctamente tras el uso.</li>
+      </ul>
+    </div>
+  </div>
+  <button id="btnSubir" onclick="subirInicio()" title="Ir arriba">↑</button>
+  <script>
+    function getParam(key) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(key);
+    }
+    const menu = getParam("menu");
+    const backBtn = document.getElementById("backBtn");
+    backBtn.addEventListener("click", () => {
+      if (menu === "it") {
+        window.location.href = "admin.html";
+      } else if (menu === "hr") {
+        window.location.href = "rrhh.html";
+      } else {
+        history.back();
+      }
+    });
+    window.onscroll = function () {
+      const btn = document.getElementById("btnSubir");
+      btn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+    };
+    function subirInicio() {
+      document.getElementById("inicio").scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+  </body>
+  </html>
