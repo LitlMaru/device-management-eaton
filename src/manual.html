@@ -81,27 +81,29 @@
   <div class="container">
     <div class="section">
       <h2>🔐 Inicio de Sesión</h2>
+      <img src="LOGIN.png" alt="90" width="500">
       <p>El sistema cuenta con login por <strong>usuario y contraseña</strong>. Según tu rol verás funciones diferentes:</p>
       <ul>
         <li><strong>IT:</strong> Accesos según rol: desde asignaciones hasta configuración completa.</li>
         <li><strong>Recursos Humanos:</strong> Gestión de empleados.</li>
-        <li><strong>Visitante:</strong> Solo vista, sin capacidad de modificar.</li>
+        
       </ul>
     </div>
     <div class="section">
       <h2>🛠️ Menú IT - Funcionalidades</h2>
+      <img src="IT.png" alt="90" width="500">
       <ul>
         <li><strong>Asignar dispositivo:</strong> Asignación directa o reemplazo ingresando el ID del anterior. Genera carta de compromiso automáticamente.</li>
         <li><strong>Buscar asignado:</strong> Consulta por ID o nombre. Incluye historial, pendientes y exportación a Excel.</li>
         <li><strong>Inventario:</strong> Control por tipo, stock mínimo y alertas. Exportación disponible.</li>
         <li><strong>Dispositivos:</strong> Agrega o elimina dispositivos según estado. Reporte disponible.</li>
-        <li><strong>Historial de Actividades:</strong> Solo para rol Master. Muestra todas las acciones por usuario.</li>
-        <li><strong>Usuarios:</strong> Gestión de accesos IT y HR.</li>
+      <li><strong>Usuarios:</strong> Gestión de accesos IT y HR.</li>
         <li style="color: red;"><strong>❌ Cerrar Sesión:</strong> Finaliza la sesión y vuelve al login.</li>
       </ul>
     </div>
     <div class="section">
       <h2>👥 Menú Recursos Humanos</h2>
+      <img src="HR.png" alt="90" width="500">
       <ul>
         <li><strong>Registrar:</strong> Ingreso completo de nuevos empleados.</li>
         <li><strong>Buscador:</strong> Revisión, eliminación y exportación de datos por ID o nombre.</li>
@@ -111,11 +113,10 @@
     </div>
     <div class="section">
       <h2>📘 Detalles Técnicos</h2>
-      <ul>
-        <li>Funciona con base de datos SQL Server.</li>
-        <li>Las acciones importantes se registran en un historial.</li>
-        <li>Se recomienda cerrar sesión correctamente tras el uso.</li>
-      </ul>
+        <ul>
+          <li>Funciona con base de datos SQL Server.</li>
+          <li>Se recomienda cerrar sesión correctamente tras el uso.</li>
+        </ul>
     </div>
   </div>
   <button id="btnSubir" onclick="subirInicio()" title="Ir arriba">↑</button>

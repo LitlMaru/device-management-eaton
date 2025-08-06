@@ -192,29 +192,7 @@ async function getGroupedInventory() {
   }
 }
 
-async function updateInventory() {
-  const data = await getGroupedInventory();
-  const tbody = document.querySelector("#inventoryTable tbody");
-  tbody.innerHTML = "";
-  data.forEach((model) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${model.TipoDispositivo}</td>
-      <td>${model.Modelo}</td>
-      <td>${model.Cantidad}</td>
-      <td>${model.Limite}</td>
-      <td>
-        <button class="edit-btn" onclick="openPanel(this.closest('tr'))">Cambiar limite </button>
-      </td>
-      `;
-    tr.dataset.ID_Modelo = model.ID_Modelo;
-    tbody.appendChild(tr);
-  });
-  checkAlerts();
-  document
-    .querySelector("#saveLimit")
-    .addEventListener("click", saveLimitHandler);
-}
+
 
 function checkAlerts() {
   const alertList = document.getElementById("alert-list");
@@ -259,9 +237,5 @@ function filtrarTabla() {
       fila.style.display = "none";
     }
   });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  checkAlerts();
-  filtrarTabla();
-});
+  }
+  
