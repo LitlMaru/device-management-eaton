@@ -101,3 +101,28 @@ function ordenarPorNombre() {
 
   ordenAscendente = !ordenAscendente; 
 }
+
+function exportarExcel(tablaID) {
+  let tabla = document.getElementById(tablaID);
+
+  let encabezadoExcel = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns="http://www.w3.org/TR/REC-html40">
+    <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+      <x:Name>DispositivosAsignados</x:Name>
+      <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+    </head><body>`;
+  let pieExcel = '</body></html>';
+
+  let tablaHTML = encabezadoExcel + tabla.outerHTML + pieExcel;
+  let tipoArchivo = 'application/vnd.ms-excel';
+  let nombreArchivo = 'dispositivos_asignados.xls';
+
+  let enlaceDescarga = document.createElement('a');
+  enlaceDescarga.href = 'data:' + tipoArchivo + ', ' + encodeURIComponent(tablaHTML);
+  enlaceDescarga.download = nombreArchivo;
+  enlaceDescarga.click();
+}
+

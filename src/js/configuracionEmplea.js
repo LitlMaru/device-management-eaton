@@ -317,3 +317,21 @@ document
   });
 
 renderTable(employees);
+
+  function exportarExcel(tablaID) {
+  let tabla = document.getElementById(tablaID);
+  let tablaHTML = tabla.outerHTML.replace(/ /g, '%20');
+
+
+  let nombreArchivo = 'empleados.xls';
+  let tipoArchivo = 'application/vnd.ms-excel';
+
+
+  let enlaceDescarga = document.createElement('a');
+  enlaceDescarga.href = 'data:' + tipoArchivo + ', ' + tablaHTML;
+  enlaceDescarga.download = nombreArchivo;
+
+ 
+  enlaceDescarga.click();
+}
+
